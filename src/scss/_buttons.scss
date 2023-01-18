@@ -1,0 +1,18 @@
+@import "./utils";
+
+button.btn.btn-primary {
+  background-color: $primary-color;
+  background: $primary-color;
+  border-radius: 5px;
+  border: 1px solid $primary-color;
+  margin: 5px;
+  padding: 10px;
+  width: 100%;
+  &:hover {
+    transform: scale(0.9);
+    background-color: $primary-color;
+    background: $primary-color;
+    border-radius: 12px;
+    border: 1px solid $primary-color;
+  }
+}

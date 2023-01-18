@@ -1,0 +1,61 @@
+.invoice-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  .header {
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    .title {
+      font-size: 26px;
+    }
+    .logo-container {
+      .logo {
+        width: 200px;
+        height: 200px;
+      }
+    }
+  }
+  .details-container {
+    display: flex;
+    align-items: center;
+    gap: 100px;
+    padding: 15px 0px;
+    .details-from {
+      .from {
+        font-weight: lighter;
+      }
+      .name {
+        font-weight: 600;
+        font-size: larger;
+      }
+    }
+    .details-for {
+      .for {
+        font-weight: lighter;
+      }
+      .name {
+        font-weight: 600;
+      }
+    }
+  }
+  .invoice-meta {
+    padding: 15px 0px;
+  }
+  .sub-table {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 0px;
+  }
+  .pay-now-link {
+    padding: 10px 0px;
+    line-height: 40px;
+    text-align: center;
+  }
+  .invoice-footer {
+    text-align: center;
+  }
+}

@@ -1,0 +1,29 @@
+@import "../scss/utils";
+
+.ant-layout-sider {
+  background-color: $primary-color;
+}
+.logo {
+  padding: 10px;
+  .brand-logo {
+    width: 45px;
+    height: 45px;
+    border-radius: 30%;
+  }
+}
+.site-layout {
+  .site-layout-background {
+    padding: 10px;
+    background-color: #fff;
+    .trigger {
+      padding: 0 24px;
+      font-size: 18px;
+      line-height: 64px;
+      cursor: pointer;
+      transition: color 0.3s;
+      &:hover {
+        color: #1890ff;
+      }
+    }
+  }
+}

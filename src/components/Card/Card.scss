@@ -1,0 +1,37 @@
+@import "../../scss/utils";
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto;
+  background-color: $primary-color;
+  overflow: hidden;
+  margin: 1rem;
+  box-shadow: 0 20px 34px hsla(20deg, 1%, 52%, 0.29);
+  width: min(90%, 55rem);
+  height: min(50rem, 15rem);
+  border-radius: 10px;
+  .header {
+    color: #fff;
+  }
+  .user-image {
+    max-width: 100%;
+    min-height: 100%;
+    width: 300px;
+    margin: 0px;
+    right: 12px;
+    position: relative;
+    object-fit: cover;
+    display: block;
+    border-radius: 5px 0px 0px 5px;
+  }
+  
+  .card-details {
+    padding: 1.5rem;
+    font-family: $font-family;
+    font-size: min(2rem, 1rem);
+  }
+  :hover {
+    cursor: pointer;
+  }
+}

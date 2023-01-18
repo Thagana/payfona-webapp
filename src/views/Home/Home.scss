@@ -1,0 +1,32 @@
+@import "../../scss/utils";
+
+.home-container {
+  .row {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    align-items: center;
+    .card {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+      max-width: 450px;
+      height: 400px;
+      transition: transform 0.2s;
+      margin: 15px;
+      background: $primary-color;
+      &:hover {
+        cursor: pointer;
+        transform: scale(1.1);
+      }
+      .header {
+        color: #fff;
+      }
+      .icon {
+        color: #fff;
+      }
+    }
+  }
+}

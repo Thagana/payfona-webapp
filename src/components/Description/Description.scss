@@ -1,0 +1,23 @@
+.description {
+  .description-text {
+    text-decoration: none;
+    color: #fff;
+  }
+  .source-items {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 1rem 0rem;
+    .source {
+      margin: 0rem 1rem;
+      font-weight: bold;
+    }
+    .date {
+      margin: 0rem 1rem;
+      font-weight: bold;
+    }
+    .bookmark {
+      margin: 0rem 1rem;
+    }
+  }
+}

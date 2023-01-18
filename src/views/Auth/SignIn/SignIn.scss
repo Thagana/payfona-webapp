@@ -1,0 +1,55 @@
+@import "../../../scss/utils";
+
+.log-in-container {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .header {
+    font-size: 30px;
+  }
+
+  .input-group {
+    .form-control {
+      max-width: 450px;
+      width: 300px;
+      padding: 15px;
+      margin: 2px;
+    }
+  }
+
+  .form-group {
+    padding: 10px;
+    max-width: 500px;
+    .link {
+      color: $primary-color;
+    }
+    .form-control {
+        max-width: 450px;
+        width: 300px;
+        padding: 15px;
+        margin: 2px;
+    }
+    .eye-container {
+      display: flex;
+      flex-direction: row;
+      position: relative;
+      top: -37px;
+      left: 350px;
+
+      .icon {
+        font-size: 20px;
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+
+    button.btn {
+      width: 100%;
+    }
+  }
+}
