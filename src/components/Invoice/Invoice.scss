@@ -1,0 +1,25 @@
+@import '../../scss/utils';
+
+.invoice {
+  height: auto;
+  display: flex;
+  align-items: center;
+  gap: 93px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 1.5rem 2rem;
+  background: rgb(248, 248, 251);
+  text-decoration: none;
+  transition: border 0.3s ease 0s, background 0.3s ease 0s;
+  margin: 5px 0px 0px 5px;
+  cursor: pointer;
+  font-family: $font-family;
+  color: $primary-color;
+  &:hover {
+    color: $secondary-color;
+  }
+  .invoice-status {
+    display: flex;
+    align-items: center;
+  }
+}

@@ -102,7 +102,6 @@ export default function SignIn() {
             <label htmlFor="password" className="label">
               Password
             </label>
-            <div className="input-group">
               <input
                 type={eyeToggle ? "text" : "password"}
                 className={`form-control is-form ${errors.password ? 'is-invalid' : 'is-valid'}`}
@@ -119,11 +118,7 @@ export default function SignIn() {
                 })}
                 placeholder="Enter your password"
               />
-              <span className="input-group-text">
-                {eyeToggle ? (<EyeInvisibleOutlined className="icon" onClick={handleToggleEye} />) : <EyeOutlined className="icon" onClick={handleToggleEye} />}
-              </span>
             </div>
-          </div>
           <div className="invalid-feedback">{errors.password?.message || ""}</div>
           <div className="form-group">
             <Link to="/register" className="link">

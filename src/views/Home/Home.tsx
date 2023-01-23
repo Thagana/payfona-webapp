@@ -1,90 +1,34 @@
 import * as React from "react";
+import { PlusCircleOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import DropdownButton from "../../components/Dropdown/Dropdown";
 import Template from "../Template";
-import {
-  ScanOutlined,
-  SearchOutlined,
-  LinkOutlined,
-  QrcodeOutlined,
-} from "@ant-design/icons";
 import "./Home.scss";
+import Invoices from "../../components/Invoices";
 
 export default function Home() {
   const navigate = useNavigate();
 
-  const handleClick = (to: string) => {
-    switch (to) {
-      case "scan":
-        navigate("scan");
-        break;
-      case "search":
-        navigate("search");
-        break;
-      case "link":
-        navigate("get-payment-link");
-        break;
-      case "qrcode":
-        navigate("get-qr-code");
-        break;
-      default:
-        break;
-    }
-  };
   return (
     <Template defaultIndex="1">
       <div className="home-container">
-        <div className="row">
-          <div
-            className="card"
-            style={{ width: "18rem" }}
-            onClick={() => {
-              handleClick("scan");
-            }}
-          >
-            <div>
-              <ScanOutlined style={{ fontSize: 60 }} className="icon" />
-            </div>
-            <div className="header">Scan and Pay</div>
+        <div className="home-header">
+          <div className="header-invoice">
+            <div className="header">Invoice</div>
+            <div className="header-sub-text">There are 7 total invoices</div>
           </div>
-          <div
-            className="card"
-            style={{ width: "18rem" }}
-            onClick={() => {
-              handleClick("search");
-            }}
-          >
-            <div>
-              <SearchOutlined style={{ fontSize: 60 }} className="icon" />
+          <div>
+            <div className="actions">
+              <div className="create-invoice">
+                <button className="btn btn-primary add-invoice">
+                  <PlusCircleOutlined />
+                  <div className="add-invoice-text">New Invoice</div>
+                </button>
+              </div>
             </div>
-            <div className="header">Search</div>
           </div>
         </div>
-        <div className="row">
-          <div
-            className="card"
-            style={{ width: "18rem" }}
-            onClick={() => {
-              handleClick("qrcode");
-            }}
-          >
-            <div>
-              <QrcodeOutlined style={{ fontSize: 60 }} className="icon" />
-            </div>
-            <div className="header">Get Paid Scan</div>
-          </div>
-          <div
-            className="card"
-            style={{ width: "18rem" }}
-            onClick={() => {
-              handleClick("link");
-            }}
-          >
-            <div>
-              <LinkOutlined style={{ fontSize: 60 }} className="icon" />
-            </div>
-            <div className="header">Payment Link</div>
-          </div>
-        </div>
+        <Invoices />
       </div>
     </Template>
   );

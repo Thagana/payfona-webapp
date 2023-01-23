@@ -71,66 +71,12 @@ export default function TemplateWrapper(props: Props): JSX.Element {
         <Menu theme="dark" mode="inline" defaultSelectedKeys={[defaultIndex]}>
           <Menu.Item
             key="1"
-            icon={<HomeOutlined />}
+            icon={<MoneyCollectOutlined />}
             onClick={() => {
               navigate("/");
             }}
           >
-            Home
-          </Menu.Item>
-          <Menu.Item
-            key="2"
-            icon={<ScanOutlined />}
-            onClick={() => {
-              navigate("/scan");
-            }}
-          >
-            Scan
-          </Menu.Item>
-          <Menu.Item
-            key="3"
-            icon={<SearchOutlined />}
-            onClick={() => {
-              navigate("/search");
-            }}
-          >
-            Search
-          </Menu.Item>
-          <Menu.Item
-            key="4"
-            icon={<InfoCircleOutlined />}
-            onClick={() => {
-              navigate("/about");
-            }}
-          >
-            About 2tip
-          </Menu.Item>
-          <Menu.Item
-            key="5"
-            icon={<QuestionOutlined />}
-            onClick={() => {
-              navigate("/help");
-            }}
-          >
-            Help
-          </Menu.Item>
-          <Menu.Item
-            key="6"
-            icon={<MoneyCollectOutlined />}
-            onClick={() => {
-              navigate("/transactions");
-            }}
-          >
-            Transactions
-          </Menu.Item>
-          <Menu.Item
-            key="7"
-            icon={<UserOutlined />}
-            onClick={() => {
-              navigate("/profile");
-            }}
-          >
-            Profile
+            Invoice
           </Menu.Item>
           <Menu.Item
             key="8"
