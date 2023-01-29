@@ -1,0 +1,45 @@
+@import "../../scss/utils";
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  .home-header { 
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    .header-invoice {
+      .header {
+        color: rgb(12, 14, 22);
+        font-weight: bold;
+        transition: color 0.3s ease 0s;
+        font-size: 2rem;
+        line-height: 1.125;
+        letter-spacing: -1px;
+
+      }
+      .header-sub-text {
+        transition: color 0.3s ease 0s;
+        color: rgb(136, 142, 176);
+        font-size: 0.75rem;
+        line-height: 1.125;
+        letter-spacing: -0.25px;
+      }
+    }
+    .actions {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .create-invoice {
+        .add-invoice {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          font-family: $font-family;
+          .add-invoice-text {
+            margin: 0px 5px;
+          }
+        }
+      }
+    }
+  }
+}

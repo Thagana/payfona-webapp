@@ -51,7 +51,6 @@ instance.interceptors.request.use(
       config.url = `${baseURL}${config.url}`;
       config.headers.authorization = `Bearer ${token}`;
     }
-    console.log('URL:::', config.url);
     return config;
   },
   (error) => Promise.reject(error)

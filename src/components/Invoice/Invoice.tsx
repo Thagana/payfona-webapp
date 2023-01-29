@@ -2,16 +2,32 @@ import * as React from "react";
 import { RightOutlined } from '@ant-design/icons'
 import './Invoice.scss';
 import InvoiceStatus from "../InvoiceStatus";
+import { formatInTimeZone } from 'date-fns-tz'
+import { parseISO } from 'date-fns';
 
-export default function Invoice() {
+type Props = {
+  status: 'PENDING' | 'PAID' | 'DRAFT',
+  total: number;
+  invoiceNumber: string;
+  name: string;
+  email: string;
+  date: string;
+  invoiceId: string;
+}
+
+export default function Invoice(props: Props) {
+  const { invoiceNumber, status, total, name, date, invoiceId } = props;
+  const parsed = parseISO(date);
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const invoiceDateTime = formatInTimeZone(parsed, timeZone, 'dd MMM yyyy');
   return (
-    <a href="/invoice/12312" className="invoice">
-      <div className="invoice-number">#INV12323</div>
-      <div className="invoice-date">Due 20 Sep 2023</div>
-      <div className="invoice-name">Alex Grim</div>
-      <div className="invoice-total">R 203.02</div>
+    <a href={`/invoices/${invoiceId}`} className="invoice">
+      <div className="invoice-number">#{invoiceNumber}</div>
+      <div className="invoice-date">{invoiceDateTime}</div>
+      <div className="invoice-name">{name}</div>
+      <div className="invoice-total">R {total}</div>
       <div className="invoice-status">
-        <InvoiceStatus status="PENDING"/>
+        <InvoiceStatus status={status} />
         <RightOutlined />
       </div>
     </a>

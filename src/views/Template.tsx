@@ -46,6 +46,7 @@ export default function TemplateWrapper(props: Props): JSX.Element {
   React.useEffect(() => {
     setOnline(navigator.onLine);
   }, []);
+
   if (!isOnline) {
     return (
       <div className="offline-container">
@@ -53,6 +54,7 @@ export default function TemplateWrapper(props: Props): JSX.Element {
       </div>
     );
   }
+
   return (
     <Layout>
       <Sider
@@ -71,9 +73,18 @@ export default function TemplateWrapper(props: Props): JSX.Element {
         <Menu theme="dark" mode="inline" defaultSelectedKeys={[defaultIndex]}>
           <Menu.Item
             key="1"
-            icon={<MoneyCollectOutlined />}
+            icon={<HomeOutlined />}
             onClick={() => {
               navigate("/");
+            }}
+          >
+            Home
+          </Menu.Item>
+          <Menu.Item
+            key="2"
+            icon={<MoneyCollectOutlined />}
+            onClick={() => {
+              navigate("/invoices");
             }}
           >
             Invoice

@@ -1,4 +1,5 @@
 import * as React from "react";
+import { BrowserRouter } from 'react-router-dom';
 import "./App.css";
 import AppRouter from "./routes/routes";
 import { createStore, StoreProvider as Provider, persist } from "easy-peasy";
@@ -13,7 +14,9 @@ const store = createStore(
 function App() {
   return (
     <Provider store={store}>
-      <AppRouter />
+      <BrowserRouter>
+        <AppRouter />
+      </BrowserRouter>
     </Provider>
   );
 }
