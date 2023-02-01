@@ -18,11 +18,15 @@
     margin: 0px auto;
     padding: 2rem 1.5rem 3.5rem;
     .back-link {
-      -webkit-box-align: center;
+      display: flex;
+      justify-content: space-between;
+      flex-direction: row;
+      gap: 5px;
       align-items: center;
       margin-bottom: 2rem;
       text-decoration: none;
       cursor: pointer;
+      color: $primary-color;
     }
     .invoice-header {
       width: 100%;

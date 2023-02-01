@@ -1,11 +1,11 @@
-@import '../../scss/utils';
+@import "../../scss/utils";
 
 .invoice {
   height: auto;
   display: flex;
   align-items: center;
-  gap: 93px;
   border: 1px solid transparent;
+  justify-content: space-between;
   border-radius: 8px;
   padding: 1.5rem 2rem;
   background: rgb(248, 248, 251);
@@ -15,12 +15,53 @@
   cursor: pointer;
   font-family: $font-family;
   color: $primary-color;
-  &:hover {
-    color: $secondary-color;
-    border: 1px solid $primary-color;
+  width: 850px;
+  .details {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 80px;
+    .invoice-total {
+      color: $primary-color;
+      font-family: $font-family;
+      font-weight: bold;
+      transition: color 0.3s ease 0s;
+      font-size: 1.25rem;
+      line-height: 1.1;
+      letter-spacing: -0.63px;
+    }
+    .invoice-date {
+      font-family: $font-family;
+      transition: color 0.3s ease 0s;
+      color: $primary-color;
+      font-size: 0.75rem;
+      line-height: 1.125;
+      letter-spacing: -0.25px;
+    }
+    .invoice-name {
+      font-family: $font-family;
+      transition: color 0.3s ease 0s;
+      color: $primary-color;
+      font-size: 0.75rem;
+      line-height: 1.125;
+      letter-spacing: -0.25px;
+    }
+    .invoice-number {
+      color: $primary-color;
+      font-family: $font-family;
+      font-weight: bold;
+      transition: color 0.3s ease 0s;
+      font-size: 1.25rem;
+      line-height: 1.1;
+      letter-spacing: -0.63px;
+    }
   }
   .invoice-status {
     display: flex;
     align-items: center;
+  }
+  &:hover {
+    color: $secondary-color;
+    border: 1px solid $primary-color;
   }
 }

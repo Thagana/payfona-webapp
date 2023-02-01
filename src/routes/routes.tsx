@@ -14,6 +14,7 @@ import InvoiceDetail from "../views/Invoices/Invoice";
 import PayView from "../views/PayView";
 import Invoices from "../views/Invoices";
 import NotFound from "../views/NotFound";
+import CreateInvoice from "../views/Invoices/New";
 
 export default function AppRouter() {
   const location = useLocation();
@@ -34,6 +35,7 @@ export default function AppRouter() {
           path="/invoices/:invoiceId"
           element={<PrivateRoutes component={InvoiceDetail} />}
         />
+        <Route path="/invoice/create" element={<PrivateRoutes component={CreateInvoice} />} />
         <Route path="/invoice/pay-now" element={<PayView />} />
         <Route path="/view_invoice" element={<Invoice />} />
         <Route path="/login" element={<SignIn />} />

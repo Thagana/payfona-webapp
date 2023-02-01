@@ -22,10 +22,12 @@ export default function Invoice(props: Props) {
   const invoiceDateTime = formatInTimeZone(parsed, timeZone, 'dd MMM yyyy');
   return (
     <a href={`/invoices/${invoiceId}`} className="invoice">
-      <div className="invoice-number">#{invoiceNumber}</div>
-      <div className="invoice-date">{invoiceDateTime}</div>
-      <div className="invoice-name">{name}</div>
-      <div className="invoice-total">R {total}</div>
+      <div className="details">
+        <div className="invoice-number">#{invoiceNumber}</div>
+        <div className="invoice-date">{invoiceDateTime}</div>
+        <div className="invoice-name">{name}</div>
+        <div className="invoice-total">R {total}</div>
+      </div>
       <div className="invoice-status">
         <InvoiceStatus status={status} />
         <RightOutlined />

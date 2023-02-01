@@ -130,7 +130,7 @@ export default function Invoice() {
       >
         <div className="invoice-details">
           <a href="/invoices" className="back-link">
-            <LeftOutlined /> Go BACK
+            <LeftOutlined color="#000"/> Go BACK
           </a>
           {SERVER_STATES === 'ERROR' && (
             <div className="error">
