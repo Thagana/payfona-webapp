@@ -3,6 +3,7 @@ import { BrowserRouter } from 'react-router-dom';
 import "./App.css";
 import AppRouter from "./routes/routes";
 import { createStore, StoreProvider as Provider, persist } from "easy-peasy";
+
 import Store from "./store/model";
 
 const store = createStore(
@@ -14,9 +15,9 @@ const store = createStore(
 function App() {
   return (
     <Provider store={store}>
-      <BrowserRouter>
-        <AppRouter />
-      </BrowserRouter>
+        <BrowserRouter>
+          <AppRouter />
+        </BrowserRouter>
     </Provider>
   );
 }

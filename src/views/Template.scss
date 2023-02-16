@@ -12,11 +12,15 @@
   }
 }
 .site-layout {
-  .site-layout-background {
+  .site-layout-header {
     padding: 10px;
     background-color: #fff;
+  }
+  .site-layout-background {
+    padding: 10px;
+    background-color: #eaeaea;
     .trigger {
-      padding: 0 24px;
+      padding: 0px 24px;
       font-size: 18px;
       line-height: 64px;
       cursor: pointer;

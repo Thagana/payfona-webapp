@@ -102,7 +102,7 @@ export default function TemplateWrapper(props: Props): JSX.Element {
         </Menu>
       </Sider>
       <Layout className="site-layout">
-        <Header className="site-layout-background" style={{ padding: 0 }}>
+        <Header className="site-layout-header" style={{ padding: 0 }}>
           {React.createElement(
             collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
             {
@@ -114,7 +114,6 @@ export default function TemplateWrapper(props: Props): JSX.Element {
         <Content
           className="site-layout-background"
           style={{
-            margin: "24px 16px",
             padding: 24,
             minHeight: "100vh",
             overflowY: "scroll",

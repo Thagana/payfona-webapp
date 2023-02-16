@@ -2,16 +2,22 @@ import * as React from "react";
 import TemplateWrapper from "../../Template";
 import Upload from "antd/es/upload";
 import ImgCrop from "antd-img-crop";
+import { formatInTimeZone } from 'date-fns-tz'
+import { parseISO } from 'date-fns';
+import { DeleteOutlined} from "@ant-design/icons";
+import Button from '../../../components/common/Button';
+
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
 
 import "./CreateInvoice.scss";
 
+
+
 export default function CreateInvoice() {
+  
   const [fileList, setFileList] = React.useState<UploadFile[]>([]);
-  const [price, setPrice] = React.useState("");
-  const [amount, setAmount] = React.useState("");
-  const [quantity, setQuantity] = React.useState<number>(0);
-  const [item, setItem] = React.useState("");
+  const [total, setTotal] = React.useState(0);
+  
 
   const [items, setItems] = React.useState([
     { item: "", price: 0, quantity: 0, amount: 0 },
@@ -21,13 +27,20 @@ export default function CreateInvoice() {
     return new Date().toISOString();
   });
 
+  const handleRemoveRow = (index: number) => {
+    const newFileList = items.filter((item, i) => i !== index);
+    setItems(newFileList);
+  }
+
   const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
     setFileList(newFileList);
   };
 
-  const getTotal = (_amount: string) => {
-    const final = parseFloat(_amount);
-    return final;
+  const calculateTotal = (_amount: { item: string, price: number, amount: number, quantity: number }[]) => {
+    const final = _amount.reduce((acc, curr) => {
+      return parseFloat((acc + curr.price * curr.quantity).toFixed(2));
+    },0);
+    setTotal(final);
   };
 
 
@@ -36,6 +49,7 @@ export default function CreateInvoice() {
     const temp = [...items]
     temp[index][name] = value;
     setItems([...temp]);
+    calculateTotal(temp);
   };
 
   const handleAppendRows = () => {
@@ -57,6 +71,15 @@ export default function CreateInvoice() {
     const imgWindow = window.open(src);
     imgWindow?.document.write(image.outerHTML);
   };
+
+  const formatInvoiceDate = (f: string) => {
+    const parsed = parseISO(f);
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    return formatInTimeZone(parsed, timeZone, 'dd MMM yyyy')
+  }
+
+  const createInvoice = () => {}
+
   return (
     <TemplateWrapper defaultIndex="2">
       <div className="wrapper">
@@ -135,7 +158,7 @@ export default function CreateInvoice() {
           </div>
           <div className="invoice-meta">
             <div className="number">Number: [Auto Generated]</div>
-            <div className="date">Date: {date}</div>
+            <div className="date">Date: {formatInvoiceDate(date)}</div>
           </div>
           <div className="invoice-items">
             <div className="table">
@@ -169,6 +192,7 @@ export default function CreateInvoice() {
                             className="form-control price"
                             type="number"
                             step="0.1"
+                            min={0}
                             onChange={(e) => handleChange(e, index)}
                           />
                         </td>
@@ -185,14 +209,24 @@ export default function CreateInvoice() {
                         </td>
                         <td>
                           <input
-                            value={i.amount}
+                            value={(i.quantity * i.price).toFixed(2)}
                             name="amount"
                             type="number"
                             className="form-control amount"
                             placeholder="Amount"
                             step="0.1"
-                            onChange={(e) => handleChange(e, index)}
+                            min={0}
                           />
+                        </td>
+                        <td>
+                            {items.length > 1 && (
+                              <Button
+                                type="primary"
+                                clickHandler={() => handleRemoveRow(index)}
+                              >
+                                  <DeleteOutlined style={{ "color": "#fff", "fontSize": 25 }} />
+                              </Button>
+                            )}
                         </td>
                       </tr>
                     );
@@ -207,8 +241,13 @@ export default function CreateInvoice() {
             </div>
           </div>
           <div className="sub-table">
-            <div className="total">Total: ZAR {getTotal(amount)}</div>
+            <div className="total">Total: ZAR {total}</div>
           </div>
+        </div>
+        <div className="create-invoice-button">
+          <Button type="primary" clickHandler={createInvoice}>
+            Send Invoice
+          </Button>
         </div>
       </div>
     </TemplateWrapper>

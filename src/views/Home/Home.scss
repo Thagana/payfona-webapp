@@ -1,10 +1,26 @@
 @import "../../scss/utils";
 
 .home-container {
+  font-family: $font-family;
   display: flex;
   .cards {
     display: flex;
     flex-direction: row;
-    gap: 10px
+    gap: 5px;
+    .header {
+      font-family: $font-family;
+    }
+    .card-body {
+      font-family: $font-family;
+    }
+    .icons {
+      background-color: #8300c41c;
+      border-radius: 10px;
+      padding: 10px;
+      .card-icon {
+        font-size: 40px;
+        color: $primary-color;
+      }
+    }
   }
 }

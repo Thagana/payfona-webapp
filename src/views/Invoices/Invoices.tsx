@@ -1,11 +1,15 @@
 import * as React from "react";
-import { PlusCircleOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import Notification from 'antd/es/notification';
-import Template from "../Template";
+
+
 import "./Invoices.scss";
+
 import Invoices from "../../components/Invoices";
 import { Invoice } from "../../networking/invoice";
+
+import Template from "../Template";
 
 type Invoices = {
   status: 'PENDING' | 'PAID' | 'DRAFT',
@@ -57,7 +61,7 @@ export default function Home() {
             <div className="actions">
               <div className="create-invoice">
                 <button className="btn btn-primary add-invoice" onClick={handleNewInvoice}>
-                  <PlusCircleOutlined />
+                  <PlusOutlined />
                   <div className="add-invoice-text">New Invoice</div>
                 </button>
               </div>
