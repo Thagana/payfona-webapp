@@ -2,25 +2,34 @@ import * as React from "react";
 import TemplateWrapper from "../../Template";
 import Upload from "antd/es/upload";
 import ImgCrop from "antd-img-crop";
-import { formatInTimeZone } from 'date-fns-tz'
-import { parseISO } from 'date-fns';
+import Notification from "antd/es/notification";
 import { DeleteOutlined} from "@ant-design/icons";
 import Button from '../../../components/common/Button';
 
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
+import { formatInvoiceDate } from "../../../helper/formatInvoiceDate";
 
 import "./CreateInvoice.scss";
-
+import { Invoice } from "../../../networking/invoice";
 
 
 export default function CreateInvoice() {
   
   const [fileList, setFileList] = React.useState<UploadFile[]>([]);
   const [total, setTotal] = React.useState(0);
-  
+
+  // from
+  const [fromName, setFromName] = React.useState("");
+  const [fromEmail, setFromEmail] = React.useState("");
+  const [fromPhoneNumber, setFromPhoneNumber] = React.useState("");
+
+  // to
+  const [toName, setToName] = React.useState("");
+  const [toEmail, setToEmail] = React.useState("");
+  const [toPhoneNumber, setToPhoneNumber] = React.useState("");
 
   const [items, setItems] = React.useState([
-    { item: "", price: 0, quantity: 0, amount: 0 },
+    { description: "", price: 0, quantity: 0, amount: 0 },
   ]);
 
   const [date] = React.useState(() => {
@@ -36,7 +45,7 @@ export default function CreateInvoice() {
     setFileList(newFileList);
   };
 
-  const calculateTotal = (_amount: { item: string, price: number, amount: number, quantity: number }[]) => {
+  const calculateTotal = (_amount: { price: number, amount: number, quantity: number }[]) => {
     const final = _amount.reduce((acc, curr) => {
       return parseFloat((acc + curr.price * curr.quantity).toFixed(2));
     },0);
@@ -53,7 +62,7 @@ export default function CreateInvoice() {
   };
 
   const handleAppendRows = () => {
-    const newValue = { item: "", price: 0, quantity: 0, amount: 0 };
+    const newValue = { description: "", price: 0, quantity: 0, amount: 0 };
     setItems([...items, newValue]);
   };
 
@@ -72,13 +81,43 @@ export default function CreateInvoice() {
     imgWindow?.document.write(image.outerHTML);
   };
 
-  const formatInvoiceDate = (f: string) => {
-    const parsed = parseISO(f);
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    return formatInTimeZone(parsed, timeZone, 'dd MMM yyyy')
-  }
 
-  const createInvoice = () => {}
+  const createInvoice = async () => {
+    try {
+      const to = {
+        email: toEmail,
+        name: toName,
+        phoneNumber: toPhoneNumber,
+      }
+      const from = {
+        email: fromEmail,
+        name: fromName,
+        phoneNumber: fromPhoneNumber
+      }
+      let data = new FormData() as FormData;
+      data.append("file", fileList[0].originFileObj as RcFile);
+      data.append("from", JSON.stringify(from));
+      data.append("to", JSON.stringify(to));
+      data.append("currency", "ZAR");
+      data.append("items", JSON.stringify(items));
+      data.append("invoiceDate", date)
+      const response = await Invoice.createInvoice(data);
+      if (!response.data.success) {
+        Notification.error({
+          message: response.data.message,
+        })
+      } else {
+        Notification.success({
+          message: "Successfully create an invoice",
+        })
+      }
+    } catch (error) {
+      console.log(error);
+      Notification.error({
+        message: "Something went wrong please try again later"
+      })
+    }
+  }
 
   return (
     <TemplateWrapper defaultIndex="2">
@@ -91,11 +130,11 @@ export default function CreateInvoice() {
             <div className="logo-container">
               <ImgCrop rotate>
                 <Upload
-                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                   listType="picture-card"
                   fileList={fileList}
                   onChange={onChange}
                   onPreview={onPreview}
+                  beforeUpload={() => false}
                 >
                   {fileList.length < 1 && "+ Upload"}
                 </Upload>
@@ -110,6 +149,8 @@ export default function CreateInvoice() {
                   className="form-control"
                   name="fromName"
                   placeholder="Name"
+                  value={fromName}
+                  onChange={(e) => setFromName(e.target.value)}
                 />
               </div>
               <div className="email">
@@ -118,6 +159,8 @@ export default function CreateInvoice() {
                   type="email"
                   className="form-control"
                   placeholder="Email"
+                  value={fromEmail}
+                  onChange={(e) => setFromEmail(e.target.value)}
                 />
               </div>
               <div className="phone-number">
@@ -125,6 +168,8 @@ export default function CreateInvoice() {
                   className="form-control"
                   name="phoneNumber"
                   placeholder="Phone Number"
+                  value={fromPhoneNumber}
+                  onChange={(e) => setFromPhoneNumber(e.target.value)}
                 />
               </div>
             </div>
@@ -136,6 +181,8 @@ export default function CreateInvoice() {
                   className="form-control"
                   type="text"
                   placeholder="Name"
+                  value={toName}
+                  onChange={(e) => setToName(e.target.value)}
                 />
               </div>
               <div className="email">
@@ -144,6 +191,8 @@ export default function CreateInvoice() {
                   className="form-control"
                   type="email"
                   placeholder="Email"
+                  value={toEmail}
+                  onChange={(e) => setToEmail(e.target.value)}
                 />
               </div>
               <div className="phone-number">
@@ -152,6 +201,8 @@ export default function CreateInvoice() {
                   className="form-control"
                   type="text"
                   placeholder="Phone Number"
+                  value={toPhoneNumber}
+                  onChange={(e) => setToPhoneNumber(e.target.value)}
                 />
               </div>
             </div>
@@ -177,7 +228,7 @@ export default function CreateInvoice() {
                       <tr key={index.toString()}>
                         <td scope="row">
                           <input
-                            value={i.item}
+                            value={i.description}
                             name="item"
                             placeholder="Item"
                             className="form-control item"
