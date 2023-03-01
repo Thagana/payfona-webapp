@@ -1,6 +1,7 @@
 import * as React from "react";
 import Invoice from "../Invoice";
-
+import Pagination from 'antd/es/pagination';
+import type { PaginationProps } from 'antd/es/pagination';
 import "./Invoices.scss";
 
 interface Props {
@@ -17,6 +18,11 @@ interface Props {
 
 export default function Invoices(props: Props) {
   const { invoices } = props;
+
+  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (current, pageSize) => {
+    console.log(current, pageSize);
+  };
+
   return (
     <div className="invoices">
       {invoices.map((invoice) => {
@@ -33,6 +39,12 @@ export default function Invoices(props: Props) {
           />
         );
       })}
+      <div className="m-2">
+        <Pagination 
+          showSizeChanger
+          onShowSizeChange={onShowSizeChange}
+        defaultCurrent={1} total={invoices.length} />
+      </div>
     </div>
   );
 }

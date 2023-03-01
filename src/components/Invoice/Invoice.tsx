@@ -30,7 +30,7 @@ export default function Invoice(props: Props) {
       </div>
       <div className="invoice-status">
         <InvoiceStatus status={status} />
-        <RightOutlined />
+        <RightOutlined className="right-icon"/>
       </div>
     </a>
   );

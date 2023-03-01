@@ -20,7 +20,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    gap: 80px;
+    width: 35rem;
     .invoice-total {
       color: $primary-color;
       font-family: $font-family;
@@ -29,22 +29,19 @@
       font-size: 1.25rem;
       line-height: 1.1;
       letter-spacing: -0.63px;
+      width: 5rem;
     }
     .invoice-date {
       font-family: $font-family;
       transition: color 0.3s ease 0s;
       color: $primary-color;
-      font-size: 0.75rem;
-      line-height: 1.125;
-      letter-spacing: -0.25px;
+      width: 5rem;
     }
     .invoice-name {
       font-family: $font-family;
       transition: color 0.3s ease 0s;
       color: $primary-color;
-      font-size: 0.75rem;
-      line-height: 1.125;
-      letter-spacing: -0.25px;
+      width: 5rem;
     }
     .invoice-number {
       color: $primary-color;
@@ -52,13 +49,14 @@
       font-weight: bold;
       transition: color 0.3s ease 0s;
       font-size: 1.25rem;
-      line-height: 1.1;
-      letter-spacing: -0.63px;
+      width: 0.5rem;
     }
   }
   .invoice-status {
     display: flex;
     align-items: center;
+    width: 8rem;
+    justify-content: space-between;
   }
   &:hover {
     color: $secondary-color;
