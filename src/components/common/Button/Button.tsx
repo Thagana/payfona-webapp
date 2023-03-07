@@ -6,10 +6,11 @@ type Props = {
   type: "primary" | "secondary" | "tertiary";
   clickHandler(): void;
   size?: "small" | "medium" | "large";
+  disabled?: boolean;
 };
 
 export default function Button(props: Props) {
-  const { children, type, clickHandler, size } = props;
+  const { children, type, clickHandler, size, disabled } = props;
   return (
     <button
       className={`btn btn-${type} ${size === "large" && "btn-lg"} ${
@@ -17,6 +18,7 @@ export default function Button(props: Props) {
       } ${size === "small" && "btn-sm"}`}
       onClick={clickHandler}
       type="button"
+      disabled={disabled}
     >
       {children}
     </button>

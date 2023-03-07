@@ -6,8 +6,8 @@ import Notification from "antd/es/notification";
 import { DeleteOutlined } from "@ant-design/icons";
 import Button from "../../../components/common/Button";
 import { useNavigate } from "react-router-dom";
-import { Space, Spin } from 'antd';
-
+import { Spin } from "antd";
+import { useForm } from "react-hook-form";
 
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
 import { formatInvoiceDate } from "../../../helper/formatInvoiceDate";
@@ -23,15 +23,38 @@ export default function CreateInvoice() {
 
   const [serverStates, setServerStates] = React.useState<STATES>("IDLE");
 
+
+  
   // from
   const [fromName, setFromName] = React.useState("");
+  const [fromNameTouches, setFromNameTouched] = React.useState(false);
+  const [fromNameError, setFromNameError] = React.useState(false);
+  
   const [fromEmail, setFromEmail] = React.useState("");
+  const [fromEmailTouched, setFromEmailTouched] = React.useState(false);
+  const [fromEmailError, setFromEmailError] = React.useState(false);
+
+
   const [fromPhoneNumber, setFromPhoneNumber] = React.useState("");
+  const [fromPhoneNumberTouched, setFromPhoneNumberTouched] = React.useState(false);
+  const [fromPhoneNumberError, setFromPhoneNumberError] = React.useState(false);
 
   // to
   const [toName, setToName] = React.useState("");
+  const [toNameTouched, setToNameTouched] = React.useState(false);
+  const [toNameError, setToNameError] = React.useState(false);
+
   const [toEmail, setToEmail] = React.useState("");
+  const [toEmailTouched, setToEmailTouched] = React.useState(false);
+  const [toEmailError, setToEmailError] = React.useState(false);
+  
   const [toPhoneNumber, setToPhoneNumber] = React.useState("");
+  const [toPhoneNumberTouched, setToPhoneNumberTouched] = React.useState(false);
+  const [toPhoneNumberError, setToPhoneNumberError] = React.useState(false);
+
+  
+  const [everyThingValid, setEveryThingValid] = React.useState(false);
+
 
   const [items, setItems] = React.useState([
     { item: "", price: 0, quantity: 0, amount: 0 },
@@ -92,6 +115,63 @@ export default function CreateInvoice() {
     imgWindow?.document.write(image.outerHTML);
   };
 
+  const validateFromDetails = (fromData: {
+    name: string;
+    email: string;
+    phoneNumber: string;
+  }) => {
+    let valid = false;
+    if (fromData.name === "") {
+      setFromNameError(true);
+      valid = false;
+    } else {
+      setFromNameError(false);
+      valid = false;
+    }
+    if (fromData.email === "") {
+      setFromEmailError(true);
+      valid = false;
+    } else {
+      setFromEmailError(false);
+      valid = true;
+    }
+    if (fromData.phoneNumber === "") {
+      setFromPhoneNumberError(true);
+      valid = false;
+    } else {
+      setFromPhoneNumberError(false);
+      valid = true;
+    }
+    return valid;
+  };
+
+  const validateToDetails = (toData: {
+    name: string;
+    email: string;
+    phoneNumber: string;
+  }) => {
+    let valid = true;
+    if (toData.name === "") {
+      valid = false;
+    } else {
+      valid = false;
+    }
+
+    if (toData.email === "") {
+      
+    } else {
+
+    }
+
+    if (toData.phoneNumber === "") {
+    
+    } else {
+
+    }
+
+    return valid;
+  };
+
   const createInvoice = async () => {
     try {
       const to = {
@@ -104,6 +184,20 @@ export default function CreateInvoice() {
         name: fromName,
         phoneNumber: fromPhoneNumber,
       };
+
+      const fromValid = validateFromDetails(from);
+      const toValid = validateToDetails(to);
+
+
+      if (!fromValid) {
+        return;
+      }
+
+
+      if (!toValid) {
+        return;
+      }
+
       let data = new FormData() as FormData;
 
       setServerStates("LOADING");
@@ -114,7 +208,7 @@ export default function CreateInvoice() {
       data.append("currency", "ZAR");
       data.append("items", JSON.stringify(items));
       data.append("invoiceDate", date);
-      
+
       const response = await Invoice.createInvoice(data);
       if (!response.data.success) {
         Notification.error({
@@ -125,7 +219,7 @@ export default function CreateInvoice() {
         Notification.success({
           message: "Successfully create an invoice",
         });
-        navigate('/invoices')
+        navigate("/invoices");
       }
     } catch (error) {
       console.log(error);
@@ -165,62 +259,68 @@ export default function CreateInvoice() {
                   <div className="from">From</div>
                   <div className="name">
                     <input
-                      className="form-control"
+                      className={`form-control  ${fromNameTouches ? (fromNameError ? "is-invalid" : "is-valid") : ""}`}
                       name="fromName"
                       placeholder="Name"
                       value={fromName}
                       onChange={(e) => setFromName(e.target.value)}
+                      onBlur={() => setFromNameTouched(true)}
                     />
                   </div>
                   <div className="email">
                     <input
                       name="fromEmail"
                       type="email"
-                      className="form-control"
+                      className={`form-control  ${fromEmailTouched ? (fromEmailError ? "is-invalid" : "is-valid") : ""}`}
                       placeholder="Email"
                       value={fromEmail}
+                      onBlur={() => setFromEmailTouched(true)}
                       onChange={(e) => setFromEmail(e.target.value)}
                     />
                   </div>
                   <div className="phone-number">
                     <input
-                      className="form-control"
+                      className={`form-control  ${fromPhoneNumberTouched ? (fromPhoneNumberError ? "is-invalid" : "is-valid") : ""}`}
                       name="phoneNumber"
                       placeholder="Phone Number"
                       value={fromPhoneNumber}
+                      onBlur={() => setFromPhoneNumberTouched(true)}
                       onChange={(e) => setFromPhoneNumber(e.target.value)}
                     />
                   </div>
                 </div>
                 <div className="details-for">
-                  <div className="for">For</div>
+                  <div className="for">To</div>
                   <div className="name">
                     <input
                       name="forName"
-                      className="form-control"
+                      className={`form-control  ${toNameTouched ? (toNameError ? "is-invalid" : "is-valid") : ""}`}
                       type="text"
                       placeholder="Name"
                       value={toName}
+                      onBlur={() => setToNameTouched(true)}
                       onChange={(e) => setToName(e.target.value)}
                     />
                   </div>
                   <div className="email">
                     <input
                       name="forEmail"
-                      className="form-control"
+                      className={`form-control  ${toNameTouched ? (toNameError ? "is-invalid" : "is-valid") : ""}`}
                       type="email"
                       placeholder="Email"
                       value={toEmail}
+                      onBlur={() => setToEmailTouched(true)}
                       onChange={(e) => setToEmail(e.target.value)}
                     />
                   </div>
                   <div className="phone-number">
                     <input
                       name="forPhoneNumber"
-                      className="form-control"
+                      className={`form-control  is-${toPhoneNumberTouched ? (toPhoneNumberError ? "is-invalid" : "is-valid") : ""}`}
                       type="text"
                       placeholder="Phone Number"
                       value={toPhoneNumber}
+                      onBlur={() => setToPhoneNumberTouched(true)}
                       onChange={(e) => setToPhoneNumber(e.target.value)}
                     />
                   </div>
@@ -279,6 +379,7 @@ export default function CreateInvoice() {
                             </td>
                             <td>
                               <input
+                                defaultValue={(i.quantity * i.price).toFixed(2)}
                                 value={(i.quantity * i.price).toFixed(2)}
                                 name="amount"
                                 type="number"
@@ -320,7 +421,7 @@ export default function CreateInvoice() {
               </div>
             </div>
             <div className="create-invoice-button">
-              <Button type="primary" clickHandler={createInvoice}>
+              <Button type="primary" clickHandler={createInvoice} disabled={false}>
                 Send Invoice
               </Button>
             </div>
