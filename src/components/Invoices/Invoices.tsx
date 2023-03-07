@@ -1,22 +1,34 @@
 import * as React from "react";
 import Invoice from "../Invoice";
-
 import "./Invoices.scss";
 
-interface Props {
-  invoices: {
-    status: "PENDING" | "PAID" | "DRAFT";
-    total: number;
-    invoiceNumber: string;
-    name: string;
-    email: string;
-    date: string;
-    invoiceId: string;
-  }[];
+type Invoices = {
+  status: 'PENDING' | 'PAID' | 'DRAFT',
+  total: number;
+  invoiceNumber: string;
+  name: string;
+  email: string;
+  date: string;
+  invoiceId: string;
+}
+
+
+type Props = {
+  data: {
+    invoices: Invoices[];
+    totalItems: number;
+    totalPages: number;
+    currentPage: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+    nextPage: number | null;
+    previousPage: number | null;
+  }
 }
 
 export default function Invoices(props: Props) {
-  const { invoices } = props;
+  const { invoices, totalItems } = props.data;
+
   return (
     <div className="invoices">
       {invoices.map((invoice) => {
