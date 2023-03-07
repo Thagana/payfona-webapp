@@ -17,8 +17,8 @@ import InvoiceStatus from "../../../components/InvoiceStatus";
 
 interface DataType {
   key: string;
-  description: string;
-  qty: number;
+  item: string;
+  quantity: number;
   amount: number;
   price: number;
 }
@@ -34,14 +34,15 @@ interface Invoice {
     email: string;
     phoneNumber: string;
   };
+  image: string;
   invoiceNumber: string;
   invoiceDate: string;
   payment_link: string;
   status?: "PAID" | "DRAFT" | "PENDING";
   items: {
     key: string;
-    description: string;
-    qty: number;
+    item: string;
+    quantity: number;
     price: number;
     amount: number;
   }[];
@@ -68,6 +69,9 @@ export default function Invoice() {
         });
         setServerState('ERROR');
       } else {
+        
+        console.log(response.data.data.data);
+
         setInvoiceMeta(response.data.data.data);
         setServerState('SUCCESS');
       }
@@ -89,9 +93,10 @@ export default function Invoice() {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
+      title: "Item",
+      dataIndex: "item",
+      key: "item",
+      render: (_, record) => <span>{record.item}</span>
     },
     {
       title: "Price",
@@ -100,14 +105,14 @@ export default function Invoice() {
       render: (_, record) => <span>${record.price}</span>,
     },
     {
-      title: "qty",
-      dataIndex: "qty",
-      key: "qty",
+      title: "Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
     },
     {
       title: "Amount",
       key: "amount",
-      render: (_, record) => <span>${record.amount}</span>,
+      render: (_, record) => <span>${ Number(record.quantity) * record.price}</span>,
     },
   ];
 
@@ -168,7 +173,7 @@ export default function Invoice() {
                     </div>
                     <div className="logo-container">
                       <img
-                        src="https://avatars.githubusercontent.com/u/68122202?s=400&u=4abc9827a8ca8b9c19b06b9c5c7643c87da51e10&v=4"
+                        src={invoiceMeta?.image}
                         className="logo"
                       />
                     </div>
@@ -210,7 +215,7 @@ export default function Invoice() {
                     <div className="total">
                       Total: $
                       {invoiceMeta?.items.reduce((a, b) => {
-                        return a + b.amount;
+                        return a + Number(b.price);
                       }, 0)}
                     </div>
                   </div>

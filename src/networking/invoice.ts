@@ -10,8 +10,8 @@ export class Invoice {
             amount
         })
     }
-    static fetchInvoices() {
-        return Adaptor.get('/invoice');
+    static fetchInvoices(page: number, limit: number) {
+        return Adaptor.get(`/invoice?page=${page}&limit=${limit}`);
     }
     static fetchInvoiceInvoiceData() {
         return Adaptor.get('/invoice/dashboard');

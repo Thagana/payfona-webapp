@@ -15,6 +15,7 @@ export default function Home() {
   const [numberOfInvoices, setNumberOfInvoices] = React.useState(0);
   const [totalRevenue, setTotalRevenue] = React.useState(0);
   const [numberOfPaidInvoices, setNumberOfPaidInvoices] = React.useState(0);
+  const [lineData, setLineData] = React.useState<any[]>([]);
 
   const fetchData = React.useCallback(async () => {
     try {
@@ -28,6 +29,7 @@ export default function Home() {
         setNumberOfInvoices(invoices.numberOfInvoices);
         setNumberOfPaidInvoices(invoices.numberOfPaidInvoices);
         setTotalRevenue(invoices.totalProfitMade);
+        setLineData(invoices.line);
       }
     } catch (error) {
       console.log(error);
@@ -91,7 +93,9 @@ export default function Home() {
         </div>
         <div className="graphs">
           <Row>
-            <Col>Left Space</Col>
+            <Col>
+              Left Space
+            </Col>
             <Col>Right Space</Col>
           </Row>
         </div>

@@ -3,6 +3,7 @@ import { usePaystackPayment } from "react-paystack";
 import configs from '../../../configs/config';
 import { useNavigate } from 'react-router-dom';
 import { Invoice } from '../../../networking/invoice';
+import Notification from 'antd/es/notification';
 
 type Props = {
   total: number;
@@ -25,11 +26,24 @@ export default function PayGateWay(props: Props) {
 
   const initializePayment = usePaystackPayment(config);
  
-  const callback = (payload: any) => {
+  const callback = async (payload: any) => {
     try {
       console.log(payload);
+      const response = await Invoice.verifyInvoice(payload.reference, 100);
+      if (response.data.success) {
+        setLoading(false);
+        navigate('/invoice')
+      } else {
+        setLoading(false);
+        Notification.error({
+          message: 'Something went wrong please try again'
+        })
+      }
     } catch (error) {
       console.log(error);
+      Notification.error({
+        message: 'Something went wrong please try again'
+      })
     }
   }
 
