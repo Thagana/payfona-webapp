@@ -9,7 +9,7 @@ import "./Invoice.scss";
 interface DataType {
   key: string;
   description: string;
-  qty: number;
+  quantity: number;
   amount: number;
   price: number;
 }
@@ -28,10 +28,11 @@ interface Invoice {
   invoice_number: string;
   invoice_date: string;
   payment_link: string,
+  logo: string;
   items: {
     key: string;
     description: string;
-    qty: number;
+    quantity: number;
     price: number;
     amount: number;
   }[]
@@ -58,13 +59,13 @@ export default function Invoice() {
     },
     {
       title: "qty",
-      dataIndex: "qty",
-      key: "qty",
+      dataIndex: "quantity",
+      key: "quantity",
     },
     {
       title: "Amount",
       key: "amount",
-      render: (_, record) => <span>${record.amount}</span>,
+      render: (_, record) => <span>${record.price * record.quantity}</span>,
     },
   ];
   const data: DataType[] = items;
@@ -78,7 +79,7 @@ export default function Invoice() {
           </div>
           <div className="logo-container">
             <img
-              src="https://avatars.githubusercontent.com/u/68122202?s=400&u=4abc9827a8ca8b9c19b06b9c5c7643c87da51e10&v=4"
+              src={payload.logo ? payload.logo : "https://avatars.githubusercontent.com/u/68122202?s=400&u=4abc9827a8ca8b9c19b06b9c5c7643c87da51e10&v=4"}
               className="logo"
             />
           </div>
@@ -108,7 +109,7 @@ export default function Invoice() {
           <div className="total">
             Total: $
             {data.reduce((a, b) => {
-              return a + b.amount;
+              return a + b.price * b.quantity;
             }, 0)}
           </div>
         </div>

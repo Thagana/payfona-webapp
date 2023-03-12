@@ -14,7 +14,8 @@ import InvoiceDetail from "../views/Invoices/Invoice";
 import PayView from "../views/PayView";
 import Invoices from "../views/Invoices";
 import NotFound from "../views/NotFound";
-import CreateInvoice from "../views/Invoices/New";
+import CreateInvoice from "../views/Invoices/Create";
+import InvoicePDFViewer from "../views/InvoicePDFViewer";
 
 export default function AppRouter() {
   const location = useLocation();
@@ -41,6 +42,7 @@ export default function AppRouter() {
         <Route path="/login" element={<SignIn />} />
         <Route path="/activate" element={<ActivateAccount />} />
         <Route path="/register" element={<SignUp />} />
+        <Route path="/invoice-url" element={<PrivateRoutes component={InvoicePDFViewer} />} />
         <Route
           path="/profile"
           element={<PrivateRoutes component={Profile} />}
