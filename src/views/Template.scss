@@ -31,3 +31,13 @@
     }
   }
 }
+
+.offline-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  .offline-container-text {
+    font-size: 10rem;
+  }
+}

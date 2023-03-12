@@ -50,7 +50,7 @@ export default function TemplateWrapper(props: Props): JSX.Element {
   if (!isOnline) {
     return (
       <div className="offline-container">
-        <span>Your offline, no internet connection</span>
+        <span className="offline-container-text">Your offline, no internet connection</span>
       </div>
     );
   }
