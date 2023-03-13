@@ -5,14 +5,10 @@ import Layout from "antd/es/layout";
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
-  SearchOutlined,
-  UserOutlined,
   LogoutOutlined,
-  QuestionOutlined,
   MoneyCollectOutlined,
   HomeOutlined,
-  ScanOutlined,
-  InfoCircleOutlined,
+  BankOutlined
 } from "@ant-design/icons";
 
 import "./Template.scss";
@@ -88,6 +84,15 @@ export default function TemplateWrapper(props: Props): JSX.Element {
             }}
           >
             Invoice
+          </Menu.Item>
+          <Menu.Item
+            key="3"
+            icon={<BankOutlined />}
+            onClick={() => {
+              navigate("/accounts");
+            }}
+          >
+            Bank Accounts
           </Menu.Item>
           <Menu.Item
             key="8"

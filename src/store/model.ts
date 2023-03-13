@@ -1,5 +1,19 @@
 import { action, Action } from "easy-peasy";
 
+
+type Account = {
+  id: number;
+  accountNumber: string;
+  userId: number;
+  name: string;
+  isDefault: boolean;
+  slug: string;
+  code: string;
+  currency: string;
+  type: string;
+  country: string;
+  active: boolean;
+}
 export interface Model {
   profile: {
     fullName: string;
@@ -8,6 +22,7 @@ export interface Model {
     email: string;
     avatar: string;
   };
+  accounts: Account[]
   token: string;
   isAuth: boolean;
   saveToken: Action<
@@ -45,6 +60,7 @@ const model: Model = {
     avatar: "",
     email: "",
   },
+  accounts: [],
   token: "",
   isAuth: false,
   saveToken: action((state, payload) => {

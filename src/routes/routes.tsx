@@ -16,6 +16,8 @@ import Invoices from "../views/Invoices";
 import NotFound from "../views/NotFound";
 import CreateInvoice from "../views/Invoices/Create";
 import InvoicePDFViewer from "../views/InvoicePDFViewer";
+import Accounts from "../views/Accounts";
+import CreateAccount from "../views/Accounts/CreateAccount";
 
 export default function AppRouter() {
   const location = useLocation();
@@ -51,6 +53,9 @@ export default function AppRouter() {
           path="/profile/edit"
           element={<PrivateRoutes component={Edit} />}
         />
+        <Route path="/accounts" element={<PrivateRoutes component={Accounts} />} />
+        <Route path="/accounts/create" element={<PrivateRoutes component={CreateAccount} />} />
+
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>
