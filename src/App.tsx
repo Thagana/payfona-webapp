@@ -7,7 +7,7 @@ import AppRouter from "./routes/routes";
 
 import Store from "./store/model";
 
-import "./App.css";
+import "./App.scss";
 
 const store = createStore(
   persist(Store, {

@@ -1,6 +1,6 @@
 import Axios from "./adaptor";
 
-export class Accounts {
+export default class Accounts {
     static async getListedBanks(token: string) {
         return await Axios.get("/accounts/external-verified", {
             headers: {
@@ -13,6 +13,13 @@ export class Accounts {
             bankCode: code,
             accountNumber: accountNumber,
         }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
+    }
+    static async deleteAccount(token: string, id: number) {
+        return await Axios.delete(`/accounts/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             }

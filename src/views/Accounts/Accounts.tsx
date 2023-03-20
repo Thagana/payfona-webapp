@@ -1,16 +1,29 @@
 import * as React from "react";
-import { useStoreState } from "easy-peasy";
+import { useStoreActions, useStoreState } from "easy-peasy";
 import { Model } from "../../store/model";
 import { useNavigate } from "react-router-dom";
 import { Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
-
+import Notification from 'antd/es/notification';
 import Button from "../../components/common/Button";
 import TemplateWrapper from "../Template";
 
 import { Account } from "../../store/model";
 
+import AccountNetwork from '../../networking/accounts';
+
+
 import "./Accounts.scss";
+
+interface DataType {
+  key: string;
+  id: number;
+  name: string;
+  country: string;
+  currency: string;
+  isDefault: boolean;
+}
+
 
 export default function Accounts() {
   const accounts = useStoreState<Model>((state) => state.accounts);
@@ -18,6 +31,7 @@ export default function Accounts() {
   const navigate = useNavigate();
 
   const data = accounts.map((item: Account) => ({
+    id: item.id,
     name: item.name,
     country: item.country,
     accountNumber: item.account_number,
@@ -25,15 +39,32 @@ export default function Accounts() {
     isDefault: item.is_default,
   }));
 
+  const token = useStoreState<Model>(state => state.token);
+  const updateAccount = useStoreActions<Model>(action => action.updateAccount);
   const handleAddAccount = () => {
     navigate("/accounts/create");
   };
-  interface DataType {
-    key: string;
-    name: string;
-    country: string;
-    currency: string;
-    isDefault: boolean;
+
+  const handleDelete = async (id: number) => {
+    try {
+      console.log(id);
+      const response = await AccountNetwork.deleteAccount(token, id);
+      if (!response.data.success) {
+        Notification.error({
+          message: response.data.message
+        })
+      } else {
+        updateAccount(response.data.data);
+        Notification.success({
+          message: "Successfully deleted an account"
+        })
+      }
+    } catch (error) {
+      console.log(error);
+      Notification.error({
+        message: "Something went wrong please try again later"
+      })
+    }
   }
 
   const columns: ColumnsType<DataType> = [
@@ -64,7 +95,15 @@ export default function Accounts() {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <a href="/delete">{record.isDefault && "Delete"}</a>
+          <Button
+            type="button"
+            state={record.isDefault ? "primary" : "secondary"}
+            onClick={() => {
+            handleDelete(record.id);
+          }}>
+            {record.isDefault && "Delete"}
+            {!record.isDefault && "Make default"}
+          </Button>
         </Space>
       ),
     },
@@ -79,7 +118,7 @@ export default function Accounts() {
             <div>You have no Bank Account Linked please link an account</div>
             <div>
               <Button
-                clickHandler={handleAddAccount}
+                onClick={handleAddAccount}
                 state="primary"
                 type="button"
               >

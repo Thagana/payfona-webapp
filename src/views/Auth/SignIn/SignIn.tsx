@@ -47,8 +47,6 @@ export default function SignIn() {
         const token = response.data.data.token;
         const data = response.data.data;
 
-        console.log('ACCOUNTS', data.accounts);
-
         saveToken({ token, profile: data.profile, accounts: data.accounts });
         
         localStorage.setItem("authToken", token);

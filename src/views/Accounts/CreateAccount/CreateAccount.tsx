@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 import TemplateWrapper from "../../Template";
 
 import "./CreateAccount.scss";
-import { Accounts } from "../../../networking/accounts";
-import { useStoreState } from "easy-peasy";
+import AccountNetwork from "../../../networking/accounts";
+import { useStoreActions, useStoreState } from "easy-peasy";
 import { Model } from "../../../store/model";
 
 type BankAccounts = {
@@ -24,17 +24,22 @@ type BankAccount = {
 }
 
 export default function CreateAccount() {
+  
+  // Hooks
+  const navigate = useNavigate();
+  
   const [accounts, setAccounts] = React.useState<BankAccount[]>([]);
   const [accountNumber, setAccountNumber] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
   const [code, setCode] = React.useState("");
 
   const token = useStoreState<Model>((state) => state.token);
-  const navigate = useNavigate();
+  const updateAccount = useStoreActions<Model>(action => action.updateAccount);
+
   const fetchAvailableAccounts = async () => {
     try {
       setIsLoading(true);
-      const response = await Accounts.getListedBanks(token);
+      const response = await AccountNetwork.getListedBanks(token);
       if (response.data.success) {
         const banks = response.data.data as BankAccounts[];
 
@@ -66,7 +71,7 @@ export default function CreateAccount() {
     try {
       setIsLoading(true);
       e.preventDefault();
-      const response = await Accounts.createBankAccount(
+      const response = await AccountNetwork.createBankAccount(
         token,
         accountNumber,
         code
@@ -77,6 +82,7 @@ export default function CreateAccount() {
         })
       } else {
         const data = response.data;
+        updateAccount(data.data);
         navigate('/accounts');
       }
       setIsLoading(false);
