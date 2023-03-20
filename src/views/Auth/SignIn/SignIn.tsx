@@ -43,12 +43,20 @@ export default function SignIn() {
         setLoading(false);
       } else {
         setLoading(false);
+        
         const token = response.data.data.token;
-        saveToken({ token, profile: response.data.data.profile });
+        const data = response.data.data;
+
+        console.log('ACCOUNTS', data.accounts);
+
+        saveToken({ token, profile: data.profile, accounts: data.accounts });
+        
         localStorage.setItem("authToken", token);
+        
         Notification.success({
           message: response.data.message,
         });
+        
         navigate("/");
       }
     } catch (error) {
@@ -59,10 +67,6 @@ export default function SignIn() {
       });
     }
   };
-
-  const handleToggleEye = () => {
-    setEyeToggle(!eyeToggle);
-  }
 
   return (
     <div className="log-in-container">
