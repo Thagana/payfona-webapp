@@ -1,14 +1,4 @@
-const devConfig = {
-  SERVER_URL: import.meta.env.VITE_API_URL,
-  PAY_STACK_PUBLIC: import.meta.env.VITE_PAY_STACK_PUBLIC,
-};
-
-const prodConfigs = {
-  SERVER_URL: import.meta.env.VITE_API_URL,
-  PAY_STACK_PUBLIC: import.meta.env.VITE_PAY_STACK_PUBLIC,
-};
-
-const configs =
-  import.meta.env.MODE === "development" ? devConfig : prodConfigs;
-
-export default configs;
+export default {
+  SERVER_URL: "https://payfona-api-staging.up.railway.app",
+  PAY_STACK_PUBLIC: "pk_test_9747c31bc1d86843545348f5984a58769061a875"
+}
