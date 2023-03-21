@@ -1,7 +1,9 @@
 import * as React from "react";
 import Notification from "antd/es/notification";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import PhoneInput from 'react-phone-number-input/input'
+
 import "./SignUp.scss";
 import Server from "../../../networking/server";
 import Input from "../../../components/common/Input";
@@ -10,6 +12,7 @@ type Inputs = {
   lastName: string;
   firstName: string;
   email: string;
+  phoneNumber: string;
   password: string;
 };
 
@@ -19,6 +22,7 @@ export default function SingUp() {
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm<Inputs>();
 
@@ -26,12 +30,13 @@ export default function SingUp() {
 
   const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
     try {
-      setLoading(true);
+      setLoading(true);      
       const response = await Server.Auth.registerUser({
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
         password: data.password,
+        phoneNumber: data.phoneNumber
       });
       if (!response.data.success) {
         Notification.error({
@@ -90,6 +95,28 @@ export default function SingUp() {
               type="email"
               placeholder="Email"
               value="email"
+            />
+          </div>
+          <div className="form-group">
+            <Controller 
+              control={control}
+              name="phoneNumber"
+              render={({
+                field: { onChange, onBlur, value, name, ref },
+                fieldState: { invalid, isTouched, isDirty, error },
+                formState,
+              }) => (
+                <PhoneInput
+                  className="form-control"
+                  value={value}
+                  onChange={onChange}
+                  onBlur={onBlur}
+                  name={name}
+                  ref={ref}
+                  error={invalid && isTouched && isDirty}
+                  placeholder="Phone Number"
+                />
+              )}
             />
           </div>
           <div className="form-group">
