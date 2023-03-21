@@ -3,20 +3,20 @@ import "./Button.scss";
 
 type Props = {
   children: React.ReactNode;
-  state: "primary" | "tertiary" | "danger";
+  state: "primary" | "tertiary" | "danger" | "secondary";
   type: "submit" | "reset" | "button";
-  clickHandler?: () => void;
+  onClick?: () => void;
   size?: "small" | "medium" | "large";
   disabled?: boolean;
 };
 
 export default function Button(props: Props) {
-  const { children, type, clickHandler, size, disabled, state } = props;
+  const { children, type, onClick, size, disabled, state } = props;
   return (
     <button
       {...props}
       className={`btn btn-${state}`}
-      onClick={clickHandler}
+      onClick={onClick}
       type={type}
       disabled={disabled}
     >

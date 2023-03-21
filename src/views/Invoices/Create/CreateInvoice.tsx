@@ -359,7 +359,7 @@ export default function CreateInvoice() {
                                 <Button
                                   type="button"
                                   state="primary"
-                                  clickHandler={() => handleRemoveRow(index)}
+                                  onClick={() => handleRemoveRow(index)}
                                 >
                                   <DeleteOutlined
                                     style={{ color: "#fff", fontSize: 25 }}
@@ -388,7 +388,7 @@ export default function CreateInvoice() {
             </div>
             <div className="create-invoice-button">
               <Button
-                clickHandler={onSubmit}
+                onClick={onSubmit}
                 type="button"
                 state="primary"
                 size="medium"

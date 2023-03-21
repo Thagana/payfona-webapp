@@ -8,11 +8,31 @@ button.btn.btn-primary {
   margin: 5px;
   padding: 10px;
   width: 100%;
+  font-family: $font-family;
   &:hover {
     transform: scale(0.9);
     background-color: $primary-color;
     background: $primary-color;
     border-radius: 12px;
     border: 1px solid $primary-color;
+  }
+}
+
+button.btn.btn-secondary {
+  border-radius: 5px;
+  background-color: transparent;
+  margin: 5px;
+  padding: 10px;
+  width: 100%;
+  border: 2px solid $primary-color;
+  color: $primary-color;
+  font-family: $font-family;
+  &:hover {
+    transform: scale(1);
+    background-color: $primary-color;
+    background: $primary-color;
+    border-radius: 12px;
+    border: 1px solid $primary-color;
+    color: #fff;
   }
 }
