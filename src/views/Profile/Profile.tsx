@@ -31,7 +31,7 @@ export default function Profile() {
             </div>
           </div>
           <div className="edit-container">
-            <Button type="primary" clickHandler={() => {
+            <Button state="primary"  type="button" onClick={() => {
                 navigate('/profile/edit', {
                   state: {
                     firstName: profile.firstName,

@@ -25,4 +25,11 @@ export default class Accounts {
             }
         })
     }
+    static async makeDefault(token: string, id: number) {
+        return Axios.put(`/accounts/default/${id}`, {}, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
+    }
 }

@@ -67,6 +67,28 @@ export default function Accounts() {
     }
   }
 
+  const handleMakeDefault = async (id: number) => {
+    try {
+      const response = await AccountNetwork.makeDefault(token, id);
+      if (!response.data.success) {
+        Notification.error({
+          message: response.data.message
+        })
+      } else {
+        console.log(response.data.data);
+        updateAccount(response.data.data);
+        Notification.success({
+          message: "Successfully made an account default"
+        })
+      }
+    } catch (error) {
+      console.log(error);
+      Notification.error({
+        message: "Something went wrong please try again later"
+      })
+    }
+  }
+
   const columns: ColumnsType<DataType> = [
     {
       title: "Name",
@@ -99,7 +121,11 @@ export default function Accounts() {
             type="button"
             state={record.isDefault ? "primary" : "secondary"}
             onClick={() => {
-            handleDelete(record.id);
+              if (record.isDefault) {
+                handleDelete(record.id);
+              } else {
+                handleMakeDefault(record.id);
+              }
           }}>
             {record.isDefault && "Delete"}
             {!record.isDefault && "Make default"}

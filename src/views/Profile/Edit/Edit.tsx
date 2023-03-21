@@ -125,7 +125,7 @@ export default function Edit() {
             </div>
           </div>
           <div className="edit-container">
-            <Button type="primary" clickHandler={handleUpdatingInformation}>
+            <Button state="primary" type="button" onClick={handleUpdatingInformation}>
               Update Profile
             </Button>
           </div>

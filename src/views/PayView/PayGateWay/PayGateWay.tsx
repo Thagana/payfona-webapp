@@ -28,7 +28,6 @@ export default function PayGateWay(props: Props) {
  
   const callback = async (payload: any) => {
     try {
-      console.log(payload);
       const response = await Invoice.verifyInvoice(payload.reference, 100);
       if (response.data.success) {
         setLoading(false);
