@@ -15,7 +15,8 @@ export default function ActivateAccount() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    getFieldState,
+    formState: { errors},
   } = useForm<Inputs>();
   const navigate = useNavigate();
   const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
@@ -56,6 +57,7 @@ export default function ActivateAccount() {
               label="Activate"
               placeholder="Enter OTP Code"
               value="activate"
+              isTouched={getFieldState("activate").isTouched}
             />
           </div>
           <div className="form-group">
