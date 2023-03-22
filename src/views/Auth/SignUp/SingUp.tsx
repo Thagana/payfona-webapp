@@ -2,7 +2,7 @@ import * as React from "react";
 import Notification from "antd/es/notification";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import PhoneInput from 'react-phone-number-input/input'
+import PhoneInput from "react-phone-number-input/input";
 
 import "./SignUp.scss";
 import Server from "../../../networking/server";
@@ -31,13 +31,13 @@ export default function SingUp() {
 
   const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
     try {
-      setLoading(true);      
+      setLoading(true);
       const response = await Server.Auth.registerUser({
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
         password: data.password,
-        phoneNumber: data.phoneNumber
+        phoneNumber: data.phoneNumber,
       });
       if (!response.data.success) {
         Notification.error({
@@ -102,7 +102,7 @@ export default function SingUp() {
             />
           </div>
           <div className="form-group">
-            <Controller 
+            <Controller
               control={control}
               name="phoneNumber"
               render={({
@@ -112,7 +112,13 @@ export default function SingUp() {
               }) => (
                 <PhoneInput
                   country="ZA"
-                  className={`form-control ${getFieldState('phoneNumber').isTouched ? (errors.phoneNumber ? "is-invalid" : "is-valid") : "" }`}
+                  className={`form-control ${
+                    getFieldState("phoneNumber").isTouched
+                      ? errors.phoneNumber
+                        ? "is-invalid"
+                        : "is-valid"
+                      : ""
+                  }`}
                   value={value}
                   onChange={onChange}
                   onBlur={onBlur}
@@ -142,7 +148,10 @@ export default function SingUp() {
             </Link>
           </div>
           <div className="form-group">
-            <button className="btn btn-primary btn-lg" disabled={!isValid && !isDirty}>
+            <button
+              className="btn btn-primary btn-lg"
+              disabled={!isValid && !isDirty}
+            >
               {loading ? "Loading ..." : "Sign Up"}
             </button>
           </div>
