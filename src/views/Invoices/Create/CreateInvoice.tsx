@@ -7,12 +7,15 @@ import { DeleteOutlined } from "@ant-design/icons";
 import Button from "../../../components/common/Button";
 import { useNavigate } from "react-router-dom";
 import { Spin } from "antd";
+import Modal from "antd/es/modal/Modal";
 
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
 import { formatInvoiceDate } from "../../../helper/formatInvoiceDate";
 
 import "./CreateInvoice.scss";
 import { Invoice } from "../../../networking/invoice";
+import { useStoreState } from "easy-peasy";
+import { Model } from "../../../store/model";
 
 type STATES = "LOADING" | "SUCCESS" | "ERROR" | "IDLE";
 
@@ -52,16 +55,10 @@ export default function CreateInvoice() {
 
   // to
   const [toName, setToName] = React.useState("");
-  const [toNameTouched, setToNameTouched] = React.useState(false);
-  const [toNameError, setToNameError] = React.useState(false);
 
   const [toEmail, setToEmail] = React.useState("");
-  const [toEmailTouched, setToEmailTouched] = React.useState(false);
-  const [toEmailError, setToEmailError] = React.useState(false);
   
   const [toPhoneNumber, setToPhoneNumber] = React.useState("");
-  const [toPhoneNumberTouched, setToPhoneNumberTouched] = React.useState(false);
-  const [toPhoneNumberError, setToPhoneNumberError] = React.useState(false);
 
   const [errors, setErrors] = React.useState<{
     fromName: boolean;
@@ -81,6 +78,8 @@ export default function CreateInvoice() {
   });
 
   const navigate = useNavigate();
+  
+  const accounts = useStoreState<Model>((state) => state.accounts);
 
   const handleRemoveRow = (index: number) => {
     const newFileList = items.filter((item, i) => i !== index);
@@ -404,6 +403,18 @@ export default function CreateInvoice() {
           </div>
         )}
       </div>
+      <Modal 
+          onCancel={() => {
+            navigate('/accounts/create');
+          }}
+          onOk={() => {
+            navigate('/accounts/create');
+          }}
+          open={accounts.length === 0 ? true: false}>
+          <div className="modal-content">
+            You have not yet linked your bank account to receive the invoice money.
+          </div>
+      </Modal>
     </TemplateWrapper>
   );
 }
