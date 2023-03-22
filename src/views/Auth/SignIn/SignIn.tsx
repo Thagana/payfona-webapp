@@ -23,7 +23,7 @@ export default function SignIn() {
     register,
     handleSubmit,
     getFieldState,
-    formState: { errors, isDirty },
+    formState: { errors, isDirty, isValid },
   } = useForm<Inputs>();
   const saveToken = useStoreActions<Model>((actions) => actions.saveToken);
   const navigate = useNavigate();
@@ -144,7 +144,7 @@ export default function SignIn() {
             </Link>
           </div>
           <div className="form-group">
-            <button className="btn btn-primary btn-lg">
+            <button className="btn btn-primary btn-lg" disabled={!isValid && !isDirty}>
               {loading ? "Loading ..." : "Sign In"}
             </button>
           </div>

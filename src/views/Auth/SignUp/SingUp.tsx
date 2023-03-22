@@ -23,7 +23,8 @@ export default function SingUp() {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    getFieldState,
+    formState: { errors, isValid, isDirty },
   } = useForm<Inputs>();
 
   const navigate = useNavigate();
@@ -73,6 +74,7 @@ export default function SingUp() {
               type="text"
               placeholder="First Name"
               value="firstName"
+              isTouched={getFieldState("firstName").isTouched}
             />
           </div>
           <div className="form-group">
@@ -84,6 +86,7 @@ export default function SingUp() {
               type="text"
               placeholder="Last Name"
               value="lastName"
+              isTouched={getFieldState("lastName").isTouched}
             />
           </div>
           <div className="form-group">
@@ -95,6 +98,7 @@ export default function SingUp() {
               type="email"
               placeholder="Email"
               value="email"
+              isTouched={getFieldState("email").isTouched}
             />
           </div>
           <div className="form-group">
@@ -107,7 +111,8 @@ export default function SingUp() {
                 formState,
               }) => (
                 <PhoneInput
-                  className="form-control"
+                  country="ZA"
+                  className={`form-control ${getFieldState('phoneNumber').isTouched ? (errors.phoneNumber ? "is-invalid" : "is-valid") : "" }`}
                   value={value}
                   onChange={onChange}
                   onBlur={onBlur}
@@ -128,6 +133,7 @@ export default function SingUp() {
               type="password"
               placeholder="Password"
               value="password"
+              isTouched={getFieldState("password").isTouched}
             />
           </div>
           <div className="form-group">
@@ -136,7 +142,7 @@ export default function SingUp() {
             </Link>
           </div>
           <div className="form-group">
-            <button className="btn btn-primary btn-lg">
+            <button className="btn btn-primary btn-lg" disabled={!isValid && !isDirty}>
               {loading ? "Loading ..." : "Sign Up"}
             </button>
           </div>
