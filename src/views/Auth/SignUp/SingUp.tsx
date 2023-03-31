@@ -2,7 +2,7 @@ import * as React from "react";
 import Notification from "antd/es/notification";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import PhoneInput from 'react-phone-number-input/input'
+import PhoneInput from "react-phone-number-input/input";
 
 import "./SignUp.scss";
 import Server from "../../../networking/server";
@@ -23,20 +23,21 @@ export default function SingUp() {
     register,
     handleSubmit,
     control,
-    formState: { errors },
+    getFieldState,
+    formState: { errors, isValid, isDirty },
   } = useForm<Inputs>();
 
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
     try {
-      setLoading(true);      
+      setLoading(true);
       const response = await Server.Auth.registerUser({
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
         password: data.password,
-        phoneNumber: data.phoneNumber
+        phoneNumber: data.phoneNumber,
       });
       if (!response.data.success) {
         Notification.error({
@@ -73,6 +74,7 @@ export default function SingUp() {
               type="text"
               placeholder="First Name"
               value="firstName"
+              isTouched={getFieldState("firstName").isTouched}
             />
           </div>
           <div className="form-group">
@@ -84,6 +86,7 @@ export default function SingUp() {
               type="text"
               placeholder="Last Name"
               value="lastName"
+              isTouched={getFieldState("lastName").isTouched}
             />
           </div>
           <div className="form-group">
@@ -95,10 +98,11 @@ export default function SingUp() {
               type="email"
               placeholder="Email"
               value="email"
+              isTouched={getFieldState("email").isTouched}
             />
           </div>
           <div className="form-group">
-            <Controller 
+            <Controller
               control={control}
               name="phoneNumber"
               render={({
@@ -107,7 +111,14 @@ export default function SingUp() {
                 formState,
               }) => (
                 <PhoneInput
-                  className="form-control"
+                  country="ZA"
+                  className={`form-control ${
+                    getFieldState("phoneNumber").isTouched
+                      ? errors.phoneNumber
+                        ? "is-invalid"
+                        : "is-valid"
+                      : ""
+                  }`}
                   value={value}
                   onChange={onChange}
                   onBlur={onBlur}
@@ -128,6 +139,7 @@ export default function SingUp() {
               type="password"
               placeholder="Password"
               value="password"
+              isTouched={getFieldState("password").isTouched}
             />
           </div>
           <div className="form-group">
@@ -136,7 +148,10 @@ export default function SingUp() {
             </Link>
           </div>
           <div className="form-group">
-            <button className="btn btn-primary btn-lg">
+            <button
+              className="btn btn-primary btn-lg"
+              disabled={!isValid && !isDirty}
+            >
               {loading ? "Loading ..." : "Sign Up"}
             </button>
           </div>

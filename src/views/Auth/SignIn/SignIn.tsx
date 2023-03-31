@@ -3,10 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Notification from "antd/es/notification";
 import { Link } from "react-router-dom";
 import { useStoreActions } from "easy-peasy";
-import {
-  EyeOutlined,
-  EyeInvisibleOutlined
-} from '@ant-design/icons';
+import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import Input from "../../../components/common/Input";
 import Server from "../../../networking/server";
@@ -25,7 +22,8 @@ export default function SignIn() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    getFieldState,
+    formState: { errors, isDirty, isValid },
   } = useForm<Inputs>();
   const saveToken = useStoreActions<Model>((actions) => actions.saveToken);
   const navigate = useNavigate();
@@ -43,18 +41,18 @@ export default function SignIn() {
         setLoading(false);
       } else {
         setLoading(false);
-        
+
         const token = response.data.data.token;
         const data = response.data.data;
 
         saveToken({ token, profile: data.profile, accounts: data.accounts });
-        
+
         localStorage.setItem("authToken", token);
-        
+
         Notification.success({
           message: response.data.message,
         });
-        
+
         navigate("/");
       }
     } catch (error) {
@@ -77,23 +75,28 @@ export default function SignIn() {
             </label>
             <input
               type="email"
-              className={`form-control ${errors.email ? 'is-invalid' : 'is-valid'}`}
-              {...register('email', {
-                required: 'Email is required',
+              className={`form-control ${
+                getFieldState("email").isTouched
+                  ? errors.email
+                    ? "is-invalid"
+                    : "is-valid"
+                  : ""
+              }`}
+              {...register("email", {
+                required: "Email is required",
                 maxLength: {
                   value: 100,
-                  message: "The email provided is too long"
+                  message: "The email provided is too long",
                 },
                 minLength: {
                   value: 3,
-                  message: "The email provided is too short"
+                  message: "The email provided is too short",
                 },
                 pattern: {
                   value: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,63})$/,
-                  message: "Email provided is not valid"
-                }
-              })
-              }
+                  message: "Email provided is not valid",
+                },
+              })}
               placeholder="Enter your email"
             />
             {errors.email && (
@@ -104,24 +107,32 @@ export default function SignIn() {
             <label htmlFor="password" className="label">
               Password
             </label>
-              <input
-                type={eyeToggle ? "text" : "password"}
-                className={`form-control is-form ${errors.password ? 'is-invalid' : 'is-valid'}`}
-                {...register('password', {
-                  required: 'Password is required',
-                  maxLength: {
-                    value: 100,
-                    message: "The password provided is too long"
-                  },
-                  minLength: {
-                    value: 8,
-                    message: "The password provided is too short"
-                  }
-                })}
-                placeholder="Enter your password"
-              />
-            </div>
-          <div className="invalid-feedback">{errors.password?.message || ""}</div>
+            <input
+              type={eyeToggle ? "text" : "password"}
+              className={`form-control ${
+                getFieldState("password").isTouched
+                  ? errors.password
+                    ? "is-invalid"
+                    : "is-valid"
+                  : ""
+              }`}
+              {...register("password", {
+                required: "Password is required",
+                maxLength: {
+                  value: 100,
+                  message: "The password provided is too long",
+                },
+                minLength: {
+                  value: 8,
+                  message: "The password provided is too short",
+                },
+              })}
+              placeholder="Enter your password"
+            />
+          </div>
+          <div className="invalid-feedback">
+            {errors.password?.message || ""}
+          </div>
           <div className="form-group">
             <Link to="/register" className="link">
               Don&apos;t have an account? Sign Up
@@ -133,7 +144,7 @@ export default function SignIn() {
             </Link>
           </div>
           <div className="form-group">
-            <button className="btn btn-primary btn-lg">
+            <button className="btn btn-primary btn-lg" disabled={!isValid && !isDirty}>
               {loading ? "Loading ..." : "Sign In"}
             </button>
           </div>
