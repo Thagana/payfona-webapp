@@ -23,4 +23,7 @@ export class Invoice {
             }
         });
     }
+    static deleteInvoice(id: string) {
+        return Adaptor.delete(`/invoice/${id}`);
+    }
 }

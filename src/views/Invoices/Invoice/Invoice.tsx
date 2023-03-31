@@ -5,8 +5,9 @@ import { Invoice as InvoiceAdaptor } from "../../../networking/invoice";
 import { motion } from "framer-motion";
 import { LeftOutlined } from "@ant-design/icons";
 import Table from "antd/es/table";
-import { formatInTimeZone } from 'date-fns-tz'
-import { parseISO } from 'date-fns';
+import { formatInTimeZone } from "date-fns-tz";
+import { parseISO } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 import type { ColumnsType } from "antd/es/table";
 
@@ -54,29 +55,30 @@ export default function Invoice() {
   let { invoiceId } = useParams();
   const [invoiceMeta, setInvoiceMeta] = React.useState<Invoice>();
   const [SERVER_STATES, setServerState] =
-    React.useState<VIEW_SERVER_STATE>("IDLE");
+  React.useState<VIEW_SERVER_STATE>("IDLE");
+  
+  const navigate = useNavigate();
 
   const fetchInvoice = React.useCallback(async () => {
     try {
       if (!invoiceId) {
         return;
       }
-      setServerState('LOADING');
+      setServerState("LOADING");
       const response = await InvoiceAdaptor.fetchInvoice(invoiceId);
       if (!response.data.success) {
         Notification.error({
           message: "Something went, could not connect",
         });
-        setServerState('ERROR');
+        setServerState("ERROR");
       } else {
-        
         console.log(response.data.data.data);
 
         setInvoiceMeta(response.data.data.data);
-        setServerState('SUCCESS');
+        setServerState("SUCCESS");
       }
     } catch (error) {
-      setServerState('ERROR');
+      setServerState("ERROR");
       Notification.error({
         message: "Something went wrong please try again later",
       });
@@ -87,16 +89,37 @@ export default function Invoice() {
     if (date) {
       const parsed = parseISO(date);
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      return formatInTimeZone(parsed, timeZone, 'dd MMM yyyy')
+      return formatInTimeZone(parsed, timeZone, "dd MMM yyyy");
     }
   };
+
+  const handleDeleteInvoice = async () => {
+    try {
+      const response = await InvoiceAdaptor.deleteInvoice(invoiceId || "");
+      if (!response.data.success) {
+        Notification.error({
+          message: response.data.message,
+        });
+      } else {
+        Notification.success({
+          message: "Invoice deleted successfully",
+        })
+        navigate("/invoices");
+      }
+    } catch (error) {
+      console.log(error);
+      Notification.error({
+        message: "Something went wrong please try again later",
+      })
+    }
+  }
 
   const columns: ColumnsType<DataType> = [
     {
       title: "Item",
       dataIndex: "item",
       key: "item",
-      render: (_, record) => <span>{record.item}</span>
+      render: (_, record) => <span>{record.item}</span>,
     },
     {
       title: "Price",
@@ -112,7 +135,9 @@ export default function Invoice() {
     {
       title: "Amount",
       key: "amount",
-      render: (_, record) => <span>${ Number(record.quantity) * record.price}</span>,
+      render: (_, record) => (
+        <span>${Number(record.quantity) * record.price}</span>
+      ),
     },
   ];
 
@@ -135,17 +160,13 @@ export default function Invoice() {
       >
         <div className="invoice-details">
           <a href="/invoices" className="back-link">
-            <LeftOutlined color="#000"/> Go BACK
+            <LeftOutlined color="#000" /> Go BACK
           </a>
-          {SERVER_STATES === 'ERROR' && (
-            <div className="error">
-              Error occurred
-            </div>
+          {SERVER_STATES === "ERROR" && (
+            <div className="error">Error occurred</div>
           )}
-          {SERVER_STATES === 'LOADING' && (
-            <div className="loading">
-              Loading ...
-            </div>
+          {SERVER_STATES === "LOADING" && (
+            <div className="loading">Loading ...</div>
           )}
           <div className="invoice-view">
             {SERVER_STATES === "SUCCESS" && (
@@ -153,70 +174,72 @@ export default function Invoice() {
                 <div className="invoice-header">
                   <div className="status">
                     <span className="status-text">Status</span>
-                    <InvoiceStatus
-                      status={
-                        invoiceMeta?.status || 'DRAFT'
-                      }
-                    />
+                    <InvoiceStatus status={invoiceMeta?.status || "DRAFT"} />
                   </div>
                   <div className="controls">
                     <button className="edit" disabled>
                       Edit
                     </button>
-                    <button className="delete">Delete</button>
+                    <button className="delete" onClick={handleDeleteInvoice}>Delete</button>
                   </div>
                 </div>
-                <div>
-                  <div className="header">
-                    <div className="title">
-                      <span>Invoice</span>
+                <div className="invoice-view">
+                  <div>
+                    <div className="header">
+                      <div className="title">
+                        <span>Invoice</span>
+                      </div>
+                      <div className="logo-container">
+                        <img
+                          src={
+                            invoiceMeta?.image
+                              ? invoiceMeta?.image
+                              : "https://avatars.githubusercontent.com/u/68122202?s=400&u=4abc9827a8ca8b9c19b06b9c5c7643c87da51e10&v=4"
+                          }
+                          className="logo"
+                        />
+                      </div>
                     </div>
-                    <div className="logo-container">
-                      <img
-                        src={invoiceMeta?.image}
-                        className="logo"
+                    <div className="details-container">
+                      <div className="details-from">
+                        <div className="from">From</div>
+                        <div className="name">{invoiceMeta?.from.name}</div>
+                        <div className="email">{invoiceMeta?.from.email}</div>
+                        <div className="phone-number">{invoiceMeta?.from.phoneNumber}</div>
+                      </div>
+                      <div className="details-for">
+                        <div className="for">For</div>
+                        <div className="name">{invoiceMeta?.to.name}</div>
+                        <div className="email">{invoiceMeta?.to.email}</div>
+                        <div className="phone-number">{invoiceMeta?.to.phoneNumber}</div>
+                      </div>
+                    </div>
+                    <div className="invoice-meta">
+                      <div className="number">Number: {invoiceMeta?.invoiceNumber}</div>
+                      <div className="date">Date: {invoiceMeta?.invoiceNumber}</div>
+                    </div>
+                    <div className="invoice-items">
+                      <Table
+                        dataSource={invoiceMeta?.items}
+                        columns={columns}
+                        pagination={false}
                       />
                     </div>
-                  </div>
-                  <div className="details-container">
-                    <div className="details-from">
-                      <div className="from">From</div>
-                      <div className="name">{invoiceMeta?.from.name}</div>
-                      <div className="email">{invoiceMeta?.from.email}</div>
-                      <div className="phone-number">
-                        {invoiceMeta?.from.phoneNumber}
+                    <div className="sub-table">
+                      <div className="total">
+                        Total: $
+                        {invoiceMeta?.items.reduce((a, b) => {
+                          return a + b.price * b.quantity;
+                        }, 0)}
                       </div>
                     </div>
-                    <div className="details-for">
-                      <div className="for">For</div>
-                      <div className="name">{invoiceMeta?.to.name}</div>
-                      <div className="email">{invoiceMeta?.to.email}</div>
-                      <div className="phone-number">
-                        {invoiceMeta?.to.phoneNumber}
-                      </div>
+                    <div className="pay-now-link">
+                      <a href={invoiceMeta?.payment_link} className="pay-now-link">
+                        Pay Now!
+                      </a>
                     </div>
-                  </div>
-                  <div className="invoice-meta">
-                    <div className="number">
-                      Number: {invoiceMeta?.invoiceNumber}
-                    </div>
-                    <div className="date">
-                      Date: {invoiceDateTime(invoiceMeta?.invoiceDate)}
-                    </div>
-                  </div>
-                  <div className="invoice-items">
-                    <Table
-                      dataSource={invoiceMeta?.items}
-                      columns={columns}
-                      pagination={false}
-                    />
-                  </div>
-                  <div className="sub-table">
-                    <div className="total">
-                      Total: $
-                      {invoiceMeta?.items.reduce((a, b) => {
-                        return a + Number(b.price);
-                      }, 0)}
+                    <div className="invoice-footer">
+                      Copy right reserved for company xxx.xxx.com
                     </div>
                   </div>
                 </div>

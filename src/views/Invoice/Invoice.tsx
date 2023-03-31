@@ -36,6 +36,7 @@ interface Invoice {
     price: number;
     amount: number;
   }[]
+  currency: "ZAR" | "USD"
 }
 
 export default function Invoice() {
@@ -43,7 +44,7 @@ export default function Invoice() {
     payload: string;
   };
   const payload = JSON.parse(search.payload) as Invoice;
-  const { to, from, invoice_date, invoice_number, items, payment_link } = payload
+  const { to, from, invoice_date, invoice_number, items, payment_link, currency } = payload
 
   const columns: ColumnsType<DataType> = [
     {
@@ -55,7 +56,7 @@ export default function Invoice() {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (_, record) => <span>${record.price}</span>,
+      render: (_, record) => <span>{record.price}</span>,
     },
     {
       title: "qty",
@@ -65,7 +66,7 @@ export default function Invoice() {
     {
       title: "Amount",
       key: "amount",
-      render: (_, record) => <span>${record.price * record.quantity}</span>,
+      render: (_, record) => <span>{record.price * record.quantity}</span>,
     },
   ];
   const data: DataType[] = items;
@@ -107,7 +108,7 @@ export default function Invoice() {
         </div>
         <div className="sub-table">
           <div className="total">
-            Total: $
+            Total: {currency} {' '}
             {data.reduce((a, b) => {
               return a + b.price * b.quantity;
             }, 0)}
@@ -117,7 +118,7 @@ export default function Invoice() {
           <a href={payment_link} className="pay-now-link">Pay Now!</a>
         </div>
         <div className="invoice-footer">
-          Copy right reserved for company xxx.xxx.com
+          Copy right reserved for company @ payfona.com {new Date().getFullYear()}
         </div>
       </div>
     </div>

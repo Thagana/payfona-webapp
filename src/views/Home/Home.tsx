@@ -36,7 +36,20 @@ ChartJS.register(
   ArcElement
 );
 
-export const options = {
+const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top" as const,
+    },
+    title: {
+      display: true,
+      text: "# Paid Invoice",
+    },
+  },
+};
+
+const revenueOptions = {
   responsive: true,
   plugins: {
     legend: {
@@ -47,7 +60,7 @@ export const options = {
       text: "Revenue",
     },
   },
-};
+}
 
 const labels = [
   "January",
@@ -75,6 +88,17 @@ export const data = {
   ],
 };
 
+type Line = {
+  labels: string[];
+  datasets: {
+    label: string;
+    data: number[];
+    backgroundColor: string[];
+    borderColor: string[];
+    borderWidth: number;
+  }[];
+}
+
 export const getPieData = (pie: number[]) => ({
   labels: ["PAID", "UNPAID"],
   datasets: [
@@ -94,8 +118,9 @@ export default function Home() {
   const [numberOfInvoices, setNumberOfInvoices] = React.useState(0);
   const [totalRevenue, setTotalRevenue] = React.useState(0);
   const [numberOfPaidInvoices, setNumberOfPaidInvoices] = React.useState(0);
-  const [lineData, setLineData] = React.useState<any[]>([]);
+  const [lineData, setLineData] = React.useState<Line>();
   const [pieData, setPieData] = React.useState<number[]>([]);
+  const [revenue, setRevenue] = React.useState<Line>();
 
   const fetchData = React.useCallback(async () => {
     try {
@@ -111,6 +136,7 @@ export default function Home() {
         setTotalRevenue(invoices.totalProfitMade);
         setLineData(invoices.line);
         setPieData(invoices.pieChart);
+        setRevenue(invoices.revenue);
       }
     } catch (error) {
       console.log(error);
@@ -127,7 +153,7 @@ export default function Home() {
   return (
     <Template defaultIndex="1">
       <div className="home-container">
-        <div className="cards">
+        <div className="cards mx-2 my-2">
           <Card style={{ width: 300 }}>
             <Row gutter={[8, 18]}>
               <Col span={6}>
@@ -173,10 +199,12 @@ export default function Home() {
           </Card>
         </div>
         <>
-          <Row gutter={[8, 8]}>
+          <Row gutter={[12, 12]} className="mx-2 my-2">
             <Col span={12}>
               <Card>
-                <Bar options={options} data={data} />
+                {revenue ? (
+                  <Bar options={revenueOptions} data={revenue} />
+                ) : (<div>Revenue data not found</div>)}
               </Card>
             </Col>
             <Col span={12}>
@@ -186,7 +214,9 @@ export default function Home() {
                     <Pie data={getPieData(pieData)} />
                   </Col>
                   <Col span={12}>
-                    <header>Income Flow</header>
+                      {lineData ? (
+                        <Bar options={options} data={lineData} />
+                      ): <div>Failed to load data</div>}
                   </Col>
                 </Row>
               </Card>
