@@ -4,10 +4,13 @@ import Notification from "antd/es/notification";
 import { Invoice as InvoiceAdaptor } from "../../../networking/invoice";
 import { motion } from "framer-motion";
 import { LeftOutlined } from "@ant-design/icons";
-import Table from "antd/es/table";
-import { formatInTimeZone } from "date-fns-tz";
-import { parseISO } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { Document, Page, pdfjs } from "react-pdf";
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+
+import "react-pdf/dist/esm/Page/TextLayer.css";
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 
 import type { ColumnsType } from "antd/es/table";
 
@@ -54,9 +57,30 @@ type VIEW_SERVER_STATE = "IDLE" | "LOADING" | "ERROR" | "SUCCESS";
 export default function Invoice() {
   let { invoiceId } = useParams();
   const [invoiceMeta, setInvoiceMeta] = React.useState<Invoice>();
+  const [invoiceLink, setInvoiceLink] = React.useState<string>("");
   const [SERVER_STATES, setServerState] =
-  React.useState<VIEW_SERVER_STATE>("IDLE");
-  
+    React.useState<VIEW_SERVER_STATE>("IDLE");
+
+  const [numPages, setNumPages] = React.useState<number>();
+  const [pageNumber, setPageNumber] = React.useState(1);
+
+  function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
+    setNumPages(numPages);
+    setPageNumber(1);
+  }
+
+  function changePage(offset: number) {
+    setPageNumber((prevPageNumber) => prevPageNumber + offset);
+  }
+
+  function previousPage() {
+    changePage(-1);
+  }
+
+  function nextPage() {
+    changePage(1);
+  }
+
   const navigate = useNavigate();
 
   const fetchInvoice = React.useCallback(async () => {
@@ -72,9 +96,8 @@ export default function Invoice() {
         });
         setServerState("ERROR");
       } else {
-        console.log(response.data.data.data);
-
         setInvoiceMeta(response.data.data.data);
+        setInvoiceLink(response.data.data.link);
         setServerState("SUCCESS");
       }
     } catch (error) {
@@ -84,14 +107,6 @@ export default function Invoice() {
       });
     }
   }, [invoiceId]);
-
-  const invoiceDateTime = (date: string | undefined) => {
-    if (date) {
-      const parsed = parseISO(date);
-      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      return formatInTimeZone(parsed, timeZone, "dd MMM yyyy");
-    }
-  };
 
   const handleDeleteInvoice = async () => {
     try {
@@ -103,16 +118,16 @@ export default function Invoice() {
       } else {
         Notification.success({
           message: "Invoice deleted successfully",
-        })
+        });
         navigate("/invoices");
       }
     } catch (error) {
       console.log(error);
       Notification.error({
         message: "Something went wrong please try again later",
-      })
+      });
     }
-  }
+  };
 
   const columns: ColumnsType<DataType> = [
     {
@@ -180,68 +195,21 @@ export default function Invoice() {
                     <button className="edit" disabled>
                       Edit
                     </button>
-                    <button className="delete" onClick={handleDeleteInvoice}>Delete</button>
+                    <button className="delete" onClick={handleDeleteInvoice}>
+                      Delete
+                    </button>
                   </div>
                 </div>
-                <div className="invoice-view">
-                  <div>
-                    <div className="header">
-                      <div className="title">
-                        <span>Invoice</span>
-                      </div>
-                      <div className="logo-container">
-                        <img
-                          src={
-                            invoiceMeta?.image
-                              ? invoiceMeta?.image
-                              : "https://avatars.githubusercontent.com/u/68122202?s=400&u=4abc9827a8ca8b9c19b06b9c5c7643c87da51e10&v=4"
-                          }
-                          className="logo"
-                        />
-                      </div>
-                    </div>
-                    <div className="details-container">
-                      <div className="details-from">
-                        <div className="from">From</div>
-                        <div className="name">{invoiceMeta?.from.name}</div>
-                        <div className="email">{invoiceMeta?.from.email}</div>
-                        <div className="phone-number">{invoiceMeta?.from.phoneNumber}</div>
-                      </div>
-                      <div className="details-for">
-                        <div className="for">For</div>
-                        <div className="name">{invoiceMeta?.to.name}</div>
-                        <div className="email">{invoiceMeta?.to.email}</div>
-                        <div className="phone-number">{invoiceMeta?.to.phoneNumber}</div>
-                      </div>
-                    </div>
-                    <div className="invoice-meta">
-                      <div className="number">Number: {invoiceMeta?.invoiceNumber}</div>
-                      <div className="date">Date: {invoiceMeta?.invoiceNumber}</div>
-                    </div>
-                    <div className="invoice-items">
-                      <Table
-                        dataSource={invoiceMeta?.items}
-                        columns={columns}
-                        pagination={false}
-                      />
-                    </div>
-                    <div className="sub-table">
-                      <div className="total">
-                        Total: $
-                        {invoiceMeta?.items.reduce((a, b) => {
-                          return a + b.price * b.quantity;
-                        }, 0)}
-                      </div>
-                    </div>
-                    <div className="pay-now-link">
-                      <a href={invoiceMeta?.payment_link} className="pay-now-link">
-                        Pay Now!
-                      </a>
-                    </div>
-                    <div className="invoice-footer">
-                      Copy right reserved for company xxx.xxx.com
-                    </div>
-                  </div>
+                <div className="invoice-pdf">
+                  <Document
+                    file={invoiceLink}
+                    onLoadError={(error) => console.log(error)}
+                  >
+                    <Page
+                      pageNumber={pageNumber}
+                      onGetAnnotationsError={console.error}
+                    />
+                  </Document>
                 </div>
               </>
             )}

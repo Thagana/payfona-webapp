@@ -28,71 +28,6 @@
       cursor: pointer;
       color: $primary-color;
     }
-    .invoice-header {
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      -webkit-box-align: center;
-      align-items: center;
-      border-radius: 8px;
-      box-shadow: rgb(72 84 159 / 10%) 0px 10px 10px -10px;
-      padding: 1.5rem;
-      background: rgb(248, 248, 251);
-      transition: background 0.3s ease 0s;
-      .status-text {
-        transition: color 0.3s ease 0s;
-        color: rgb(136, 142, 176);
-        font-size: 0.75rem;
-        line-height: 1.125;
-        letter-spacing: -0.25px;
-        margin-right: auto;
-      }
-      .status {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-      }
-      .controls {
-        display: flex;
-        gap: 0.5rem;
-        margin-left: auto;
-        .edit {
-          width: initial;
-          border: none;
-          border-radius: 10rem;
-          padding: 1rem 1.5rem;
-          font-size: 0.75rem;
-          font-weight: 700;
-          line-height: 1.25;
-          -webkit-font-smoothing: antialiased;
-          cursor: pointer;
-          transition: background 0.3s ease 0s, color 0.3s ease 0s;
-          outline: none;
-          background: rgb(249, 250, 254);
-          color: rgb(126, 136, 195);
-          font-family: $font-family;
-          &:hover {
-            cursor: not-allowed;
-          }
-        }
-        .delete {
-          width: initial;
-          border: none;
-          border-radius: 10rem;
-          padding: 1rem 1.5rem;
-          color: white;
-          font-size: 0.75rem;
-          font-weight: 700;
-          line-height: 1.25;
-          -webkit-font-smoothing: antialiased;
-          cursor: pointer;
-          transition: background 0.3s ease 0s, color 0.3s ease 0s;
-          outline: none;
-          background: $primary-color;
-          font-family: $font-family;
-        }
-      }
-    }
     .invoice-view {
       display: flex;
       align-items: center;
@@ -100,58 +35,76 @@
       flex-direction: column;
       width: auto;
       height: auto;
-      .header {
-        padding: 10px;
+      .invoice-header {
+        width: 100%;
         display: flex;
-        justify-content: space-between;
-        .title {
-          font-size: 26px;
-        }
-        .logo-container {
-          .logo {
-            width: 200px;
-            height: 200px;
-          }
-        }
-      }
-      .details-container {
-        display: flex;
+        flex-direction: row;
+        -webkit-box-align: center;
         align-items: center;
-        gap: 100px;
-        padding: 15px 0px;
-        .details-from {
-          .from {
-            font-weight: lighter;
+        border-radius: 8px;
+        box-shadow: rgb(72 84 159 / 10%) 0px 10px 10px -10px;
+        padding: 1.5rem;
+        background: rgb(248, 248, 251);
+        transition: background 0.3s ease 0s;
+        .status-text {
+          transition: color 0.3s ease 0s;
+          color: rgb(136, 142, 176);
+          font-size: 0.75rem;
+          line-height: 1.125;
+          letter-spacing: -0.25px;
+          margin-right: auto;
+        }
+        .status {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+        }
+        .controls {
+          display: flex;
+          gap: 0.5rem;
+          margin-left: auto;
+          .edit {
+            width: initial;
+            border: none;
+            border-radius: 10rem;
+            padding: 1rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            line-height: 1.25;
+            -webkit-font-smoothing: antialiased;
+            cursor: pointer;
+            transition: background 0.3s ease 0s, color 0.3s ease 0s;
+            outline: none;
+            background: rgb(249, 250, 254);
+            color: rgb(126, 136, 195);
+            font-family: $font-family;
+            &:hover {
+              cursor: not-allowed;
+            }
           }
-          .name {
-            font-weight: 600;
-            font-size: larger;
+          .delete {
+            width: initial;
+            border: none;
+            border-radius: 10rem;
+            padding: 1rem 1.5rem;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+            line-height: 1.25;
+            -webkit-font-smoothing: antialiased;
+            cursor: pointer;
+            transition: background 0.3s ease 0s, color 0.3s ease 0s;
+            outline: none;
+            background: $primary-color;
+            font-family: $font-family;
           }
         }
-        .details-for {
-          .for {
-            font-weight: lighter;
-          }
-          .name {
-            font-weight: 600;
-          }
-        }
       }
-      .invoice-meta {
-        padding: 15px 0px;
+      .invoice-pdf {
+        width: 100%;
       }
-      .sub-table {
-        display: flex;
-        justify-content: flex-end;
-        padding: 10px 0px;
-      }
-      .pay-now-link {
-        padding: 10px 0px;
-        line-height: 40px;
-        text-align: center;
-      }
-      .invoice-footer {
-        text-align: center;
+      .react-pdf__Page__textContent {
+        display: none;
       }
     }
   }
