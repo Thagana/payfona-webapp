@@ -176,7 +176,7 @@ export default function CreateInvoice() {
         Notification.success({
           message: "Successfully create an invoice",
         });
-        navigate("/invoice-url", { state: { url: response.data.data } });
+        navigate(`/invoices/${response.data.data}`);
       }
     } catch (error) {
       console.log(error);

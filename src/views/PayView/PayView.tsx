@@ -1,5 +1,4 @@
 import * as React from "react";
-import { usePaystackPayment } from "react-paystack";
 import { Invoice } from "../../networking/invoice";
 import NoInvoiceGui from "./NoInvoiceGui";
 import PayGateWay from "./PayGateWay";
