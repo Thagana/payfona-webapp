@@ -61,4 +61,18 @@ export class Auth {
       password,
     });
   }
+  static async requestChangePassword(data: { email: string }) {
+    const {email} = data;
+    return Axios.post('/auth/password_request', {
+      email
+    })
+  }
+  static async changePassword(data: { password1: string, password2: string, otp: string }) {
+    const { password1, password2, otp } = data;
+    return Axios.post('/auth/update_password', {
+      password: password1,
+      password1: password2,
+      token: otp
+    })
+  }
 }
