@@ -66,7 +66,7 @@ export default function SignIn() {
 
   return (
     <div className="log-in-container">
-      <div className="header">Sign Up</div>
+      <div className="header">Sign In</div>
       <div className="form-container">
         <form className="form" onSubmit={handleSubmit(onSubmit)}>
           <div className="form-group">

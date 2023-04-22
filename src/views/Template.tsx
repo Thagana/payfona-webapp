@@ -8,7 +8,9 @@ import {
   LogoutOutlined,
   MoneyCollectOutlined,
   HomeOutlined,
-  BankOutlined
+  BankOutlined,
+  ShopOutlined,
+  AccountBookOutlined
 } from "@ant-design/icons";
 
 import "./Template.scss";
@@ -93,6 +95,24 @@ export default function TemplateWrapper(props: Props): JSX.Element {
             }}
           >
             Bank Accounts
+          </Menu.Item>
+          <Menu.Item
+            key="3"
+            icon={<AccountBookOutlined />}
+            onClick={() => {
+              navigate("/subscriptions");
+            }}
+          >
+            Subscriptions
+          </Menu.Item>
+          <Menu.Item
+            key="4"
+            icon={<ShopOutlined />}
+            onClick={() => {
+              navigate("/virtual-pos");
+            }}
+          >
+            Virtual (POS)
           </Menu.Item>
           <Menu.Item
             key="8"
