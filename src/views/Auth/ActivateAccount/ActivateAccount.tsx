@@ -13,7 +13,6 @@ export default function ActivateAccount() {
   const [loading, setLoading] = React.useState(false);
   const [otp, setOtp] = React.useState('');
 
-
   const navigate = useNavigate();
   const onSubmit = async (event: React.SyntheticEvent) => {
     try {

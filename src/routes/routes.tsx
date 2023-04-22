@@ -18,6 +18,8 @@ import CreateInvoice from "../views/Invoices/Create";
 import InvoicePDFViewer from "../views/InvoicePDFViewer";
 import Accounts from "../views/Accounts";
 import CreateAccount from "../views/Accounts/CreateAccount";
+import ForgotPassword from "../views/Auth/ForgotPassword/ForgotPassword";
+import ChangePassword from "../views/Auth/Changepassword/ChangePassword";
 
 export default function AppRouter() {
   const location = useLocation();
@@ -41,9 +43,12 @@ export default function AppRouter() {
         <Route path="/invoice/create" element={<PrivateRoutes component={CreateInvoice} />} />
         <Route path="/invoice/pay-now" element={<PayView />} />
         <Route path="/view_invoice" element={<Invoice />} />
-        <Route path="/login" element={<SignIn />} />
+        
         <Route path="/activate" element={<ActivateAccount />} />
         <Route path="/register" element={<SignUp />} />
+        <Route path="/login" element={<SignIn />} />
+        <Route path="/forgot-password-request" element={<ForgotPassword />} />
+        <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/invoice-url" element={<PrivateRoutes component={InvoicePDFViewer} />} />
         <Route
           path="/profile"

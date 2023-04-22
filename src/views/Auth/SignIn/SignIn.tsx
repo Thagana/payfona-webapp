@@ -3,9 +3,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Notification from "antd/es/notification";
 import { Link } from "react-router-dom";
 import { useStoreActions } from "easy-peasy";
-import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import Input from "../../../components/common/Input";
 import Server from "../../../networking/server";
 import { Model } from "../../../store/model";
 import "./SignIn.scss";
@@ -136,6 +134,11 @@ export default function SignIn() {
           <div className="form-group">
             <Link to="/register" className="link">
               Don&apos;t have an account? Sign Up
+            </Link>
+          </div>
+          <div className="form-group">
+            <Link to="/forgot-password-request" className="link">
+              Forgot password? request change password
             </Link>
           </div>
           <div className="form-group">
