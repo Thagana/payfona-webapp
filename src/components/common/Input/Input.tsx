@@ -7,12 +7,9 @@ type Props = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: UseFormRegister<any>;
   required: boolean;
-  errors: FieldErrorsImpl<{
-    email: string;
-    password: string;
-    firstName: string;
-    activate: string;
-  }>;
+  errors: {
+    [key: string]: any
+  };
   isTouched: boolean;
   type: string;
   placeholder: string;

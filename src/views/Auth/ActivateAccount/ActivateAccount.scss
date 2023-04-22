@@ -10,10 +10,11 @@
   button.btn {
     width: 100%;
   }
+  .form-container {
+    padding: 4rem;
+  }
   .form-control {
-    min-width: 400px;
-    max-width: 500px;
-    padding: 10px;
+    padding: 20px;
     margin: 2px;
     .loader {
       border: 16px solid #f3f3f3; /* Light grey */
@@ -32,5 +33,21 @@
         transform: rotate(360deg);
       }
     }
+  }
+  input.form-control {
+    width: 5rem !important;
+    height: 5rem;
+    min-width: 70px;
+    max-width: 70px;
+  }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
   }
 }

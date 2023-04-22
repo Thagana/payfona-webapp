@@ -1,28 +1,25 @@
 import * as React from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import Notification from "antd/es/notification";
-import Input from "../../../components/common/Input";
 import "./ActivateAccount.scss";
 import Server from "../../../networking/server";
+import OtpInput from 'react-otp-input';
 
 type Inputs = {
-  activate: string;
+  activate: string
 };
 
 export default function ActivateAccount() {
   const [loading, setLoading] = React.useState(false);
-  const {
-    register,
-    handleSubmit,
-    getFieldState,
-    formState: { errors},
-  } = useForm<Inputs>();
+  const [otp, setOtp] = React.useState('');
+
+
   const navigate = useNavigate();
-  const onSubmit: SubmitHandler<Inputs> = async (data: Inputs) => {
+  const onSubmit = async (event: React.SyntheticEvent) => {
     try {
+      event.preventDefault();
       setLoading(true);
-      const response = await Server.Auth.verifyAccount(data.activate);
+      const response = await Server.Auth.verifyAccount(otp);
       if (!response.data.success) {
         setLoading(false);
         Notification.error({
@@ -43,21 +40,24 @@ export default function ActivateAccount() {
       });
     }
   };
+
+
   return (
     <div className="activate-container">
       <header className="header">Activate Account</header>
       <div className="form-container">
-        <form className="form" onSubmit={handleSubmit(onSubmit)}>
-          <div className="form-group">
-            <Input
-              type="text"
-              register={register}
-              required
-              errors={errors}
-              label="Activate"
-              placeholder="Enter OTP Code"
-              value="activate"
-              isTouched={getFieldState("activate").isTouched}
+        <form className="form" onSubmit={onSubmit}>
+          <div className="form-group d-flex">
+          <OtpInput
+              value={otp}
+              onChange={setOtp}
+              numInputs={4}
+              inputStyle={{
+                width: 70,
+                height: 70
+              }}
+              renderSeparator={<span>-</span>}
+              renderInput={(props) => <input {...props} />}
             />
           </div>
           <div className="form-group">

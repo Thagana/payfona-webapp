@@ -1,14 +1,23 @@
 @import "../scss/utils";
 
+
 .ant-layout-sider {
   background-color: $primary-color;
 }
+
+.ant-menu {
+  background: $primary-color;
+}
+
 .logo {
+  display: flex;
   padding: 10px;
+  background-color: #eaeaea;
+  justify-content: center;
+  align-items: center;
   .brand-logo {
     width: 45px;
     height: 45px;
-    border-radius: 30%;
   }
 }
 .site-layout {

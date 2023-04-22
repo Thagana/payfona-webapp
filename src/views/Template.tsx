@@ -17,6 +17,8 @@ import "./Template.scss";
 import { useStoreState } from "easy-peasy";
 import { Model } from "../store/model";
 
+import image from '../assets/payfona.png';
+
 const { Header, Sider, Content } = Layout;
 
 type Props = {
@@ -60,10 +62,13 @@ export default function TemplateWrapper(props: Props): JSX.Element {
         collapsible
         collapsed={collapsed}
         className="side-bar"
+        style={{
+          background: '#31004a'
+        }}
       >
         <div className="logo">
           <img
-            src={profile.avatar}
+            src={image}
             className="brand-logo"
             alt="Northern Breeze"
           />

@@ -1,2 +1,2 @@
-# payfona-webapp
+# Payfona Web Application
 Payfona Web Application

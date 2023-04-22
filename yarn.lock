@@ -1921,6 +1921,13 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-otp-input@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@types/react-otp-input/-/react-otp-input-2.0.1.tgz#b35d723dae497a79117b2cde5db59c613a5ecc2b"
+  integrity sha512-fhkO7N/rds9cJAhY2gpeE7kLK3hCvRD+t5KmIKk4zAGoGd1RCbSAir/pXTDwWdh8Pt87h2aarDzuqmZymxXZ4g==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-pdf@^6.2.0":
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/@types/react-pdf/-/react-pdf-6.2.0.tgz#e99d498f8f76704d15e4553197c89e254cc17278"
@@ -6607,6 +6614,11 @@ react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
+
+react-otp-input@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/react-otp-input/-/react-otp-input-3.0.0.tgz#870f3cdfb973dc4ef0b8749785c64ec303f2f835"
+  integrity sha512-TgTE3PbHhu4VxsAA9JUACzhtxwuZ8OSle9kiwK0Ne7fCv7wOXTtIRWQWPoNlfOZ/sxGsXjMexqwrQdB9yy0qEQ==
 
 react-paystack@^4.0.2:
   version "4.0.2"
