@@ -5,9 +5,6 @@ import "./ActivateAccount.scss";
 import Server from "../../../networking/server";
 import OtpInput from 'react-otp-input';
 
-type Inputs = {
-  activate: string
-};
 
 export default function ActivateAccount() {
   const [loading, setLoading] = React.useState(false);
