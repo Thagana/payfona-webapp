@@ -10,14 +10,18 @@ import {
   HomeOutlined,
   BankOutlined,
   ShopOutlined,
-  AccountBookOutlined
+  AccountBookOutlined,
+  NotificationOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 
 import "./Template.scss";
 import { useStoreState } from "easy-peasy";
 import { Model } from "../store/model";
 
-import image from '../assets/payfona.png';
+import image from "../assets/payfona.png";
+import SubMenu from "antd/es/menu/SubMenu";
+import Button from "antd/es/button";
 
 const { Header, Sider, Content } = Layout;
 
@@ -50,7 +54,9 @@ export default function TemplateWrapper(props: Props): JSX.Element {
   if (!isOnline) {
     return (
       <div className="offline-container">
-        <span className="offline-container-text">Your offline, no internet connection</span>
+        <span className="offline-container-text">
+          Your offline, no internet connection
+        </span>
       </div>
     );
   }
@@ -63,17 +69,13 @@ export default function TemplateWrapper(props: Props): JSX.Element {
         collapsed={collapsed}
         className="side-bar"
         style={{
-          background: '#31004a'
+          backgroundColor: "#31004a",
         }}
       >
         <div className="logo">
-          <img
-            src={image}
-            className="brand-logo"
-            alt="Northern Breeze"
-          />
+          <img src={image} className="brand-logo" alt="Northern Breeze" />
         </div>
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={[defaultIndex]}>
+        <Menu theme="dark" mode="vertical" defaultSelectedKeys={[defaultIndex]}>
           <Menu.Item
             key="1"
             icon={<HomeOutlined />}
@@ -102,7 +104,7 @@ export default function TemplateWrapper(props: Props): JSX.Element {
             Bank Accounts
           </Menu.Item>
           <Menu.Item
-            key="3"
+            key="4"
             icon={<AccountBookOutlined />}
             onClick={() => {
               navigate("/subscriptions");
@@ -110,15 +112,10 @@ export default function TemplateWrapper(props: Props): JSX.Element {
           >
             Subscriptions
           </Menu.Item>
-          <Menu.Item
-            key="4"
-            icon={<ShopOutlined />}
-            onClick={() => {
-              navigate("/virtual-pos");
-            }}
-          >
-            Virtual (POS)
-          </Menu.Item>
+          <Menu.SubMenu title="Virtual (POS)" icon={<ShopOutlined />}>
+            <Menu.Item>Launch</Menu.Item>
+            <Menu.Item>Configure</Menu.Item>
+          </Menu.SubMenu>
           <Menu.Item
             key="8"
             icon={<LogoutOutlined />}
@@ -133,13 +130,47 @@ export default function TemplateWrapper(props: Props): JSX.Element {
       </Sider>
       <Layout className="site-layout">
         <Header className="site-layout-header" style={{ padding: 0 }}>
-          {React.createElement(
-            collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-            {
-              className: "trigger",
-              onClick: toggleNav,
-            }
-          )}
+          <div>
+            <Button
+              type="text"
+              icon={
+                collapsed ? (
+                  <MenuUnfoldOutlined color="#fff" />
+                ) : (
+                  <MenuFoldOutlined color="#fff" />
+                )
+              }
+              onClick={() => setCollapsed(!collapsed)}
+              style={{
+                fontSize: "16px",
+                width: 64,
+                height: 64,
+                color: "#fff",
+              }}
+            />
+          </div>
+          <div>
+            <Button
+              type="text"
+              icon={<NotificationOutlined color="#fff" />}
+              style={{
+                fontSize: "16px",
+                width: 64,
+                height: 64,
+                color: "#fff",
+              }}
+            />
+            <Button
+              type="text"
+              icon={<UserOutlined color="#fff" />}
+              style={{
+                fontSize: "16px",
+                width: 64,
+                height: 64,
+                color: "#fff",
+              }}
+            />
+          </div>
         </Header>
         <Content
           className="site-layout-background"
