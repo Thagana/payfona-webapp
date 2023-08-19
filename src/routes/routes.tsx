@@ -20,6 +20,7 @@ import Accounts from "../views/Accounts";
 import CreateAccount from "../views/Accounts/CreateAccount";
 import ForgotPassword from "../views/Auth/ForgotPassword/ForgotPassword";
 import ChangePassword from "../views/Auth/Changepassword/ChangePassword";
+import Customer from "../views/Customers/Customers";
 
 export default function AppRouter() {
   const location = useLocation();
@@ -41,6 +42,7 @@ export default function AppRouter() {
           element={<PrivateRoutes component={InvoiceDetail} />}
         />
         <Route path="/invoice/create" element={<PrivateRoutes component={CreateInvoice} />} />
+        <Route path='/customers' element={<PrivateRoutes component={Customer} />} />
         <Route path="/invoice/pay-now" element={<PayView />} />
         <Route path="/view_invoice" element={<Invoice />} />
         
