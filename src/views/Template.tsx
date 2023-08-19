@@ -95,15 +95,6 @@ export default function TemplateWrapper(props: Props): JSX.Element {
             Invoice
           </Menu.Item>
           <Menu.Item
-            key="3"
-            icon={<BankOutlined />}
-            onClick={() => {
-              navigate("/accounts");
-            }}
-          >
-            Bank Accounts
-          </Menu.Item>
-          <Menu.Item
             key="4"
             icon={<AccountBookOutlined />}
             onClick={() => {
@@ -112,10 +103,15 @@ export default function TemplateWrapper(props: Props): JSX.Element {
           >
             Subscriptions
           </Menu.Item>
-          <Menu.SubMenu title="Virtual (POS)" icon={<ShopOutlined />}>
-            <Menu.Item>Launch</Menu.Item>
-            <Menu.Item>Configure</Menu.Item>
-          </Menu.SubMenu>
+          <Menu.Item
+            key="3"
+            icon={<BankOutlined />}
+            onClick={() => {
+              navigate("/accounts");
+            }}
+          >
+            Bank Accounts
+          </Menu.Item>
           <Menu.Item
             key="8"
             icon={<LogoutOutlined />}
