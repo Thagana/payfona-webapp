@@ -2,17 +2,17 @@
 
 
 .ant-layout-sider {
-  background-color: $primary-color;
+  background-color: #fff;
 }
 
 .ant-menu {
-  background: $primary-color;
+  background: #fff;
 }
 
 .logo {
   display: flex;
   padding: 10px;
-  background-color: #eaeaea;
+  background-color: #fff;
   justify-content: center;
   align-items: center;
   .brand-logo {
@@ -22,6 +22,8 @@
 }
 .site-layout {
   .site-layout-header {
+    display: flex;
+    justify-content: space-between;
     padding: 10px;
     background-color: #fff;
   }
@@ -35,7 +37,7 @@
       cursor: pointer;
       transition: color 0.3s;
       &:hover {
-        color: #1890ff;
+        color: $primary-color;
       }
     }
   }

@@ -7,17 +7,20 @@ import {
   MenuFoldOutlined,
   LogoutOutlined,
   MoneyCollectOutlined,
-  HomeOutlined,
   BankOutlined,
-  ShopOutlined,
-  AccountBookOutlined
+  LineChartOutlined,
+  AccountBookOutlined,
+  NotificationOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
 
 import "./Template.scss";
 import { useStoreState } from "easy-peasy";
 import { Model } from "../store/model";
 
-import image from '../assets/payfona.png';
+import image from "../assets/payfona.png";
+import SubMenu from "antd/es/menu/SubMenu";
+import Button from "antd/es/button";
 
 const { Header, Sider, Content } = Layout;
 
@@ -33,16 +36,15 @@ export default function TemplateWrapper(props: Props): JSX.Element {
   const profile = useStoreState<Model>((state) => state.profile);
 
   const navigate = useNavigate();
-  const toggleNav = () => {
-    setCollapsed(!collapsed);
-  };
 
   window.addEventListener("online", () => {
     setOnline(true);
   });
+
   window.addEventListener("offline", () => {
     setOnline(false);
   });
+  
   React.useEffect(() => {
     setOnline(navigator.onLine);
   }, []);
@@ -50,7 +52,9 @@ export default function TemplateWrapper(props: Props): JSX.Element {
   if (!isOnline) {
     return (
       <div className="offline-container">
-        <span className="offline-container-text">Your offline, no internet connection</span>
+        <span className="offline-container-text">
+          Your offline, no internet connection
+        </span>
       </div>
     );
   }
@@ -63,28 +67,33 @@ export default function TemplateWrapper(props: Props): JSX.Element {
         collapsed={collapsed}
         className="side-bar"
         style={{
-          background: '#31004a'
+          backgroundColor: "#fff",
         }}
       >
         <div className="logo">
-          <img
-            src={image}
-            className="brand-logo"
-            alt="Northern Breeze"
-          />
+          <img src={image} className="brand-logo" alt="Northern Breeze" />
         </div>
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={[defaultIndex]}>
+        <Menu mode="vertical" defaultSelectedKeys={[defaultIndex]}>
           <Menu.Item
             key="1"
-            icon={<HomeOutlined />}
+            icon={<LineChartOutlined />}
             onClick={() => {
               navigate("/");
             }}
           >
-            Home
+            Dashboard
           </Menu.Item>
           <Menu.Item
             key="2"
+            icon={<AccountBookOutlined />}
+            onClick={() => {
+              navigate("/customers");
+            }}
+          >
+            Customers
+          </Menu.Item>
+          <Menu.Item
+            key="3"
             icon={<MoneyCollectOutlined />}
             onClick={() => {
               navigate("/invoices");
@@ -93,16 +102,7 @@ export default function TemplateWrapper(props: Props): JSX.Element {
             Invoice
           </Menu.Item>
           <Menu.Item
-            key="3"
-            icon={<BankOutlined />}
-            onClick={() => {
-              navigate("/accounts");
-            }}
-          >
-            Bank Accounts
-          </Menu.Item>
-          <Menu.Item
-            key="3"
+            key="4"
             icon={<AccountBookOutlined />}
             onClick={() => {
               navigate("/subscriptions");
@@ -111,16 +111,16 @@ export default function TemplateWrapper(props: Props): JSX.Element {
             Subscriptions
           </Menu.Item>
           <Menu.Item
-            key="4"
-            icon={<ShopOutlined />}
+            key="5"
+            icon={<BankOutlined />}
             onClick={() => {
-              navigate("/virtual-pos");
+              navigate("/accounts");
             }}
           >
-            Virtual (POS)
+            Bank Accounts
           </Menu.Item>
           <Menu.Item
-            key="8"
+            key="6"
             icon={<LogoutOutlined />}
             onClick={() => {
               localStorage.clear();
@@ -133,13 +133,47 @@ export default function TemplateWrapper(props: Props): JSX.Element {
       </Sider>
       <Layout className="site-layout">
         <Header className="site-layout-header" style={{ padding: 0 }}>
-          {React.createElement(
-            collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-            {
-              className: "trigger",
-              onClick: toggleNav,
-            }
-          )}
+          <div>
+            <Button
+              type="text"
+              icon={
+                collapsed ? (
+                  <MenuUnfoldOutlined color="#31004a" />
+                ) : (
+                  <MenuFoldOutlined color="#31004a" />
+                )
+              }
+              onClick={() => setCollapsed(!collapsed)}
+              style={{
+                fontSize: "16px",
+                width: 64,
+                height: 64,
+                color: "#31004a",
+              }}
+            />
+          </div>
+          <div>
+            <Button
+              type="text"
+              icon={<NotificationOutlined color="#fff" />}
+              style={{
+                fontSize: "16px",
+                width: 64,
+                height: 64,
+                color: "#31004a",
+              }}
+            />
+            <Button
+              type="text"
+              icon={<UserOutlined color="#31004a" />}
+              style={{
+                fontSize: "16px",
+                width: 64,
+                height: 64,
+                color: "#31004a",
+              }}
+            />
+          </div>
         </Header>
         <Content
           className="site-layout-background"

@@ -12,7 +12,7 @@ export type Account = {
   name: string;
   account_number: string;
   sub_account_code: string;
-  user_id: number;
+  business_id: number;
   is_default: boolean;
 };
 

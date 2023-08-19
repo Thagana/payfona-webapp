@@ -1,65 +1,61 @@
-@import "../../scss/utils";
-
-.invoice {
-  height: auto;
+.invoice-view {
   display: flex;
   align-items: center;
-  border: 1px solid transparent;
-  justify-content: space-between;
-  border-radius: 8px;
-  padding: 1.5rem 2rem;
-  background: rgb(248, 248, 251);
-  text-decoration: none;
-  transition: border 0.3s ease 0s, background 0.3s ease 0s;
-  margin: 5px 0px 0px 5px;
-  cursor: pointer;
-  font-family: $font-family;
-  color: $primary-color;
-  width: 850px;
-  .details {
+  justify-content: center;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  .header {
+    padding: 10px;
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
-    width: 35rem;
-    .invoice-total {
-      color: $primary-color;
-      font-family: $font-family;
-      font-weight: bold;
-      transition: color 0.3s ease 0s;
-      font-size: 1.25rem;
-      line-height: 1.1;
-      letter-spacing: -0.63px;
-      width: 5rem;
+    .title {
+      font-size: 26px;
     }
-    .invoice-date {
-      font-family: $font-family;
-      transition: color 0.3s ease 0s;
-      color: $primary-color;
-      width: 5rem;
-    }
-    .invoice-name {
-      font-family: $font-family;
-      transition: color 0.3s ease 0s;
-      color: $primary-color;
-      width: 5rem;
-    }
-    .invoice-number {
-      color: $primary-color;
-      font-family: $font-family;
-      font-weight: bold;
-      transition: color 0.3s ease 0s;
-      font-size: 1.25rem;
-      width: 0.5rem;
+    .logo-container {
+      .logo {
+        width: 200px;
+        height: 200px;
+      }
     }
   }
-  .invoice-status {
+  .details-container {
     display: flex;
     align-items: center;
-    width: 8rem;
-    justify-content: space-between;
+    gap: 100px;
+    padding: 15px 0px;
+    .details-from {
+      .from {
+        font-weight: lighter;
+      }
+      .name {
+        font-weight: 600;
+        font-size: larger;
+      }
+    }
+    .details-for {
+      .for {
+        font-weight: lighter;
+      }
+      .name {
+        font-weight: 600;
+      }
+    }
   }
-  &:hover {
-    color: $secondary-color;
-    border: 1px solid $primary-color;
+  .invoice-meta {
+    padding: 15px 0px;
+  }
+  .sub-table {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 0px;
+  }
+  .pay-now-link {
+    padding: 10px 0px;
+    line-height: 40px;
+    text-align: center;
+  }
+  .invoice-footer {
+    text-align: center;
   }
 }
