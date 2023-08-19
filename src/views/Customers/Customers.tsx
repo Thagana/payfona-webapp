@@ -169,7 +169,7 @@ export default function Customer() {
     }, []);
 
     return (
-        <TemplateWrapper defaultIndex="3">
+        <TemplateWrapper defaultIndex="2">
             <div className="customer-container">
                 <div className="table">
                     <Table columns={columns} dataSource={customerData} />

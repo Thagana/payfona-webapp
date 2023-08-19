@@ -1,111 +1,64 @@
-@import "../../../scss/utils";
-
-.invoice-detail-container {
+.invoice-view {
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
-  min-height: 100vh;
-  font-family: $font-family;
-  .invoice-details {
+  width: 100vw;
+  height: 100vh;
+  .header {
+    padding: 10px;
     display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    justify-content: space-between;
+    .title {
+      font-size: 26px;
+    }
+    .logo-container {
+      .logo {
+        width: 200px;
+        height: 200px;
+      }
+    }
+  }
+  .details-container {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-    max-width: 45.625rem;
-    height: 100%;
-    margin: 0px auto;
-    padding: 2rem 1.5rem 3.5rem;
-    .back-link {
-      display: flex;
-      justify-content: space-between;
-      flex-direction: row;
-      gap: 5px;
-      align-items: center;
-      margin-bottom: 2rem;
-      text-decoration: none;
+    align-items: center;
+    gap: 100px;
+    padding: 15px 0px;
+    .details-from {
+      .from {
+        font-weight: lighter;
+      }
+      .name {
+        font-weight: 600;
+        font-size: larger;
+      }
+    }
+    .details-for {
+      .for {
+        font-weight: lighter;
+      }
+      .name {
+        font-weight: 600;
+      }
+    }
+  }
+  .invoice-meta {
+    padding: 15px 0px;
+  }
+  .sub-table {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px 0px;
+  }
+  .pay-now-link {
+    padding: 10px 0px;
+    line-height: 40px;
+    text-align: center;
+    &:hover {
       cursor: pointer;
-      color: $primary-color;
     }
-    .invoice-view {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      width: auto;
-      height: auto;
-      .invoice-header {
-        width: 100%;
-        display: flex;
-        flex-direction: row;
-        -webkit-box-align: center;
-        align-items: center;
-        border-radius: 8px;
-        box-shadow: rgb(72 84 159 / 10%) 0px 10px 10px -10px;
-        padding: 1.5rem;
-        background: rgb(248, 248, 251);
-        transition: background 0.3s ease 0s;
-        .status-text {
-          transition: color 0.3s ease 0s;
-          color: rgb(136, 142, 176);
-          font-size: 0.75rem;
-          line-height: 1.125;
-          letter-spacing: -0.25px;
-          margin-right: auto;
-        }
-        .status {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-        }
-        .controls {
-          display: flex;
-          gap: 0.5rem;
-          margin-left: auto;
-          .edit {
-            width: initial;
-            border: none;
-            border-radius: 10rem;
-            padding: 1rem 1.5rem;
-            font-size: 0.75rem;
-            font-weight: 700;
-            line-height: 1.25;
-            -webkit-font-smoothing: antialiased;
-            cursor: pointer;
-            transition: background 0.3s ease 0s, color 0.3s ease 0s;
-            outline: none;
-            background: rgb(249, 250, 254);
-            color: rgb(126, 136, 195);
-            font-family: $font-family;
-            &:hover {
-              cursor: not-allowed;
-            }
-          }
-          .delete {
-            width: initial;
-            border: none;
-            border-radius: 10rem;
-            padding: 1rem 1.5rem;
-            color: white;
-            font-size: 0.75rem;
-            font-weight: 700;
-            line-height: 1.25;
-            -webkit-font-smoothing: antialiased;
-            cursor: pointer;
-            transition: background 0.3s ease 0s, color 0.3s ease 0s;
-            outline: none;
-            background: $primary-color;
-            font-family: $font-family;
-          }
-        }
-      }
-      .invoice-pdf {
-        width: 100%;
-      }
-      .react-pdf__Page__textContent {
-        display: none;
-      }
-    }
+  }
+  .invoice-footer {
+    text-align: center;
   }
 }

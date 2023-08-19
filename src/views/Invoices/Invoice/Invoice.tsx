@@ -1,27 +1,16 @@
 import * as React from "react";
-import { useParams } from "react-router-dom";
-import Notification from "antd/es/notification";
-import { Invoice as InvoiceAdaptor } from "../../../networking/invoice";
-import { motion } from "framer-motion";
-import { LeftOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
-import { Document, Page, pdfjs } from "react-pdf";
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
-
-import "react-pdf/dist/esm/Page/TextLayer.css";
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
-
+import Table from "antd/es/table";
+import Notification from 'antd/es/notification';
 import type { ColumnsType } from "antd/es/table";
 
 import "./Invoice.scss";
 
-import TemplateWrapper from "../../Template";
-import InvoiceStatus from "../../../components/InvoiceStatus";
+import { Invoice as InvoiceNetworking } from '../../../networking/invoice'
+import { useParams } from "react-router-dom";
 
 interface DataType {
   key: string;
-  item: string;
+  description: string;
   quantity: number;
   amount: number;
   price: number;
@@ -38,184 +27,121 @@ interface Invoice {
     email: string;
     phoneNumber: string;
   };
-  image: string;
   invoiceNumber: string;
   invoiceDate: string;
-  payment_link: string;
-  status?: "PAID" | "DRAFT" | "PENDING";
+  paymentLink: string,
+  logo: string;
   items: {
     key: string;
-    item: string;
+    description: string;
     quantity: number;
     price: number;
     amount: number;
-  }[];
+  }[]
+  currency: "ZAR" | "USD"
 }
 
-type VIEW_SERVER_STATE = "IDLE" | "LOADING" | "ERROR" | "SUCCESS";
-
 export default function Invoice() {
-  let { invoiceId } = useParams();
-  const [invoiceMeta, setInvoiceMeta] = React.useState<Invoice>();
-  const [invoiceLink, setInvoiceLink] = React.useState<string>("");
-  const [SERVER_STATES, setServerState] =
-    React.useState<VIEW_SERVER_STATE>("IDLE");
 
-  const [numPages, setNumPages] = React.useState<number>();
-  const [pageNumber, setPageNumber] = React.useState(1);
-
-  function onDocumentLoadSuccess({ numPages }: { numPages: number }) {
-    setNumPages(numPages);
-    setPageNumber(1);
-  }
-
-  function changePage(offset: number) {
-    setPageNumber((prevPageNumber) => prevPageNumber + offset);
-  }
-
-  function previousPage() {
-    changePage(-1);
-  }
-
-  function nextPage() {
-    changePage(1);
-  }
-
-  const navigate = useNavigate();
-
-  const fetchInvoice = React.useCallback(async () => {
-    try {
-      if (!invoiceId) {
-        return;
-      }
-      setServerState("LOADING");
-      const response = await InvoiceAdaptor.fetchInvoice(invoiceId);
-      if (!response.data.success) {
-        Notification.error({
-          message: "Something went, could not connect",
-        });
-        setServerState("ERROR");
-      } else {
-        setInvoiceMeta(response.data.data.data);
-        setInvoiceLink(response.data.data.link);
-        setServerState("SUCCESS");
-      }
-    } catch (error) {
-      setServerState("ERROR");
-      Notification.error({
-        message: "Something went wrong please try again later",
-      });
-    }
-  }, [invoiceId]);
-
-  const handleDeleteInvoice = async () => {
-    try {
-      const response = await InvoiceAdaptor.deleteInvoice(invoiceId || "");
-      if (!response.data.success) {
-        Notification.error({
-          message: response.data.message,
-        });
-      } else {
-        Notification.success({
-          message: "Invoice deleted successfully",
-        });
-        navigate("/invoices");
-      }
-    } catch (error) {
-      console.log(error);
-      Notification.error({
-        message: "Something went wrong please try again later",
-      });
-    }
-  };
+  const { invoiceId } = useParams();
+  const [data, setData] = React.useState<Invoice>()
 
   const columns: ColumnsType<DataType> = [
     {
-      title: "Item",
+      title: "Description",
       dataIndex: "item",
       key: "item",
-      render: (_, record) => <span>{record.item}</span>,
     },
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (_, record) => <span>${record.price}</span>,
+      render: (_, record) => <span>{record.price}</span>,
     },
     {
-      title: "Quantity",
+      title: "qty",
       dataIndex: "quantity",
       key: "quantity",
     },
     {
       title: "Amount",
       key: "amount",
-      render: (_, record) => (
-        <span>${Number(record.quantity) * record.price}</span>
-      ),
+      render: (_, record) => <span>{record.price * record.quantity}</span>,
     },
   ];
 
+  const fetchInvoice = async () => {
+    try {
+      const response = await InvoiceNetworking.fetchInvoice(invoiceId || '');
+      if (response.data.success) {
+        setData(response.data.data.data);
+      } else {
+        Notification.error({
+          message: response.data.message
+        })
+      }
+    } catch (error) {
+      console.error(error);
+      Notification.error({
+        message: 'Failed to find invoice'
+      })
+    }
+  }
+
   React.useEffect(() => {
     fetchInvoice();
-  }, [fetchInvoice]);
+  },[])
 
   return (
-    <TemplateWrapper defaultIndex="2">
-      <motion.div
-        initial={{ x: 300, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        exit={{ x: 300, opacity: 0 }}
-        transition={{
-          type: "spring",
-          stiffness: 260,
-          damping: 20,
-        }}
-        className="invoice-detail-container"
-      >
-        <div className="invoice-details">
-          <a href="/invoices" className="back-link">
-            <LeftOutlined color="#000" /> Go BACK
-          </a>
-          {SERVER_STATES === "ERROR" && (
-            <div className="error">Error occurred</div>
-          )}
-          {SERVER_STATES === "LOADING" && (
-            <div className="loading">Loading ...</div>
-          )}
-          <div className="invoice-view">
-            {SERVER_STATES === "SUCCESS" && (
-              <>
-                <div className="invoice-header">
-                  <div className="status">
-                    <span className="status-text">Status</span>
-                    <InvoiceStatus status={invoiceMeta?.status || "DRAFT"} />
-                  </div>
-                  <div className="controls">
-                    <button className="edit" disabled>
-                      Edit
-                    </button>
-                    <button className="delete" onClick={handleDeleteInvoice}>
-                      Delete
-                    </button>
-                  </div>
-                </div>
-                <div className="invoice-pdf">
-                  <Document
-                    file={invoiceLink}
-                    onLoadError={(error) => console.log(error)}
-                  >
-                    <Page
-                      pageNumber={pageNumber}
-                      onGetAnnotationsError={console.error}
-                    />
-                  </Document>
-                </div>
-              </>
-            )}
+    <div className="invoice-view">
+      <div>
+        <div className="header">
+          <div className="title">
+            <span>Invoice</span>
+          </div>
+          <div className="logo-container">
+            <img
+              src={data?.logo ? data.logo : "https://avatars.githubusercontent.com/u/68122202?s=400&u=4abc9827a8ca8b9c19b06b9c5c7643c87da51e10&v=4"}
+              className="logo"
+            />
           </div>
         </div>
-      </motion.div>
-    </TemplateWrapper>
+        <div className="details-container">
+          <div className="details-from">
+            <div className="from">From</div>
+            <div className="name">{data?.from.name}</div>
+            <div className="email">{data?.from.email}</div>
+            <div className="phone-number">{data?.from.phoneNumber}</div>
+          </div>
+          <div className="details-for">
+            <div className="for">For</div>
+            <div className="name">{data?.to.name}</div>
+            <div className="email">{data?.to.email}</div>
+            <div className="phone-number">{data?.to.phoneNumber}</div>
+          </div>
+        </div>
+        <div className="invoice-meta">
+          <div className="number">Number: {data?.invoiceNumber}</div>
+          <div className="date">Date: {data?.invoiceDate}</div>
+        </div>
+        <div className="invoice-items">
+          <Table dataSource={data?.items} columns={columns} pagination={false} />
+        </div>
+        <div className="sub-table">
+          <div className="total">
+            Total: {data?.currency} {' '}
+            {data?.items.reduce((a, b) => {
+              return a + b.price * b.quantity;
+            }, 0)}
+          </div>
+        </div>
+        <div className="pay-now-link">
+          <a href={data?.paymentLink} className="pay-now-link">Pay Now!</a>
+        </div>
+        <div className="invoice-footer">
+          Copy right reserved for company @ payfona.com {new Date().getFullYear()}
+        </div>
+      </div>
+    </div>
   );
 }

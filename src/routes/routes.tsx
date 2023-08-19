@@ -9,7 +9,7 @@ import SignUp from "../views/Auth/SignUp";
 import Home from "../views/Home";
 import Profile from "../views/Profile";
 import Edit from "../views/Profile/Edit";
-import Invoice from "../views/Invoice";
+import Invoice from "../components/Invoice";
 import InvoiceDetail from "../views/Invoices/Invoice";
 import PayView from "../views/PayView";
 import Invoices from "../views/Invoices";
@@ -38,7 +38,7 @@ export default function AppRouter() {
           element={<PrivateRoutes component={Invoices} />}
         />
         <Route
-          path="/invoices/:invoiceId"
+          path="/invoice/:invoiceId"
           element={<PrivateRoutes component={InvoiceDetail} />}
         />
         <Route path="/invoice/create" element={<PrivateRoutes component={CreateInvoice} />} />
