@@ -13,8 +13,11 @@ import { Invoice as FetchInvoice } from "../../networking/invoice";
 import Template from "../Template";
 
 import "./Invoices.scss";
+import Checkbox from "antd/es/checkbox/Checkbox";
+import { TableRowSelection } from "antd/es/table/interface";
 
 type Invoices = {
+  id: number;
   status: "PENDING" | "PAID" | "DRAFT";
   total: number;
   invoiceNumber: string;
@@ -57,7 +60,6 @@ function getColorFromStatus(status: string): string {
   }
 }
 
-
 const columns: ColumnsType<DataType> = [
   {
     title: 'Invoice #',
@@ -98,15 +100,52 @@ const columns: ColumnsType<DataType> = [
         <LinkOutlined />
       </div>
     )
-  },
+  }
 ];
 
 export default function Invoice() {
   const navigate = useNavigate();
   const [data, setData] = React.useState<Invoices[]>([]);
+  const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
 
   const [page, setPage] = React.useState<number>(1);
   const [limit, setLimit] = React.useState<number>(10);
+
+  const handleSelect = (record: DataType, selected: boolean) => {
+    if (selected) {
+      setSelectedRowKeys((keys) => [...keys, record.invoiceId]);
+    } else {
+      setSelectedRowKeys((keys) => {
+        const index = keys.indexOf(record.invoiceId);
+        return [...keys.slice(0, index), ...keys.slice(index + 1)];
+      });
+    }
+  };
+
+  const toggleSelectAll = () => {
+    setSelectedRowKeys((keys) =>
+      keys.length === data.length ? [] : data.map((r) => r.invoiceId)
+    );
+  };
+
+  const headerCheckbox = (
+    <Checkbox
+      checked={selectedRowKeys.length === 0 ? false : true}
+      indeterminate={
+        selectedRowKeys.length > 0 && selectedRowKeys.length < data.length
+      }
+      onChange={toggleSelectAll}
+    />
+  );
+
+  const rowSelection: TableRowSelection<DataType> = {
+    selectedRowKeys,
+    type: "checkbox",
+    fixed: true,
+    onSelect: handleSelect,
+    columnTitle: headerCheckbox,
+    onSelectAll: toggleSelectAll
+  };
 
   const fetchInvoice = async () => {
     try {
@@ -156,7 +195,12 @@ export default function Invoice() {
             </div>
           </div>
         </div>
-        <Table columns={columns} dataSource={data} />
+        <Table 
+          rowSelection={rowSelection}
+          columns={columns}
+          rowKey={(record) => record.invoiceId}
+          dataSource={data} 
+          />
       </div>
     </Template>
   );
