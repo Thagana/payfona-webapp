@@ -6,7 +6,7 @@
   .home-header { 
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: space-between;
     .header-invoice {
       .header {
         color: rgb(12, 14, 22);
@@ -15,7 +15,6 @@
         font-size: 2rem;
         line-height: 1.125;
         letter-spacing: -1px;
-
       }
       .header-sub-text {
         transition: color 0.3s ease 0s;
@@ -29,6 +28,7 @@
       display: flex;
       flex-direction: row;
       align-items: center;
+      gap: 1rem;
       .create-invoice {
         .add-invoice {
           display: flex;
@@ -41,5 +41,26 @@
         }
       }
     }
+  }
+}
+
+.ant-drawer-content.invoice-drawer {
+  .invoice-details {
+    .row-item {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      justify-content: space-between;
+      margin: 2rem 0rem;
+      .refund {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+  .buttons-inline {
+    display: flex;
+    align-items: center;
   }
 }
