@@ -228,7 +228,7 @@ export default function Invoice() {
   }
 
   const downloadInvoice = () => {
-    
+
   }
 
   const statusFormatter = (date?: string, status?: 'PAID' | 'DRAFT' | 'PENDING', paidAt?: string) => {
@@ -283,7 +283,7 @@ export default function Invoice() {
           rowSelection={rowSelection}
           onRow={(record, rowIndex) => {
             return {
-              onClick: event => {
+              onClick: (event) => {
                 setIsOpenInvoiceDetails(!isOpenInvoiceDetails);
                 setSelectedInvoice(record);
               }
