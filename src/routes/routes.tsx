@@ -21,6 +21,7 @@ import CreateAccount from "../views/Accounts/CreateAccount";
 import ForgotPassword from "../views/Auth/ForgotPassword/ForgotPassword";
 import ChangePassword from "../views/Auth/Changepassword/ChangePassword";
 import Customer from "../views/Customers/Customers";
+import InvoiceRefund from "../views/Refund/InvoiceRefund";
 
 export default function AppRouter() {
   const location = useLocation();
@@ -42,16 +43,17 @@ export default function AppRouter() {
           element={<PrivateRoutes component={InvoiceDetail} />}
         />
         <Route path="/invoice/create" element={<PrivateRoutes component={CreateInvoice} />} />
-        <Route path='/customers' element={<PrivateRoutes component={Customer} />} />
         <Route path="/invoice/pay-now" element={<PayView />} />
         <Route path="/view_invoice" element={<Invoice />} />
+        <Route path="/invoice-url" element={<PrivateRoutes component={InvoicePDFViewer} />} />
+        <Route path="/invoice-refunds" element={<PrivateRoutes component={InvoiceRefund} />} />
+        <Route path='/customers' element={<PrivateRoutes component={Customer} />} />
         
         <Route path="/activate" element={<ActivateAccount />} />
         <Route path="/register" element={<SignUp />} />
         <Route path="/login" element={<SignIn />} />
         <Route path="/forgot-password-request" element={<ForgotPassword />} />
         <Route path="/change-password" element={<ChangePassword />} />
-        <Route path="/invoice-url" element={<PrivateRoutes component={InvoicePDFViewer} />} />
         <Route
           path="/profile"
           element={<PrivateRoutes component={Profile} />}

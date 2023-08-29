@@ -12,6 +12,7 @@ import {
   AccountBookOutlined,
   NotificationOutlined,
   UserOutlined,
+  RollbackOutlined
 } from "@ant-design/icons";
 
 import "./Template.scss";
@@ -100,6 +101,15 @@ export default function TemplateWrapper(props: Props): JSX.Element {
             }}
           >
             Invoice
+          </Menu.Item>
+          <Menu.Item
+            key="7"
+            icon={<RollbackOutlined />}
+            onClick={() => {
+              navigate("/invoice-refunds");
+            }}
+          >
+            Invoice Refunds
           </Menu.Item>
           <Menu.Item
             key="4"
