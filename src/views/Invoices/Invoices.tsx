@@ -3,6 +3,7 @@ import { Tag, Table, Divider, Button } from 'antd/es';
 import { useNavigate } from "react-router-dom";
 import Notification from "antd/es/notification";
 import { format } from "date-fns";
+import { ExportToCsv } from 'export-to-csv';
 
 import Drawer from 'antd/es/drawer';
 import Checkbox from "antd/es/checkbox/Checkbox";
@@ -177,7 +178,7 @@ export default function Invoice() {
       });
     }
   };
-  
+
   const onClose = () => {
     setIsOpenInvoiceDetails(!isOpenInvoiceDetails);
   }
@@ -186,18 +187,51 @@ export default function Invoice() {
     navigate("/invoice/create");
   };
 
-  const handleViewInvoice = (id: string | undefined)  => {
+  const handleViewInvoice = (id: string | undefined) => {
     if (id) {
-      navigate(`/invoice/${id}`);  
+      navigate(`/invoice/${id}`);
     }
   }
 
   const handleExport = () => {
-    // TODO: Export invoices
+    const options = {
+      fieldSeparator: ',',
+      quoteStrings: '"',
+      decimalSeparator: '.',
+      showLabels: true,
+      title: `Invoice_Report`,
+      showTitle: true,
+      useTextFile: false,
+      useBom: true,
+      useKeysAsHeaders: true,
+      filename: `Invoice_Report-${new Date().getTime()}`
+    };
+    const csvExporter = new ExportToCsv(options);
+    csvExporter.generateCsv(data);
   }
 
+  const exportSingleInvoice = (payload: any) => {
+    const options = {
+      fieldSeparator: ',',
+      quoteStrings: '"',
+      decimalSeparator: '.',
+      title: `Invoice_Report`,
+      showLabels: true,
+      showTitle: true,
+      useTextFile: false,
+      useBom: true,
+      useKeysAsHeaders: true,
+      filename: `Invoice_Report-${new Date().getTime()}`
+    };
+    const csvExporter = new ExportToCsv(options);
+    csvExporter.generateCsv([payload]);
+  }
 
-  const statusFormatter = (date?: string, status?:  'PAID' | 'DRAFT' | 'PENDING', paidAt?: string) => {
+  const downloadInvoice = () => {
+    
+  }
+
+  const statusFormatter = (date?: string, status?: 'PAID' | 'DRAFT' | 'PENDING', paidAt?: string) => {
     switch (status) {
       case 'PAID':
         return <Tag color="green">PAID on {format(new Date(paidAt || '2008/06/06'), 'y/M/d')}</Tag>
@@ -259,65 +293,67 @@ export default function Invoice() {
           rowKey={(record) => record.invoiceId}
           dataSource={data}
         />
-        <Drawer 
-          title={`Invoice ${selectedRecord?.invoiceNumber}`} 
-          placement="right" 
-          onClose={onClose} 
+        <Drawer
+          title={`Invoice ${selectedRecord?.invoiceNumber}`}
+          placement="right"
+          onClose={onClose}
           open={isOpenInvoiceDetails} className="invoice-drawer">
           <div className="invoice-details">
-              <div className="row-item">
-                <span>
-                  <UserOutlined />
-                </span>
-                <span>
-                  {selectedRecord?.name}
-                </span>
-              </div>
-              <div className="row-item">
-                <span>Amount Due</span>
-                <span>{selectedRecord?.currency} {selectedRecord?.total}</span>
-              </div>
-              <div className="row-item">
-                <span>Invoice Created</span>
-                <span>{format(new Date(selectedRecord?.createdAt || '2008/06/06'), 'y/M/d')}</span>
-              </div>
-              <div className="row-item">
-                <span>Invoice Due</span>
-                <span>{format(new Date(selectedRecord?.date || '2008/06/06'), 'y/M/d')}</span>
-              </div>
-              <div className="row-item">
-                <span>Status</span>
-                <span>
-                  {statusFormatter(selectedRecord?.date, selectedRecord?.status, selectedRecord?.paidAt)}
-                </span>
-              </div>
-              <div className="row-item">
-                <span>Method</span>
-                <span>
+            <div className="row-item">
+              <span>
+                <UserOutlined />
+              </span>
+              <span>
+                {selectedRecord?.name}
+              </span>
+            </div>
+            <div className="row-item">
+              <span>Amount Due</span>
+              <span>{selectedRecord?.currency} {selectedRecord?.total}</span>
+            </div>
+            <div className="row-item">
+              <span>Invoice Created</span>
+              <span>{format(new Date(selectedRecord?.createdAt || '2008/06/06'), 'y/M/d')}</span>
+            </div>
+            <div className="row-item">
+              <span>Invoice Due</span>
+              <span>{format(new Date(selectedRecord?.date || '2008/06/06'), 'y/M/d')}</span>
+            </div>
+            <div className="row-item">
+              <span>Status</span>
+              <span>
+                {statusFormatter(selectedRecord?.date, selectedRecord?.status, selectedRecord?.paidAt)}
+              </span>
+            </div>
+            <div className="row-item">
+              <span>Method</span>
+              <span>
                 {selectedRecord?.banking.channel} {selectedRecord?.banking.brand} ********{selectedRecord?.banking.last4}
-                </span>
-              </div>
-              <Divider />
-              <div className="row-item">
-                <span>
-                  <Button>
-                    <RollbackOutlined />
-                  </Button>
-                </span>
-                <span className="buttons-inline">
-                  <Button onClick={() => {
-                    handleViewInvoice(selectedRecord?.invoiceId)
-                  }}>
-                    <EyeOutlined />
-                  </Button>
-                  <Button>
-                    <DownloadOutlined />
-                  </Button>
-                </span>
-              </div>
-              <Divider />
+              </span>
+            </div>
+            <Divider />
+            <div className="row-item">
+              <span>
+                <Button>
+                  <RollbackOutlined />
+                </Button>
+              </span>
+              <span className="buttons-inline">
+                <Button onClick={() => {
+                  handleViewInvoice(selectedRecord?.invoiceId)
+                }}>
+                  <EyeOutlined />
+                </Button>
+                <Button onClick={() => {
+                  exportSingleInvoice(selectedRecord);
+                }}>
+                  <DownloadOutlined />
+                </Button>
+              </span>
+            </div>
+            <Divider />
           </div>
-      </Drawer>
+        </Drawer>
       </div>
     </Template>
   );
