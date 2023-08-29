@@ -210,25 +210,8 @@ export default function Invoice() {
     csvExporter.generateCsv(data);
   }
 
-  const exportSingleInvoice = (payload: any) => {
-    const options = {
-      fieldSeparator: ',',
-      quoteStrings: '"',
-      decimalSeparator: '.',
-      title: `Invoice_Report`,
-      showLabels: true,
-      showTitle: true,
-      useTextFile: false,
-      useBom: true,
-      useKeysAsHeaders: true,
-      filename: `Invoice_Report-${new Date().getTime()}`
-    };
-    const csvExporter = new ExportToCsv(options);
-    csvExporter.generateCsv([payload]);
-  }
-
   const downloadInvoice = () => {
-
+    // download invoice
   }
 
   const statusFormatter = (date?: string, status?: 'PAID' | 'DRAFT' | 'PENDING', paidAt?: string) => {
@@ -345,7 +328,7 @@ export default function Invoice() {
                   <EyeOutlined />
                 </Button>
                 <Button onClick={() => {
-                  exportSingleInvoice(selectedRecord);
+                  downloadInvoice();
                 }}>
                   <DownloadOutlined />
                 </Button>
