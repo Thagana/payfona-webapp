@@ -17,7 +17,6 @@ import { Invoice as FetchInvoice } from "../../networking/invoice";
 
 import Template from "../Template";
 
-
 import "./Invoices.scss";
 
 
