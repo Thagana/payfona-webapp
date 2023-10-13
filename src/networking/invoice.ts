@@ -1,3 +1,4 @@
+import { InvoicePayload } from '../interface/InvoicePayload';
 import Adaptor from './adaptor';
 
 export class Invoice {
@@ -16,10 +17,10 @@ export class Invoice {
     static fetchInvoiceInvoiceData() {
         return Adaptor.get('/invoice/dashboard');
     }
-    static createInvoice(data: FormData) {
+    static createInvoice(data: InvoicePayload) {
         return Adaptor.post('/invoice/create_invoice', data, {
             headers: {
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'application/json'
             }
         });
     }

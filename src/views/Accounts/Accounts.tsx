@@ -47,7 +47,6 @@ export default function Accounts() {
 
   const handleDelete = async (id: number) => {
     try {
-      console.log(id);
       const response = await AccountNetwork.deleteAccount(token, id);
       if (!response.data.success) {
         Notification.error({
@@ -75,7 +74,6 @@ export default function Accounts() {
           message: response.data.message
         })
       } else {
-        console.log(response.data.data);
         updateAccount(response.data.data);
         Notification.success({
           message: "Successfully made an account default"
@@ -136,7 +134,7 @@ export default function Accounts() {
   ];
 
   return (
-    <TemplateWrapper defaultIndex="4">
+    <TemplateWrapper defaultIndex="5">
       <div className="accounts-container">
         {accounts.length === 0 && (
           <div className="empty-account">
