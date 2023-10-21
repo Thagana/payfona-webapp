@@ -9,19 +9,18 @@ import SignUp from "../views/Auth/SignUp";
 import Home from "../views/Home";
 import Profile from "../views/Profile";
 import Edit from "../views/Profile/Edit";
-import Invoice from "../components/Invoice";
 import InvoiceDetail from "../views/Invoices/Invoice";
 import PayView from "../views/PayView";
 import Invoices from "../views/Invoices";
 import NotFound from "../views/NotFound";
 import CreateInvoice from "../views/Invoices/Create";
-import InvoicePDFViewer from "../views/InvoicePDFViewer";
 import Accounts from "../views/Accounts";
 import CreateAccount from "../views/Accounts/CreateAccount";
 import ForgotPassword from "../views/Auth/ForgotPassword/ForgotPassword";
 import ChangePassword from "../views/Auth/Changepassword/ChangePassword";
 import Customer from "../views/Customers/Customers";
 import InvoiceRefund from "../views/Refund/InvoiceRefund";
+import ViewInvoice from "../views/ViewInvoice";
 
 export default function AppRouter() {
   const location = useLocation();
@@ -42,10 +41,9 @@ export default function AppRouter() {
           path="/invoice/:invoiceId"
           element={<PrivateRoutes component={InvoiceDetail} />}
         />
+        <Route path="/view_invoice/:invoiceId" element={<ViewInvoice />} />
         <Route path="/invoice/create" element={<PrivateRoutes component={CreateInvoice} />} />
         <Route path="/invoice/pay-now" element={<PayView />} />
-        <Route path="/view_invoice" element={<Invoice />} />
-        <Route path="/invoice-url" element={<PrivateRoutes component={InvoicePDFViewer} />} />
         <Route path="/invoice-refunds" element={<PrivateRoutes component={InvoiceRefund} />} />
         <Route path='/customers' element={<PrivateRoutes component={Customer} />} />
         

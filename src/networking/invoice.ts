@@ -1,8 +1,9 @@
+import { InvoicePayload } from '../interface/InvoicePayload';
 import Adaptor from './adaptor';
 
 export class Invoice {
     static fetchInvoice(param: string) {
-        return Adaptor.get(`/invoice/${param}`)
+        return Adaptor.get(`/invoice/get_unauthenticated/${param}`)
     }
     static verifyInvoice(reference: string, amount: number) {
         return Adaptor.post('/invoice/verify', {
@@ -16,10 +17,10 @@ export class Invoice {
     static fetchInvoiceInvoiceData() {
         return Adaptor.get('/invoice/dashboard');
     }
-    static createInvoice(data: FormData) {
+    static createInvoice(data: InvoicePayload) {
         return Adaptor.post('/invoice/create_invoice', data, {
             headers: {
-                'Content-Type': 'multipart/form-data'
+                'Content-Type': 'application/json'
             }
         });
     }

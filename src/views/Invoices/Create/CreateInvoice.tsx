@@ -1,13 +1,13 @@
 import * as React from "react";
-import TemplateWrapper from "../../Template";
-import Upload from "antd/es/upload";
-import ImgCrop from "antd-img-crop";
-import Notification from "antd/es/notification";
-import { DeleteOutlined } from "@ant-design/icons";
-import Button from "../../../components/common/Button";
 import { useNavigate } from "react-router-dom";
-import { Spin } from "antd";
+import Select from 'react-select';
+import Notification from "antd/es/notification";
+import Spin from 'antd/es/spin';
+import { DeleteOutlined } from "@ant-design/icons";
 import Modal from "antd/es/modal/Modal";
+
+import Button from "../../../components/common/Button";
+import TemplateWrapper from "../../Template";
 
 import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
 import { formatInvoiceDate } from "../../../helper/formatInvoiceDate";
@@ -38,6 +38,8 @@ export default function CreateInvoice() {
   const [isAllValid, setAllValid] = React.useState(false);
   const [serverStates, setServerStates] = React.useState<STATES>("IDLE");
 
+
+  const [logo, setLogo] = React.useState<string>('');
 
   // from
   const [fromName, setFromName] = React.useState("");
@@ -86,9 +88,7 @@ export default function CreateInvoice() {
     setItems(newFileList);
   };
 
-  const onChange: UploadProps["onChange"] = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
-  };
+  const imageOptions = [{ label: 'Default Logo', value: 'https://avatars.githubusercontent.com/u/68122202?s=400&u=4abc9827a8ca8b9c19b06b9c5c7643c87da51e10&v=4' }]
 
   const calculateTotal = (
     _amount: { price: number; amount: number; quantity: number }[]
@@ -132,19 +132,6 @@ export default function CreateInvoice() {
 
   const onSubmit = async () => {
     try {
-
-      let data = new FormData() as FormData;
-
-      
-      // Validate if the image has been set
-      if (fileList.length === 0) {
-        Notification.error({
-          message: "Please select an image",
-          description: "You need to select an image",
-        })
-        return;
-      }
-
       setServerStates("LOADING");
 
       const from = {
@@ -159,12 +146,16 @@ export default function CreateInvoice() {
         phoneNumber: toPhoneNumber,
       };
 
-      data.append("file", fileList[0].originFileObj as RcFile);
-      data.append("from", JSON.stringify(from));
-      data.append("to", JSON.stringify(to));
-      data.append("currency", "ZAR");
-      data.append("items", JSON.stringify(items));
-      data.append("invoiceDate", date);
+      const data = {
+        from,
+        to,
+        items,
+        logo,
+        total: total * 100,
+        invoiceDate: new Date().toDateString(),
+        companyNote: "",
+        currency: "ZAR"
+      }
 
       const response = await Invoice.createInvoice(data);
       if (!response.data.success) {
@@ -176,7 +167,7 @@ export default function CreateInvoice() {
         Notification.success({
           message: "Successfully create an invoice",
         });
-        navigate(`/invoices/${response.data.data}`);
+        navigate(`/invoice/${response.data.data}`);
       }
     } catch (error) {
       console.log(error);
@@ -198,17 +189,16 @@ export default function CreateInvoice() {
                   <span>Invoice</span>
                 </div>
                 <div className="logo-container">
-                  <ImgCrop rotate>
-                    <Upload
-                      listType="picture-card"
-                      fileList={fileList}
-                      onChange={onChange}
-                      onPreview={onPreview}
-                      beforeUpload={() => false}
-                    >
-                      {fileList.length < 1 && "+ Upload"}
-                    </Upload>
-                  </ImgCrop>
+                  <Select
+                    className="basic-single"
+                    classNamePrefix="select"
+                    defaultValue={imageOptions[0]}
+                    isDisabled={false}
+                    isSearchable={true}
+                    name="logo"
+                    options={imageOptions}
+                    onChange={((value) => setLogo(value?.value || ''))}
+                  />
                 </div>
               </div>
               <div className="details-container">

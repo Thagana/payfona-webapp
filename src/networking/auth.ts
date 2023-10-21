@@ -30,14 +30,16 @@ export class Auth {
     email: string;
     password: string;
     phoneNumber: string;
+    businessName: string;
   }) {
-    const { firstName, lastName, email, password, phoneNumber } = data;
+    const { firstName, lastName, email, password, phoneNumber, businessName } = data;
     return Axios.post("/auth/register", {
       firstName,
       lastName,
       email,
       password,
-      phoneNumber
+      phoneNumber,
+      businessName
     });
   }
   static updateImage(uri: string, name: string, token: string) {
