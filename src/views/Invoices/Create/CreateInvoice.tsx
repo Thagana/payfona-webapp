@@ -105,9 +105,19 @@ export default function CreateInvoice() {
   ) => {
     const { name, value } = e.target;
     const temp = [...items];
-    temp[index][name] = value;
-    setItems([...temp]);
-    calculateTotal(temp);
+    
+    // Type guard to ensure name is a valid key of InvoiceItem
+    if (name === 'item' || name === 'price' || name === 'quantity' || name === 'amount') {
+      // Handle numeric values
+      const newValue = name === 'item' ? value : Number(value);
+      temp[index] = {
+        ...temp[index],
+        [name]: newValue
+      };
+      
+      setItems([...temp]);
+      calculateTotal(temp);
+    }
   };
 
   const handleAppendRows = () => {
