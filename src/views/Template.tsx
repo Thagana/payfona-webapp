@@ -34,7 +34,6 @@ export default function TemplateWrapper(props: Props): JSX.Element {
   const { children, defaultIndex } = props;
   const [collapsed, setCollapsed] = React.useState(false);
   const [isOnline, setOnline] = React.useState(true);
-  const profile = useStoreState<Model>((state) => state.profile);
 
   const navigate = useNavigate();
 
