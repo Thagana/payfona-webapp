@@ -39,7 +39,17 @@ interface Invoice {
   currency: "ZAR" | "USD"
 }
 
-export default function Invoice() {
+type Props = {
+  status: "PENDING" | "PAID" | "DRAFT"
+  name: string
+  total: number
+  invoiceNumber: string
+  email: string
+  date: string
+  invoiceId: string
+}
+
+export default function Invoice(props: Props) {
   const search = queryString.parse(useLocation().search) as unknown as {
     payload: string;
   };

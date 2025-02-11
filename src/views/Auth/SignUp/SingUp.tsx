@@ -16,7 +16,11 @@ type FirstInputs = {
 
 export default function SingUp() {
   const [onNext, setOnNext] = React.useState(false);
-  const [firstDate, setFirstData] = React.useState<FirstInputs>()
+  const [firstDate, setFirstData] = React.useState<FirstInputs>({
+    firstName: '',
+    lastName: '',
+    email: ''
+  })
 
   const handleNavigateNext = (data: FirstInputs) => {
     setFirstData(data);
