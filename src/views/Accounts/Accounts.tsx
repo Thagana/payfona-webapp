@@ -12,7 +12,6 @@ import { Account } from "../../store/model";
 
 import AccountNetwork from '../../networking/accounts';
 
-
 import "./Accounts.scss";
 
 interface DataType {
@@ -24,13 +23,14 @@ interface DataType {
   isDefault: boolean;
 }
 
-
 export default function Accounts() {
   const accounts = useStoreState<Model>((state) => state.accounts);
-
+  const token = useStoreState<Model>(state => state.token);
+  const updateAccount = useStoreActions<Model>(action => action.updateAccount);
   const navigate = useNavigate();
 
   const data = accounts.map((item: Account) => ({
+    key: item.id.toString(),
     id: item.id,
     name: item.name,
     country: item.country,
@@ -39,60 +39,81 @@ export default function Accounts() {
     isDefault: item.is_default,
   }));
 
-  const token = useStoreState<Model>(state => state.token);
-  const updateAccount = useStoreActions<Model>(action => action.updateAccount);
-  const handleAddAccount = () => {
+  const handleAddAccount = React.useCallback(() => {
     navigate("/accounts/create");
-  };
+  }, [navigate]);
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = React.useCallback(async (id: number) => {
     try {
       const response = await AccountNetwork.deleteAccount(token, id);
       if (!response.data.success) {
         Notification.error({
           message: response.data.message
-        })
+        });
       } else {
         updateAccount(response.data.data);
         Notification.success({
           message: "Successfully deleted an account"
-        })
+        });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       Notification.error({
         message: "Something went wrong please try again later"
-      })
+      });
     }
-  }
+  }, [token, updateAccount]);
 
-  const handleMakeDefault = async (id: number) => {
+  const handleMakeDefault = React.useCallback(async (id: number) => {
     try {
       const response = await AccountNetwork.makeDefault(token, id);
       if (!response.data.success) {
         Notification.error({
           message: response.data.message
-        })
+        });
       } else {
         updateAccount(response.data.data);
         Notification.success({
           message: "Successfully made an account default"
-        })
+        });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       Notification.error({
         message: "Something went wrong please try again later"
-      })
+      });
     }
-  }
+  }, [token, updateAccount]);
+
+  const renderName = React.useCallback((text: string) => <a>{text}</a>, []);
+
+  const renderDefault = React.useCallback((_: any, record: DataType) => (
+    <div>{record.isDefault ? "Yes" : "No"}</div>
+  ), []);
+
+  const renderAction = React.useCallback((_: any, record: DataType) => (
+    <Space size="middle">
+      <Button
+        type="button"
+        state={record.isDefault ? "primary" : "secondary"}
+        onClick={() => {
+          if (record.isDefault) {
+            handleDelete(record.id);
+          } else {
+            handleMakeDefault(record.id);
+          }
+        }}>
+        {record.isDefault ? "Delete" : "Make default"}
+      </Button>
+    </Space>
+  ), [handleDelete, handleMakeDefault]);
 
   const columns: ColumnsType<DataType> = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render: (text) => <a>{text}</a>,
+      render: renderName,
     },
     {
       title: "Currency",
@@ -108,35 +129,19 @@ export default function Accounts() {
       title: "Default",
       key: "default",
       dataIndex: "default",
-      render: (_, record) => <div>{record.isDefault ? "Yes" : "No"}</div>,
+      render: renderDefault,
     },
     {
       title: "Action",
       key: "action",
-      render: (_, record) => (
-        <Space size="middle">
-          <Button
-            type="button"
-            state={record.isDefault ? "primary" : "secondary"}
-            onClick={() => {
-              if (record.isDefault) {
-                handleDelete(record.id);
-              } else {
-                handleMakeDefault(record.id);
-              }
-          }}>
-            {record.isDefault && "Delete"}
-            {!record.isDefault && "Make default"}
-          </Button>
-        </Space>
-      ),
+      render: renderAction,
     },
   ];
 
   return (
     <TemplateWrapper defaultIndex="5">
       <div className="accounts-container">
-        {accounts.length === 0 && (
+        {accounts.length === 0 ? (
           <div className="empty-account">
             <h3 className="header">Account</h3>
             <div>You have no Bank Account Linked please link an account</div>
@@ -150,8 +155,7 @@ export default function Accounts() {
               </Button>
             </div>
           </div>
-        )}
-        {accounts.length !== 0 && (
+        ) : (
           <>
             <div className="header">
               <div className="header-info">

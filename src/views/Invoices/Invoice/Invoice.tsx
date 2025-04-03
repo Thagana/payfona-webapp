@@ -2,11 +2,9 @@ import * as React from "react";
 import Table from "antd/es/table";
 import Notification from 'antd/es/notification';
 import type { ColumnsType } from "antd/es/table";
-
-import "./Invoice.scss";
-
-import { Invoice as InvoiceNetworking } from '../../../networking/invoice'
 import { useParams } from "react-router-dom";
+import "./Invoice.scss";
+import { Invoice as InvoiceNetworking } from '../../../networking/invoice';
 
 interface DataType {
   key: string;
@@ -29,37 +27,30 @@ interface Invoice {
   };
   invoiceNumber: string;
   invoiceDate: string;
-  paymentLink: string,
+  paymentLink: string;
   logo: string;
-  items: {
-    key: string;
-    description: string;
-    quantity: number;
-    price: number;
-    amount: number;
-  }[]
-  currency: "ZAR" | "USD"
+  items: DataType[];
+  currency: "ZAR" | "USD";
 }
 
 export default function Invoice() {
-
   const { invoiceId } = useParams();
-  const [data, setData] = React.useState<Invoice>()
+  const [data, setData] = React.useState<Invoice | null>(null);
 
-  const columns: ColumnsType<DataType> = [
+  const columns: ColumnsType<DataType> = React.useMemo(() => [
     {
       title: "Description",
-      dataIndex: "item",
-      key: "item",
+      dataIndex: "description",
+      key: "description",
     },
     {
       title: "Price",
       dataIndex: "price",
       key: "price",
-      render: (_, record) => <span>{record.price}</span>,
+      render: (price) => <span>{price}</span>,
     },
     {
-      title: "qty",
+      title: "Quantity",
       dataIndex: "quantity",
       key: "quantity",
     },
@@ -68,29 +59,33 @@ export default function Invoice() {
       key: "amount",
       render: (_, record) => <span>{record.price * record.quantity}</span>,
     },
-  ];
+  ], []);
 
-  const fetchInvoice = async () => {
+  const fetchInvoice = React.useCallback(async () => {
     try {
       const response = await InvoiceNetworking.fetchInvoice(invoiceId || '');
       if (response.data.success) {
         setData(response.data.data.data);
       } else {
         Notification.error({
-          message: response.data.message
-        })
+          message: response.data.message,
+        });
       }
     } catch (error) {
       console.error(error);
       Notification.error({
-        message: 'Failed to find invoice'
-      })
+        message: 'Failed to find invoice',
+      });
     }
-  }
+  }, [invoiceId]);
 
   React.useEffect(() => {
     fetchInvoice();
-  },[])
+  }, [fetchInvoice]);
+
+  const totalAmount = React.useMemo(() => {
+    return data?.items.reduce((total, item) => total + item.price * item.quantity, 0) || 0;
+  }, [data]);
 
   return (
     <div className="invoice-view">
@@ -101,8 +96,9 @@ export default function Invoice() {
           </div>
           <div className="logo-container">
             <img
-              src={data?.logo ? data.logo : "https://avatars.githubusercontent.com/u/68122202?s=400&u=4abc9827a8ca8b9c19b06b9c5c7643c87da51e10&v=4"}
+              src={data?.logo || "https://avatars.githubusercontent.com/u/68122202?s=400&u=4abc9827a8ca8b9c19b06b9c5c7643c87da51e10&v=4"}
               className="logo"
+              alt="Company Logo"
             />
           </div>
         </div>
@@ -125,21 +121,18 @@ export default function Invoice() {
           <div className="date">Date: {data?.invoiceDate}</div>
         </div>
         <div className="invoice-items">
-          <Table dataSource={data?.items} columns={columns} pagination={false} />
+          <Table dataSource={data?.items} columns={columns} pagination={false} rowKey="key" />
         </div>
         <div className="sub-table">
           <div className="total">
-            Total: {data?.currency} {' '}
-            {data?.items.reduce((a, b) => {
-              return a + b.price * b.quantity;
-            }, 0)}
+            Total: {data?.currency} {totalAmount}
           </div>
         </div>
         <div className="pay-now-link">
           <a href={data?.paymentLink} className="pay-now-link">Pay Now!</a>
         </div>
         <div className="invoice-footer">
-          Copy right reserved for company @ payfona.com {new Date().getFullYear()}
+          Copyright reserved for company @ payfona.com {new Date().getFullYear()}
         </div>
       </div>
     </div>

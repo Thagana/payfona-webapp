@@ -5,7 +5,7 @@ export interface InvoicePayload {
     logo: string
     total: number
     invoiceDate: string
-    companyNote: string
+    companyNote?: string
     currency: string
   }
   
@@ -25,6 +25,5 @@ export interface InvoicePayload {
     item: string
     price: number
     quantity: number
-    amount: number
   }
   

@@ -1,419 +1,321 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import Select from 'react-select';
-import Notification from "antd/es/notification";
-import Spin from 'antd/es/spin';
+import Select from "react-select";
+import { notification, Spin, Modal } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
-import Modal from "antd/es/modal/Modal";
-
 import Button from "../../../components/common/Button";
 import TemplateWrapper from "../../Template";
-
-import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
-import { formatInvoiceDate } from "../../../helper/formatInvoiceDate";
-
-import "./CreateInvoice.scss";
 import { Invoice } from "../../../networking/invoice";
 import { useStoreState } from "easy-peasy";
 import { Model } from "../../../store/model";
+import "./CreateInvoice.scss";
+import { InvoicePayload } from "../../../interface/InvoicePayload";
 
 type STATES = "LOADING" | "SUCCESS" | "ERROR" | "IDLE";
 
-type Inputs = {
-  // From Details
+type InvoiceFormState = {
   fromName: string;
   fromEmail: string;
   fromPhoneNumber: string;
-  // For Details
-  forName: string;
-  forEmail: string;
-  forPhoneNumber: string;
-  date: string;
-  image: RcFile;
+  toName: string;
+  toEmail: string;
+  toPhoneNumber: string;
+  items: { item: string; price: number; quantity: number }[];
+  logo: string;
+  total: number;
+  serverState: STATES;
+  errors: Record<string, boolean>;
 };
 
+const initialState: InvoiceFormState = {
+  fromName: "",
+  fromEmail: "",
+  fromPhoneNumber: "",
+  toName: "",
+  toEmail: "",
+  toPhoneNumber: "",
+  items: [{ item: "", price: 0, quantity: 0 }],
+  logo: "",
+  total: 0,
+  serverState: "IDLE",
+  errors: {},
+};
+
+interface Action {
+  type: "SET_FIELD" | "SET_ITEMS" | "SET_ERROR" | "SET_STATE" | "RESET_FORM";
+  field?: keyof InvoiceFormState;
+  value?: any;
+  items?: InvoiceFormState["items"];
+}
+
+function reducer(state: InvoiceFormState, action: Action): InvoiceFormState {
+  switch (action.type) {
+    case "SET_FIELD":
+      if (action.field) {
+        return { ...state, [action.field]: action.value };
+      }
+      return state;
+    case "SET_ITEMS":
+      return {
+        ...state,
+        items: action.items || [],
+        total: calculateTotal(action.items || []),
+      };
+    case "SET_ERROR":
+      if (action.field) {
+        return {
+          ...state,
+          errors: { ...state.errors, [action.field]: action.value },
+        };
+      }
+      return state;
+    case "SET_STATE":
+      return { ...state, serverState: action.value as STATES };
+    case "RESET_FORM":
+      return initialState;
+    default:
+      return state;
+  }
+}
+
+const calculateTotal = (items: { price: number; quantity: number }[]) =>
+  items.reduce((acc, curr) => acc + curr.price * curr.quantity, 0);
+
 export default function CreateInvoice() {
-  const [fileList, setFileList] = React.useState<UploadFile[]>([]);
-  const [total, setTotal] = React.useState(0);
-  const [isAllValid, setAllValid] = React.useState(false);
-  const [serverStates, setServerStates] = React.useState<STATES>("IDLE");
-
-
-  const [logo, setLogo] = React.useState<string>('');
-
-  // from
-  const [fromName, setFromName] = React.useState("");
-  const [fromNameTouches, setFromNameTouched] = React.useState(false);
-  const [fromNameError, setFromNameError] = React.useState(false);
-  
-  const [fromEmail, setFromEmail] = React.useState("");
-  const [fromEmailTouched, setFromEmailTouched] = React.useState(false);
-  const [fromEmailError, setFromEmailError] = React.useState(false);
-
-
-  const [fromPhoneNumber, setFromPhoneNumber] = React.useState("");
-  const [fromPhoneNumberTouched, setFromPhoneNumberTouched] = React.useState(false);
-  const [fromPhoneNumberError, setFromPhoneNumberError] = React.useState(false);
-
-  // to
-  const [toName, setToName] = React.useState("");
-
-  const [toEmail, setToEmail] = React.useState("");
-  
-  const [toPhoneNumber, setToPhoneNumber] = React.useState("");
-
-  const [errors, setErrors] = React.useState<{
-    fromName: boolean;
-    fromEmail: boolean;
-    fromPhoneNumber: boolean;
-    forName: boolean;
-    forEmail: boolean;
-    forPhoneNumber: boolean;
-  }>();
-
-  const [items, setItems] = React.useState([
-    { item: "", price: 0, quantity: 0, amount: 0 },
-  ]);
-
-  const [date] = React.useState(() => {
-    return new Date().toISOString();
-  });
-
+  const [state, dispatch] = React.useReducer(reducer, initialState);
   const navigate = useNavigate();
-  
   const accounts = useStoreState<Model>((state) => state.accounts);
 
-  const handleRemoveRow = (index: number) => {
-    const newFileList = items.filter((item, i) => i !== index);
-    setItems(newFileList);
+  const validateField = (name: keyof InvoiceFormState, value: string) => {
+    let isValid = true;
+    if (!value) isValid = false;
+    if (name?.includes("Email") && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))
+      isValid = false;
+    if (name?.includes("PhoneNumber") && !/^\d+$/.test(value)) isValid = false;
+    dispatch({ type: "SET_ERROR", field: name, value: !isValid });
   };
 
-  const imageOptions = [{ label: 'Default Logo', value: 'https://avatars.githubusercontent.com/u/68122202?s=400&u=4abc9827a8ca8b9c19b06b9c5c7643c87da51e10&v=4' }]
-
-  const calculateTotal = (
-    _amount: { price: number; amount: number; quantity: number }[]
-  ) => {
-    const final = _amount.reduce((acc, curr) => {
-      return parseFloat((acc + curr.price * curr.quantity).toFixed(2));
-    }, 0);
-    setTotal(final);
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number
+  const handleFieldChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    const temp = [...items];
-    
-    // Type guard to ensure name is a valid key of InvoiceItem
-    if (name === 'item' || name === 'price' || name === 'quantity' || name === 'amount') {
-      // Handle numeric values
-      const newValue = name === 'item' ? value : Number(value);
-      temp[index] = {
-        ...temp[index],
-        [name]: newValue
-      };
-      
-      setItems([...temp]);
-      calculateTotal(temp);
-    }
+    // @ts-ignore
+    dispatch({ type: "SET_FIELD", field: name, value });
+    // @ts-ignore
+    validateField(name, value);
   };
 
-  const handleAppendRows = () => {
-    const newValue = { item: "", price: 0, quantity: 0, amount: 0 };
-    setItems([...items, newValue]);
+  const handleItemChange = (
+    index: number,
+    field: "item" | "price" | "quantity",
+    value: string
+  ) => {
+    const updatedItems = [...state.items];
+    const newItem = { ...updatedItems[index], [field]: value };
+    updatedItems[index] = {
+      item: newItem.item,
+      price: isNaN(Number(newItem.price)) ? 0 : Number(newItem.price),
+      quantity: isNaN(Number(newItem.quantity)) ? 0 : Number(newItem.quantity),
+    };
+    dispatch({ type: "SET_ITEMS", items: updatedItems });
   };
 
-  const onPreview = async (file: UploadFile) => {
-    let src = file.url as string;
-    if (!src) {
-      src = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj as RcFile);
-        reader.onload = () => resolve(reader.result as string);
-      });
-    }
-    const image = new Image();
-    image.src = src;
-    const imgWindow = window.open(src);
-    imgWindow?.document.write(image.outerHTML);
+  const addRow = () =>
+    dispatch({
+      type: "SET_ITEMS",
+      items: [...state.items, { item: "", price: 0, quantity: 0 }],
+    });
+
+  const removeRow = (index: number) => {
+    const filteredItems = state.items.filter((_, i) => i !== index);
+    dispatch({ type: "SET_ITEMS", items: filteredItems });
   };
 
   const onSubmit = async () => {
+    dispatch({ type: "SET_STATE", value: "LOADING" });
+
+    const invoiceData: InvoicePayload = {
+      from: {
+        name: state.fromName,
+        email: state.fromEmail,
+        phoneNumber: state.fromPhoneNumber,
+      },
+      to: {
+        name: state.toName,
+        email: state.toEmail,
+        phoneNumber: state.toPhoneNumber,
+      },
+      items: state.items.map((item) => ({
+        item: item.item,
+        price: Number(item.price),
+        quantity: Number(item.quantity),
+      })),
+      logo: state.logo,
+      total: state.total * 100,
+      invoiceDate: new Date().toISOString(),
+      currency: "ZAR",
+      companyNote: "",
+    };
+
     try {
-      setServerStates("LOADING");
-
-      const from = {
-        name: fromName,
-        email: fromEmail,
-        phoneNumber: fromPhoneNumber,
-      };
-
-      const to = {
-        name: toName,
-        email: toEmail,
-        phoneNumber: toPhoneNumber,
-      };
-
-      const data = {
-        from,
-        to,
-        items,
-        logo,
-        total: total * 100,
-        invoiceDate: new Date().toDateString(),
-        companyNote: "",
-        currency: "ZAR"
-      }
-
-      const response = await Invoice.createInvoice(data);
-      if (!response.data.success) {
-        Notification.error({
-          message: response.data.message,
-        });
-        setServerStates("IDLE");
-      } else {
-        Notification.success({
-          message: "Successfully create an invoice",
-        });
+      const response = await Invoice.createInvoice(invoiceData);
+      if (response?.data?.success) {
+        notification.success({ message: "Invoice created successfully!" });
+        dispatch({ type: "RESET_FORM" }); // Reset the form after successful submission
         navigate(`/invoice/${response.data.data}`);
+      } else {
+        throw new Error(response?.data?.message || "Failed to create invoice");
       }
-    } catch (error) {
-      console.log(error);
-      Notification.error({
-        message: "Something went wrong please try again later",
+    } catch (error: any) {
+      notification.error({
+        message: error.message || "Failed to create invoice",
       });
-      setServerStates("IDLE");
+      dispatch({ type: "SET_STATE", value: "IDLE" });
     }
   };
 
   return (
     <TemplateWrapper defaultIndex="2">
       <div className="wrapper">
-        {serverStates === "IDLE" && (
-          <form>
+        {state.serverState === "LOADING" ? (
+          <Spin size="large" className="loading" />
+        ) : (
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              onSubmit();
+            }}
+          >
             <div className="wrapper-invoice">
               <div className="header">
-                <div className="title">
-                  <span>Invoice</span>
-                </div>
-                <div className="logo-container">
-                  <Select
-                    className="basic-single"
-                    classNamePrefix="select"
-                    defaultValue={imageOptions[0]}
-                    isDisabled={false}
-                    isSearchable={true}
-                    name="logo"
-                    options={imageOptions}
-                    onChange={((value) => setLogo(value?.value || ''))}
-                  />
-                </div>
+                <span>Invoice</span>
+                <Select
+                  className="basic-single"
+                  defaultValue={{ label: "Default Logo", value: "" }}
+                  options={[{ label: "Default Logo", value: "" }]}
+                  onChange={(opt: { value: any }) =>
+                    dispatch({
+                      type: "SET_FIELD",
+                      field: "logo",
+                      value: opt?.value,
+                    })
+                  }
+                />
               </div>
               <div className="details-container">
-                <div className="details-from">
-                  <div className="from">From</div>
-                  <div className="name">
-                    <input
-                      className={`form-control  ${
-                        errors?.fromName && "in-valid"
-                      }`}
-                      type="text"
-                      name="fromName"
-                      value={fromName}
-                      onChange={(e) => setFromName(e.target.value)}
-                      placeholder="Name"
-                    />
+                {["from", "to"].map((prefix) => (
+                  <div key={prefix} className={`details-${prefix}`}>
+                    <div>{prefix === "from" ? "From" : "To"}</div>
+                    {["Name", "Email", "PhoneNumber"].map((field: string) => {
+                      const prefixName =
+                        `${prefix}${field}` as keyof InvoiceFormState;
+                      const name = prefixName; // Explicitly type name
+                      return (
+                        <input
+                          key={name}
+                          className={`form-control ${
+                            state.errors[name] ? "in-valid" : ""
+                          }`}
+                          type={field === "Email" ? "email" : "text"}
+                          placeholder={field}
+                          value={state[name] as any}
+                          onChange={handleFieldChange}
+                          name={name}
+                        />
+                      );
+                    })}
                   </div>
-                  <div className="email">
-                    <input
-                      type="email"
-                      className={`form-control  ${
-                        errors?.fromEmail && "in-valid"
-                      }`}
-                      name="fromEmail"
-                      value={fromEmail}
-                      onChange={(e) => setFromEmail(e.target.value)}
-                      placeholder="Email"
-                    />
-                  </div>
-                  <div className="phone-number">
-                    <input
-                      className={`form-control  ${
-                        errors?.fromPhoneNumber && "in-valid"
-                      }`}
-                      type="text"
-                      name="fromPhoneNumber"
-                      value={fromPhoneNumber}
-                      onChange={(e) => setFromPhoneNumber(e.target.value)}
-                      placeholder="Phone Number"
-                    />
-                  </div>
-                </div>
-                <div className="details-for">
-                  <div className="for">To</div>
-                  <div className="name">
-                    <input
-                      name="forName"
-                      className={`form-control  ${
-                        errors?.forName && "in-valid"
-                      }`}
-                      type="text"
-                      placeholder="Name"
-                      value={toName}
-                      onChange={(e) => setToName(e.target.value)}
-                    />
-                  </div>
-                  <div className="email">
-                    <input
-                      name="forEmail"
-                      className={`form-control  ${
-                        errors?.forEmail && "in-valid"
-                      }`}
-                      type="email"
-                      placeholder="Email"
-                      value={toEmail}
-                      onChange={(e) => setToEmail(e.target.value)}
-                    />
-                  </div>
-                  <div className="phone-number">
-                    <input
-                      name="forPhoneNumber"
-                      className={`form-control  is-${
-                        errors?.forPhoneNumber && "in-valid"
-                      }`}
-                      type="text"
-                      placeholder="Phone Number"
-                      value={toPhoneNumber}
-                      onChange={(e) => setToPhoneNumber(e.target.value)}
-                    />
-                  </div>
-                </div>
+                ))}
               </div>
-              <div className="invoice-meta">
-                <div className="number">Number: [Auto Generated]</div>
-                <div className="date">Date: {formatInvoiceDate(date)}</div>
-              </div>
+
               <div className="invoice-items">
-                <div className="table">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th scope="col">Item</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Amount</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {items.map((i, index) => {
-                        return (
-                          <tr key={index.toString()}>
-                            <td scope="row">
-                              <input
-                                name="item"
-                                placeholder="Item"
-                                className="form-control item"
-                                onChange={(e) => handleChange(e, index)}
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={i.price}
-                                placeholder="Price"
-                                name="price"
-                                className="form-control price"
-                                type="number"
-                                step="0.1"
-                                min={0}
-                                onChange={(e) => handleChange(e, index)}
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={i.quantity}
-                                name="quantity"
-                                type="number"
-                                min="1"
-                                className="form-control quantity"
-                                placeholder="Quantity"
-                                onChange={(e) => handleChange(e, index)}
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="number"
-                                className="form-control amount"
-                                placeholder="Amount"
-                                step="0.1"
-                                defaultValue={(i.quantity * i.price).toFixed(2)}
-                                value={(i.quantity * i.price).toFixed(2)}
-                                min={0}
-                                readOnly
-                              />
-                            </td>
-                            <td>
-                              {items.length > 1 && (
-                                <Button
-                                  type="button"
-                                  state="primary"
-                                  onClick={() => handleRemoveRow(index)}
-                                >
-                                  <DeleteOutlined
-                                    style={{ color: "#fff", fontSize: 25 }}
-                                  />
-                                </Button>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                  <div className="add-row">
-                    <button
-                      className="btn btn-primary"
-                      onClick={handleAppendRows}
-                    >
-                      + Row
-                    </button>
-                  </div>
-                </div>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Item</th>
+                      <th>Price</th>
+                      <th>Quantity</th>
+                      <th>Amount</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {state.items.map(
+                      (
+                        item: {
+                          item: string;
+                          price: number;
+                          quantity: number;
+                        },
+                        index: number
+                      ) => (
+                        <tr key={index}>
+                          {["item", "price", "quantity"].map(
+                            (field: any) => (
+                              <td key={field}>
+                                <input
+                                  className="form-control"
+                                  type={field === "item" ? "text" : "number"}
+                                  value={item[field as "item" | "price" | "quantity"]}
+                                  onChange={(e) =>
+                                    handleItemChange(
+                                      index,
+                                      field,
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </td>
+                            )
+                          )}
+                          <td>{(item.price * item.quantity).toFixed(2)}</td>
+                          <td>
+                            {state.items.length > 1 && (
+                              <Button
+                                onClick={() => removeRow(index)}
+                                type="button"
+                                state="primary"
+                              >
+                                <DeleteOutlined />
+                              </Button>
+                            )}
+                          </td>
+                        </tr>
+                      )
+                    )}
+                  </tbody>
+                </table>
+                <Button onClick={addRow} type="button" state="primary">
+                  + Add Row
+                </Button>
               </div>
-              <div className="sub-table">
-                <div className="total">Total: ZAR {total}</div>
-              </div>
-            </div>
-            <div className="create-invoice-button">
+
               <Button
                 onClick={onSubmit}
-                type="button"
+                type="submit"
                 state="primary"
-                size="medium"
               >
                 Send Invoice
               </Button>
             </div>
           </form>
         )}
-        {serverStates === "LOADING" && (
-          <div className="loading">
-            <Spin size="large" />
-          </div>
-        )}
       </div>
-      <Modal 
-          onCancel={() => {
-            navigate('/accounts/create');
-          }}
-          onOk={() => {
-            navigate('/accounts/create');
-          }}
-          open={accounts.length === 0 ? true: false}>
-          <div className="modal-content">
-            You have not yet linked your bank account to receive the invoice money.
-          </div>
+      <Modal
+        open={accounts.length === 0}
+        onOk={() => navigate("/accounts/create")}
+        footer={
+          <Button
+            key="submit"
+            type="button"
+            state="primary"
+            onClick={() => navigate("/accounts/create")}
+          >
+            Link Account
+          </Button>
+        }
+      >
+        Link a bank account to receive invoice payments.
       </Modal>
     </TemplateWrapper>
   );

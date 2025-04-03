@@ -1,17 +1,10 @@
 import * as React from "react";
-import { Tag, Table, Divider, Button } from 'antd/es';
+import { Tag, Table, Divider, Button, Drawer, Checkbox, notification } from 'antd/es';
 import { useNavigate } from "react-router-dom";
-import Notification from "antd/es/notification";
 import { format } from "date-fns";
 import { ExportToCsv } from 'export-to-csv';
-
-import Drawer from 'antd/es/drawer';
-import Checkbox from "antd/es/checkbox/Checkbox";
-
 import { LinkOutlined, DownloadOutlined, PlusOutlined, UserOutlined, EyeOutlined, RollbackOutlined } from '@ant-design/icons';
-
-import { TableRowSelection } from "antd/es/table/interface";
-import type { ColumnsType } from 'antd/es/table';
+import type { ColumnsType, TableRowSelection } from 'antd/es/table';
 
 import { Invoice as FetchInvoice } from "../../networking/invoice";
 
@@ -123,32 +116,28 @@ export default function Invoice() {
   const [page, setPage] = React.useState<number>(1);
   const [limit, setLimit] = React.useState<number>(10);
 
-  const handleSelect = (record: Invoice, selected: boolean) => {
-    if (selected) {
-      setSelectedRowKeys((keys) => [...keys, record.invoiceId]);
-    } else {
-      setSelectedRowKeys((keys) => {
-        const index = keys.indexOf(record.invoiceId);
-        return [...keys.slice(0, index), ...keys.slice(index + 1)];
-      });
-    }
-  };
+  const handleSelect = React.useCallback((record: Invoice, selected: boolean) => {
+    setSelectedRowKeys((keys) => selected ? 
+      [...keys, record.invoiceId] : 
+      keys.filter(key => key !== record.invoiceId)
+    );
+  }, []);
 
-  const toggleSelectAll = () => {
+  const toggleSelectAll = React.useCallback(() => {
     setSelectedRowKeys((keys) =>
       keys.length === data.length ? [] : data.map((r) => r.invoiceId)
     );
-  };
+  }, [data]);
 
-  const headerCheckbox = (
+  const headerCheckbox = React.useMemo(() => (
     <Checkbox
-      checked={selectedRowKeys.length === 0 ? false : true}
+      checked={selectedRowKeys.length > 0}
       indeterminate={
         selectedRowKeys.length > 0 && selectedRowKeys.length < data.length
       }
       onChange={toggleSelectAll}
     />
-  );
+  ), [selectedRowKeys, data.length, toggleSelectAll]);
 
   const rowSelection: TableRowSelection<Invoice> = {
     selectedRowKeys,
@@ -159,12 +148,12 @@ export default function Invoice() {
     onSelectAll: toggleSelectAll
   };
 
-  const fetchInvoice = async () => {
+  const fetchInvoice = React.useCallback(async () => {
     try {
       const response = await FetchInvoice.fetchInvoices(page, limit);
       const data = response.data as InvoiceResponse;
       if (!data.success) {
-        Notification.error({
+        notification.error({
           message: "Something went wrong could not fetch invoices",
         });
       } else {
@@ -172,27 +161,27 @@ export default function Invoice() {
       }
     } catch (error) {
       console.error(error);
-      Notification.error({
+      notification.error({
         message: "Something went wrong please try again",
       });
     }
-  };
+  }, [page, limit]);
 
-  const onClose = () => {
+  const onClose = React.useCallback(() => {
     setIsOpenInvoiceDetails(!isOpenInvoiceDetails);
-  }
+  }, [isOpenInvoiceDetails]);
 
-  const handleNewInvoice = () => {
+  const handleNewInvoice = React.useCallback(() => {
     navigate("/invoice/create");
-  };
+  }, [navigate]);
 
-  const handleViewInvoice = (id: string | undefined) => {
+  const handleViewInvoice = React.useCallback((id: string | undefined) => {
     if (id) {
       navigate(`/invoice/${id}`);
     }
-  }
+  }, [navigate]);
 
-  const handleExport = () => {
+  const handleExport = React.useCallback(() => {
     const options = {
       fieldSeparator: ',',
       quoteStrings: '"',
@@ -207,29 +196,28 @@ export default function Invoice() {
     };
     const csvExporter = new ExportToCsv(options);
     csvExporter.generateCsv(data);
-  }
+  }, [data]);
 
-  const downloadInvoice = () => {
+  const downloadInvoice = React.useCallback(() => {
     // download invoice
-  }
+  }, []);
 
-  const statusFormatter = (date?: string, status?: 'PAID' | 'DRAFT' | 'PENDING', paidAt?: string) => {
+  const statusFormatter = React.useCallback((date?: string, status?: 'PAID' | 'DRAFT' | 'PENDING', paidAt?: string) => {
     switch (status) {
       case 'PAID':
-        return <Tag color="green">PAID on {format(new Date(paidAt || '2008/06/06'), 'y/M/d')}</Tag>
-        break;
+        return <Tag color="green">PAID on {format(new Date(paidAt || '2008/06/06'), 'y/M/d')}</Tag>;
       case 'DRAFT':
-        return <Tag color="default">DRAFT {format(new Date(date || ''), 'y/M/d')}</Tag>
+        return <Tag color="default">DRAFT {format(new Date(date || ''), 'y/M/d')}</Tag>;
       case 'PENDING':
-        return <Tag color="red">OVERDUE {format(new Date(date || ''), 'y/M/d')}</Tag>
+        return <Tag color="red">OVERDUE {format(new Date(date || ''), 'y/M/d')}</Tag>;
       default:
-        return <></>
+        return <></>;
     }
-  }
+  }, []);
 
   React.useEffect(() => {
     fetchInvoice();
-  }, [page, limit]);
+  }, [fetchInvoice]);
 
   return (
     <Template defaultIndex="3">
@@ -263,14 +251,12 @@ export default function Invoice() {
         </div>
         <Table
           rowSelection={rowSelection}
-          onRow={(record, rowIndex) => {
-            return {
-              onClick: (event) => {
-                setIsOpenInvoiceDetails(!isOpenInvoiceDetails);
-                setSelectedInvoice(record);
-              }
+          onRow={(record) => ({
+            onClick: () => {
+              setIsOpenInvoiceDetails(!isOpenInvoiceDetails);
+              setSelectedInvoice(record);
             }
-          }}
+          })}
           columns={columns}
           rowKey={(record) => record.invoiceId}
           dataSource={data}
@@ -321,14 +307,10 @@ export default function Invoice() {
                 </Button>
               </span>
               <span className="buttons-inline">
-                <Button onClick={() => {
-                  handleViewInvoice(selectedRecord?.invoiceId)
-                }}>
+                <Button onClick={() => handleViewInvoice(selectedRecord?.invoiceId)}>
                   <EyeOutlined />
                 </Button>
-                <Button onClick={() => {
-                  downloadInvoice();
-                }}>
+                <Button onClick={downloadInvoice}>
                   <DownloadOutlined />
                 </Button>
               </span>
