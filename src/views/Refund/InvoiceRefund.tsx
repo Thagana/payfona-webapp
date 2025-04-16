@@ -1,5 +1,5 @@
 import * as React from 'react';
-import TemplateWrapper from "../Template";
+import TemplateWrapper from "../Layout";
 import { Tag, Table, Divider, Button, notification } from 'antd/es';
 
 import Checkbox from "antd/es/checkbox/Checkbox";
@@ -62,7 +62,6 @@ export default function InvoiceRefund() {
     }, []);
 
     return (
-        <TemplateWrapper defaultIndex="7">
             <div className="refunds-container">
                 <Table
                     columns={columns}
@@ -70,6 +69,5 @@ export default function InvoiceRefund() {
                     dataSource={data}
                 />
             </div>
-        </TemplateWrapper>
     )
 }

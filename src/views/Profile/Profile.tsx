@@ -1,5 +1,5 @@
 import * as React from "react";
-import TemplateWrapper from "../Template";
+import TemplateWrapper from "../Layout";
 import { useStoreState } from "easy-peasy";
 import { Model } from "../../store/model";
 import { UserOutlined, MailOutlined } from "@ant-design/icons";
@@ -12,7 +12,6 @@ export default function Profile() {
   const navigate = useNavigate();
   const profile = useStoreState<Model>((state) => state.profile);
   return (
-    <TemplateWrapper defaultIndex="7">
       <div className="profile-container">
         <div className="container-container">
           <div className="image-container">
@@ -46,6 +45,5 @@ export default function Profile() {
           </div>
         </div>
       </div>
-    </TemplateWrapper>
   );
 }

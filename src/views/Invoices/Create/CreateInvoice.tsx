@@ -1,420 +1,339 @@
-import * as React from "react";
-import { useNavigate } from "react-router-dom";
-import Select from 'react-select';
-import Notification from "antd/es/notification";
-import Spin from 'antd/es/spin';
-import { DeleteOutlined } from "@ant-design/icons";
-import Modal from "antd/es/modal/Modal";
+import React, { useState } from "react";
+import {
+  Row,
+  Col,
+  Input,
+  Button,
+  Table,
+  Space,
+  Typography,
+  Card,
+  Divider,
+  notification,
+  Select,
+} from "antd";
+import {
+  PlusOutlined,
+  DeleteOutlined,
+  SendOutlined,
+  SaveOutlined,
+} from "@ant-design/icons";
+import { useMutation } from "@tanstack/react-query";
+import { Spin } from "antd";
 
-import Button from "../../../components/common/Button";
-import TemplateWrapper from "../../Template";
+const { Title, Text } = Typography;
 
-import type { RcFile, UploadFile, UploadProps } from "antd/es/upload/interface";
-import { formatInvoiceDate } from "../../../helper/formatInvoiceDate";
+import Axios from "../../../networking/adaptor";
+import { InvoicePayload } from "../../../interface/InvoicePayload";
+import { useNavigate, useNavigation } from "react-router-dom";
+interface Item {
+  description: string;
+  price: number;
+  quantity: number;
+}
 
-import "./CreateInvoice.scss";
-import { Invoice } from "../../../networking/invoice";
-import { useStoreState } from "easy-peasy";
-import { Model } from "../../../store/model";
+interface Details {
+  name: string;
+  email: string;
+  phoneNumber: string;
+}
 
-type STATES = "LOADING" | "SUCCESS" | "ERROR" | "IDLE";
-
-type Inputs = {
-  // From Details
-  fromName: string;
-  fromEmail: string;
-  fromPhoneNumber: string;
-  // For Details
-  forName: string;
-  forEmail: string;
-  forPhoneNumber: string;
-  date: string;
-  image: RcFile;
-};
-
-export default function CreateInvoice() {
-  const [fileList, setFileList] = React.useState<UploadFile[]>([]);
-  const [total, setTotal] = React.useState(0);
-  const [isAllValid, setAllValid] = React.useState(false);
-  const [serverStates, setServerStates] = React.useState<STATES>("IDLE");
-
-
-  const [logo, setLogo] = React.useState<string>('');
-
-  // from
-  const [fromName, setFromName] = React.useState("");
-  const [fromNameTouches, setFromNameTouched] = React.useState(false);
-  const [fromNameError, setFromNameError] = React.useState(false);
-  
-  const [fromEmail, setFromEmail] = React.useState("");
-  const [fromEmailTouched, setFromEmailTouched] = React.useState(false);
-  const [fromEmailError, setFromEmailError] = React.useState(false);
-
-
-  const [fromPhoneNumber, setFromPhoneNumber] = React.useState("");
-  const [fromPhoneNumberTouched, setFromPhoneNumberTouched] = React.useState(false);
-  const [fromPhoneNumberError, setFromPhoneNumberError] = React.useState(false);
-
-  // to
-  const [toName, setToName] = React.useState("");
-
-  const [toEmail, setToEmail] = React.useState("");
-  
-  const [toPhoneNumber, setToPhoneNumber] = React.useState("");
-
-  const [errors, setErrors] = React.useState<{
-    fromName: boolean;
-    fromEmail: boolean;
-    fromPhoneNumber: boolean;
-    forName: boolean;
-    forEmail: boolean;
-    forPhoneNumber: boolean;
-  }>();
-
-  const [items, setItems] = React.useState([
-    { item: "", price: 0, quantity: 0, amount: 0 },
+const InvoicePage = () => {
+  const [items, setItems] = useState([
+    { description: "", price: 0, quantity: 0 },
   ]);
-
-  const [date] = React.useState(() => {
-    return new Date().toISOString();
+  const [formDetails, setFromDetails] = useState<Details>({
+    name: "",
+    email: "",
+    phoneNumber: "",
   });
 
-  const navigate = useNavigate();
-  
-  const accounts = useStoreState<Model>((state) => state.accounts);
+  const [toDetails, setToDetails] = useState<Details>({
+    name: "",
+    email: "",
+    phoneNumber: "",
+  });
 
-  const handleRemoveRow = (index: number) => {
-    const newFileList = items.filter((item, i) => i !== index);
-    setItems(newFileList);
+  const navigation = useNavigate();
+
+  const { mutate, isError, isPending, isPaused } = useMutation({
+    mutationFn: (invoice: InvoicePayload) => {
+      return Axios.post("/invoice/create_invoice", invoice);
+    },
+  });
+
+  const handleAddItem = () => {
+    setItems([...items, { description: "", price: 0, quantity: 0 }]);
   };
 
-  const imageOptions = [{ label: 'Default Logo', value: 'https://avatars.githubusercontent.com/u/68122202?s=400&u=4abc9827a8ca8b9c19b06b9c5c7643c87da51e10&v=4' }]
-
-  const calculateTotal = (
-    _amount: { price: number; amount: number; quantity: number }[]
-  ) => {
-    const final = _amount.reduce((acc, curr) => {
-      return parseFloat((acc + curr.price * curr.quantity).toFixed(2));
-    }, 0);
-    setTotal(final);
+  const handleRemoveItem = (index: number) => {
+    const newItems = [...items];
+    newItems.splice(index, 1);
+    setItems(newItems);
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number
-  ) => {
-    const { name, value } = e.target;
-    const temp = [...items];
-    
-    // Type guard to ensure name is a valid key of InvoiceItem
-    if (name === 'item' || name === 'price' || name === 'quantity' || name === 'amount') {
-      // Handle numeric values
-      const newValue = name === 'item' ? value : Number(value);
-      temp[index] = {
-        ...temp[index],
-        [name]: newValue
-      };
-      
-      setItems([...temp]);
-      calculateTotal(temp);
-    }
+  const updateItem = (index: number, field: string, value: string | number) => {
+    const newItems = [...items];
+    newItems[index] = {
+      ...newItems[index],
+      [field]: field === "description" ? (value as string) : Number(value),
+    };
+    setItems(newItems);
   };
 
-  const handleAppendRows = () => {
-    const newValue = { item: "", price: 0, quantity: 0, amount: 0 };
-    setItems([...items, newValue]);
-  };
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
 
-  const onPreview = async (file: UploadFile) => {
-    let src = file.url as string;
-    if (!src) {
-      src = await new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file.originFileObj as RcFile);
-        reader.onload = () => resolve(reader.result as string);
-      });
-    }
-    const image = new Image();
-    image.src = src;
-    const imgWindow = window.open(src);
-    imgWindow?.document.write(image.outerHTML);
-  };
-
-  const onSubmit = async () => {
+  const handleSubmit = () => {
     try {
-      setServerStates("LOADING");
-
-      const from = {
-        name: fromName,
-        email: fromEmail,
-        phoneNumber: fromPhoneNumber,
+      const invoice: InvoicePayload = {
+        to: toDetails,
+        from: formDetails,
+        items: items,
+        currency: "ZAR",
+        invoiceDate: new Date().toISOString(),
+        total: subtotal,
+        logo: "https://avatars.githubusercontent.com/u/68122202?s=400&u=4abc9827a8ca8b9c19b06b9c5c7643c87da51e10&v=4",
       };
-
-      const to = {
-        name: toName,
-        email: toEmail,
-        phoneNumber: toPhoneNumber,
-      };
-
-      const data = {
-        from,
-        to,
-        items,
-        logo,
-        total: total * 100,
-        invoiceDate: new Date().toDateString(),
-        companyNote: "",
-        currency: "ZAR"
-      }
-
-      const response = await Invoice.createInvoice(data);
-      if (!response.data.success) {
-        Notification.error({
-          message: response.data.message,
-        });
-        setServerStates("IDLE");
-      } else {
-        Notification.success({
-          message: "Successfully create an invoice",
-        });
-        navigate(`/invoice/${response.data.data}`);
-      }
+      mutate(invoice);
+      navigation("/invoices");
     } catch (error) {
-      console.log(error);
-      Notification.error({
+      notification.open({
         message: "Something went wrong please try again later",
       });
-      setServerStates("IDLE");
     }
   };
 
+  const handleChange = (value: string) => {};
+
   return (
-    <TemplateWrapper defaultIndex="2">
-      <div className="wrapper">
-        {serverStates === "IDLE" && (
-          <form>
-            <div className="wrapper-invoice">
-              <div className="header">
-                <div className="title">
-                  <span>Invoice</span>
-                </div>
-                <div className="logo-container">
-                  <Select
-                    className="basic-single"
-                    classNamePrefix="select"
-                    defaultValue={imageOptions[0]}
-                    isDisabled={false}
-                    isSearchable={true}
-                    name="logo"
-                    options={imageOptions}
-                    onChange={((value) => setLogo(value?.value || ''))}
-                  />
-                </div>
-              </div>
-              <div className="details-container">
-                <div className="details-from">
-                  <div className="from">From</div>
-                  <div className="name">
-                    <input
-                      className={`form-control  ${
-                        errors?.fromName && "in-valid"
-                      }`}
-                      type="text"
-                      name="fromName"
-                      value={fromName}
-                      onChange={(e) => setFromName(e.target.value)}
-                      placeholder="Name"
-                    />
-                  </div>
-                  <div className="email">
-                    <input
-                      type="email"
-                      className={`form-control  ${
-                        errors?.fromEmail && "in-valid"
-                      }`}
-                      name="fromEmail"
-                      value={fromEmail}
-                      onChange={(e) => setFromEmail(e.target.value)}
-                      placeholder="Email"
-                    />
-                  </div>
-                  <div className="phone-number">
-                    <input
-                      className={`form-control  ${
-                        errors?.fromPhoneNumber && "in-valid"
-                      }`}
-                      type="text"
-                      name="fromPhoneNumber"
-                      value={fromPhoneNumber}
-                      onChange={(e) => setFromPhoneNumber(e.target.value)}
-                      placeholder="Phone Number"
-                    />
-                  </div>
-                </div>
-                <div className="details-for">
-                  <div className="for">To</div>
-                  <div className="name">
-                    <input
-                      name="forName"
-                      className={`form-control  ${
-                        errors?.forName && "in-valid"
-                      }`}
-                      type="text"
-                      placeholder="Name"
-                      value={toName}
-                      onChange={(e) => setToName(e.target.value)}
-                    />
-                  </div>
-                  <div className="email">
-                    <input
-                      name="forEmail"
-                      className={`form-control  ${
-                        errors?.forEmail && "in-valid"
-                      }`}
-                      type="email"
-                      placeholder="Email"
-                      value={toEmail}
-                      onChange={(e) => setToEmail(e.target.value)}
-                    />
-                  </div>
-                  <div className="phone-number">
-                    <input
-                      name="forPhoneNumber"
-                      className={`form-control  is-${
-                        errors?.forPhoneNumber && "in-valid"
-                      }`}
-                      type="text"
-                      placeholder="Phone Number"
-                      value={toPhoneNumber}
-                      onChange={(e) => setToPhoneNumber(e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="invoice-meta">
-                <div className="number">Number: [Auto Generated]</div>
-                <div className="date">Date: {formatInvoiceDate(date)}</div>
-              </div>
-              <div className="invoice-items">
-                <div className="table">
-                  <table className="table">
-                    <thead>
-                      <tr>
-                        <th scope="col">Item</th>
-                        <th scope="col">Price</th>
-                        <th scope="col">Quantity</th>
-                        <th scope="col">Amount</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {items.map((i, index) => {
-                        return (
-                          <tr key={index.toString()}>
-                            <td scope="row">
-                              <input
-                                name="item"
-                                placeholder="Item"
-                                className="form-control item"
-                                onChange={(e) => handleChange(e, index)}
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={i.price}
-                                placeholder="Price"
-                                name="price"
-                                className="form-control price"
-                                type="number"
-                                step="0.1"
-                                min={0}
-                                onChange={(e) => handleChange(e, index)}
-                              />
-                            </td>
-                            <td>
-                              <input
-                                value={i.quantity}
-                                name="quantity"
-                                type="number"
-                                min="1"
-                                className="form-control quantity"
-                                placeholder="Quantity"
-                                onChange={(e) => handleChange(e, index)}
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="number"
-                                className="form-control amount"
-                                placeholder="Amount"
-                                step="0.1"
-                                defaultValue={(i.quantity * i.price).toFixed(2)}
-                                value={(i.quantity * i.price).toFixed(2)}
-                                min={0}
-                                readOnly
-                              />
-                            </td>
-                            <td>
-                              {items.length > 1 && (
-                                <Button
-                                  type="button"
-                                  state="primary"
-                                  onClick={() => handleRemoveRow(index)}
-                                >
-                                  <DeleteOutlined
-                                    style={{ color: "#fff", fontSize: 25 }}
-                                  />
-                                </Button>
-                              )}
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                  <div className="add-row">
-                    <button
-                      className="btn btn-primary"
-                      onClick={handleAppendRows}
-                    >
-                      + Row
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div className="sub-table">
-                <div className="total">Total: ZAR {total}</div>
-              </div>
-            </div>
-            <div className="create-invoice-button">
+    <>
+      {isPending && (
+        <div style={{ maxWidth: 1000, margin: "auto", padding: "2rem" }}>
+          <Spin />
+        </div>
+      )}
+      {isError && (
+        <div style={{ maxWidth: 1000, margin: "auto", padding: "2rem" }}>
+          Error
+        </div>
+      )}
+      {!isPending && (
+        <div style={{ maxWidth: 1000, margin: "auto", padding: "2rem" }}>
+          <Row justify="space-between" align="middle">
+            <Title level={3}>Create New Invoice</Title>
+            <Select
+              defaultValue="default"
+              style={{ width: 120 }}
+              onChange={handleChange}
+              options={[{ value: "default", label: "Default Logo" }]}
+            />
+          </Row>
+
+          <Divider />
+
+          <Row gutter={24}>
+            <Col span={12}>
+              <Card bordered={false}>
+                <Text type="secondary">From (Your Information)</Text>
+                <Input
+                  placeholder="Your name or company name"
+                  className="my-2"
+                  name="name"
+                  type="text"
+                  value={formDetails.name}
+                  onChange={(value) =>
+                    setFromDetails({
+                      ...formDetails,
+                      name: value.target.value,
+                    })
+                  }
+                />
+                <Input
+                  placeholder="your.email@example.com"
+                  className="my-2"
+                  name="email"
+                  type="email"
+                  value={formDetails.email}
+                  onChange={(value) =>
+                    setFromDetails({
+                      ...formDetails,
+                      email: value.target.value,
+                    })
+                  }
+                />
+                <Input
+                  placeholder="Phone number"
+                  name="phoneNumber"
+                  type="text"
+                  value={formDetails.phoneNumber}
+                  onChange={(value) =>
+                    setFromDetails({
+                      ...formDetails,
+                      phoneNumber: value.target.value,
+                    })
+                  }
+                />
+              </Card>
+            </Col>
+            <Col span={12}>
+              <Card bordered={false}>
+                <Text type="secondary">To (Client Information)</Text>
+                <Input
+                  placeholder="Client name or company name"
+                  name="name"
+                  className="my-2"
+                  value={toDetails.name}
+                  onChange={(value) =>
+                    setToDetails({
+                      ...toDetails,
+                      name: value.target.value,
+                    })
+                  }
+                />
+                <Input
+                  placeholder="client.email@example.com"
+                  name="email"
+                  type="email"
+                  className="my-2"
+                  value={toDetails.email}
+                  onChange={(value) =>
+                    setToDetails({
+                      ...toDetails,
+                      email: value.target.value,
+                    })
+                  }
+                />
+                <Input
+                  placeholder="Phone number"
+                  type="text"
+                  name="phoneNumber"
+                  value={toDetails.phoneNumber}
+                  onChange={(value) =>
+                    setToDetails({
+                      ...toDetails,
+                      phoneNumber: value.target.value,
+                    })
+                  }
+                />
+              </Card>
+            </Col>
+          </Row>
+
+          <Divider />
+
+          <Row justify="space-between" align="middle">
+            <Text strong>Invoice Items</Text>
+            <Button icon={<PlusOutlined />} onClick={handleAddItem}>
+              Add Item
+            </Button>
+          </Row>
+
+          <Table
+            dataSource={items}
+            pagination={false}
+            rowKey={(_, index) => index!.toString()}
+            style={{ marginTop: "1rem" }}
+          >
+            <Table.Column
+              title="Item Description"
+              dataIndex="description"
+              render={(text, _, index) => (
+                <Input
+                  value={text}
+                  placeholder="Item description"
+                  onChange={(e) =>
+                    updateItem(index, "description", e.target.value)
+                  }
+                />
+              )}
+            />
+            <Table.Column
+              title="Price (ZAR)"
+              dataIndex="price"
+              align="right"
+              render={(text, _, index) => (
+                <Input
+                  type="number"
+                  min={0}
+                  value={text}
+                  onChange={(e) => updateItem(index, "price", e.target.value)}
+                  prefix="R"
+                />
+              )}
+            />
+            <Table.Column
+              title="Quantity"
+              dataIndex="quantity"
+              align="right"
+              render={(text, _, index) => (
+                <Input
+                  type="number"
+                  min={0}
+                  value={text}
+                  onChange={(e) =>
+                    updateItem(index, "quantity", e.target.value)
+                  }
+                />
+              )}
+            />
+            <Table.Column
+              title="Amount"
+              key="amount"
+              align="right"
+              render={(_: any, item: Item, index: number) => (
+                <Text>R {(item.price * item.quantity).toFixed(2)}</Text>
+              )}
+            />
+            <Table.Column
+              title=""
+              key="action"
+              align="center"
+              render={(_, __, index) => (
+                <Button
+                  danger
+                  type="text"
+                  icon={<DeleteOutlined />}
+                  onClick={() => handleRemoveItem(index)}
+                />
+              )}
+            />
+          </Table>
+
+          <Row justify="end" style={{ marginTop: 20 }}>
+            <Card style={{ width: 300 }} bordered={false}>
+              <Row justify="space-between" align="middle">
+                <Text>Subtotal</Text>
+                <Text>R {subtotal.toFixed(2)}</Text>
+              </Row>
+              <Row justify="space-between" style={{ marginTop: 8 }}>
+                <Text strong>Total</Text>
+                <Text strong>R {subtotal.toFixed(2)}</Text>
+              </Row>
+            </Card>
+          </Row>
+
+          <Row justify="end" gutter={16} style={{ marginTop: 24 }}>
+            <Col>
+              <Button icon={<SaveOutlined />}>Save Draft</Button>
+            </Col>
+            <Col>
               <Button
-                onClick={onSubmit}
-                type="button"
-                state="primary"
-                size="medium"
+                type="primary"
+                icon={<SendOutlined />}
+                style={{ padding: "0 24px" }}
+                onClick={handleSubmit}
               >
                 Send Invoice
               </Button>
-            </div>
-          </form>
-        )}
-        {serverStates === "LOADING" && (
-          <div className="loading">
-            <Spin size="large" />
-          </div>
-        )}
-      </div>
-      <Modal 
-          onCancel={() => {
-            navigate('/accounts/create');
-          }}
-          onOk={() => {
-            navigate('/accounts/create');
-          }}
-          open={accounts.length === 0 ? true: false}>
-          <div className="modal-content">
-            You have not yet linked your bank account to receive the invoice money.
-          </div>
-      </Modal>
-    </TemplateWrapper>
+            </Col>
+          </Row>
+        </div>
+      )}
+    </>
   );
-}
+};
+
+export default InvoicePage;

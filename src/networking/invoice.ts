@@ -3,7 +3,7 @@ import Adaptor from './adaptor';
 
 export class Invoice {
     static fetchInvoice(param: string) {
-        return Adaptor.get(`/invoice/get_unauthenticated/${param}`)
+        return Adaptor.get(`/invoice/public/${param}`)
     }
     static verifyInvoice(reference: string, amount: number) {
         return Adaptor.post('/invoice/verify', {

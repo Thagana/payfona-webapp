@@ -3,7 +3,7 @@ import Select from "react-select";
 import { Spin } from 'antd';
 import Notification from "antd/es/notification";
 import { useNavigate } from "react-router-dom";
-import TemplateWrapper from "../../Template";
+import TemplateWrapper from "../../Layout";
 
 import "./CreateAccount.scss";
 import AccountNetwork from "../../../networking/accounts";
@@ -36,19 +36,17 @@ export default function CreateAccount() {
   const token = useStoreState<Model>((state) => state.token);
   const updateAccount = useStoreActions<Model>(action => action.updateAccount);
 
-  const fetchAvailableAccounts = async () => {
+  const fetchAvailableAccounts = React.useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await AccountNetwork.getListedBanks(token);
       if (response.data.success) {
         const banks = response.data.data as BankAccounts[];
 
-        const data = banks.map((bank) => {
-          return {
-            value: bank.code,
-            label: bank.name,
-          }
-        });
+        const data = banks.map((bank) => ({
+          value: bank.code,
+          label: bank.name,
+        }));
 
         setAccounts(data);
 
@@ -57,50 +55,61 @@ export default function CreateAccount() {
           message: response.data.message,
         });
       }
-      setIsLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       Notification.error({
         message: "Something went wrong please try again later",
       });
+    } finally {
       setIsLoading(false);
     }
+  }, [token]);
+
+  const validateForm = () => {
+    if (!accountNumber || !code) {
+      Notification.error({
+        message: "Please fill in all required fields.",
+      });
+      return false;
+    }
+    return true;
   };
 
-  const onSubmit = async (e: React.SyntheticEvent) => {
+  const onSubmit = React.useCallback(async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
     try {
       setIsLoading(true);
-      e.preventDefault();
       const response = await AccountNetwork.createBankAccount(
         token,
         accountNumber,
         code
-      )
+      );
       if (!response.data.success) {
         Notification.error({
           message: response.data.message,
-        })
+        });
       } else {
         const data = response.data;
         updateAccount(data.data);
         navigate('/accounts');
       }
-      setIsLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       Notification.error({
         message: "Something went wrong please try again later",
       });
+    } finally {
       setIsLoading(false);
     }
-  }
+  }, [token, accountNumber, code, updateAccount, navigate, validateForm]);
 
   React.useEffect(() => {
     fetchAvailableAccounts();
-  }, []);
+  }, [fetchAvailableAccounts]);
 
   return (
-    <TemplateWrapper defaultIndex="3">
       <div className="create-account-container">
         <form className="form" onSubmit={onSubmit}>
           <div className="form-group">
@@ -114,7 +123,7 @@ export default function CreateAccount() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="account-number" className="label">Account Name</label>
+            <label htmlFor="account-name" className="label">Account Name</label>
             <Select
               className="basic-single"
               classNamePrefix="select"
@@ -122,7 +131,7 @@ export default function CreateAccount() {
               isLoading={isLoading}
               isClearable={true}
               isSearchable={true}
-              onChange={(value) => setCode(value?.value || '')}
+              onChange={(value: any) => setCode(value?.value || '')}
               name="code"
               options={accounts}
             />
@@ -134,6 +143,5 @@ export default function CreateAccount() {
           </div>
         </form>
       </div>
-    </TemplateWrapper>
   );
 }
