@@ -1,24 +1,40 @@
 import * as React from "react";
 import Highlighter from "react-highlight-words";
 import type { InputRef } from "antd";
-import { Button, Input, Space, Table } from "antd/es";
+import { Button, Input, notification, Space, Table, Typography } from "antd/es";
 import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
-import { SearchOutlined } from "@ant-design/icons";
+import {
+  DeleteFilled,
+  DeleteOutlined,
+  EyeFilled,
+  LoadingOutlined,
+  PlusOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
+
+const { Text } = Typography;
 
 import Axios from "../../networking/adaptor";
 
-import { DataType } from './interface/DataType';
+import { DataType } from "./interface/DataType";
 
 type DataIndex = keyof DataType;
+
+import "./Customers.scss";
 
 export default function Customer() {
   const [searchText, setSearchText] = React.useState("");
   const [searchedColumn, setSearchedColumn] = React.useState("");
   const searchInput = React.useRef<InputRef>(null);
 
+  const { isPending, isError, isSuccess, mutate } = useMutation({
+    mutationFn: (id: number) => {
+      return Axios.delete(`/customer/${id}`);
+    },
+  });
   const customers = useQuery({
     queryKey: ["customers"],
     queryFn: async () => {
@@ -134,19 +150,40 @@ export default function Customer() {
       ),
   });
 
+  const handleDeleteCustomer = async (id: number) => {
+    try {
+      mutate(id);
+    } catch (error) {
+      notification.open({
+        message: "Something went wrong trying to delete customer",
+        type: "error",
+      });
+    }
+  };
+
+
+  const handleEdit = async (id: number) => {
+    try {
+      navigation(`/customers/create/${id}`)
+    } catch (error) {
+      notification.open({
+        message: "Something went wrong trying to delete customer",
+        type: "error",
+      });
+    }
+  }
+
   const columns: ColumnsType<DataType> = [
     {
       title: "First Name",
       dataIndex: "firstName",
       key: "firstName",
-      width: "30%",
       ...getColumnSearchProps("firstName"),
     },
     {
       title: "Last Name",
       dataIndex: "lastName",
       key: "lastName",
-      width: "20%",
       ...getColumnSearchProps("lastName"),
     },
     {
@@ -158,26 +195,48 @@ export default function Customer() {
       sortDirections: ["descend", "ascend"],
     },
     {
-        title: "Phone Number",
-        dataIndex: "phoneNumber",
-        key: "phone_numberail",
-        ...getColumnSearchProps("phone_number"),
-        sorter: (a, b) => a.email.length - b.email.length,
-        sortDirections: ["descend", "ascend"],
-      },
+      title: "Phone Number",
+      dataIndex: "phoneNumber",
+      key: "phone_numberail",
+      ...getColumnSearchProps("phoneNumber"),
+      sorter: (a, b) => a.email.length - b.email.length,
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Space size="middle">
+          <Button
+            type="primary"
+            icon={<DeleteFilled color="red" />}
+            onClick={() => handleDeleteCustomer(record.id)}
+          >
+              Delete
+          </Button>
+          <Button type="default" icon={<EyeFilled />} onClick={() => handleEdit(record.id)}>
+            Edit
+          </Button>
+        </Space>
+      ),
+    },
   ];
 
   const handleAddCustomer = () => {
     navigation("/customers/create");
   };
-  
 
   return (
     <div className="customer-container">
       <div className="row p-2">
         <div className="col-md-12">
-          <Button className="primary" onClick={handleAddCustomer}>
-            Add Customer
+          <Button
+            onClick={handleAddCustomer}
+            type="primary"
+            size="large"
+            icon={<PlusOutlined />}
+          >
+            Customer
           </Button>
         </div>
       </div>
