@@ -3,7 +3,7 @@ import Select from "react-select";
 import { Spin } from 'antd';
 import Notification from "antd/es/notification";
 import { useNavigate } from "react-router-dom";
-import TemplateWrapper from "../../Template";
+import TemplateWrapper from "../../Layout";
 
 import "./CreateAccount.scss";
 import AccountNetwork from "../../../networking/accounts";
@@ -110,7 +110,6 @@ export default function CreateAccount() {
   }, [fetchAvailableAccounts]);
 
   return (
-    <TemplateWrapper defaultIndex="3">
       <div className="create-account-container">
         <form className="form" onSubmit={onSubmit}>
           <div className="form-group">
@@ -132,7 +131,7 @@ export default function CreateAccount() {
               isLoading={isLoading}
               isClearable={true}
               isSearchable={true}
-              onChange={(value: { value: any; }) => setCode(value?.value || '')}
+              onChange={(value: any) => setCode(value?.value || '')}
               name="code"
               options={accounts}
             />
@@ -144,6 +143,5 @@ export default function CreateAccount() {
           </div>
         </form>
       </div>
-    </TemplateWrapper>
   );
 }

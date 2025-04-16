@@ -6,7 +6,7 @@ import { Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import Notification from 'antd/es/notification';
 import Button from "../../components/common/Button";
-import TemplateWrapper from "../Template";
+import TemplateWrapper from "../Layout";
 
 import { Account } from "../../store/model";
 
@@ -139,7 +139,6 @@ export default function Accounts() {
   ];
 
   return (
-    <TemplateWrapper defaultIndex="5">
       <div className="accounts-container">
         {accounts.length === 0 ? (
           <div className="empty-account">
@@ -174,6 +173,5 @@ export default function Accounts() {
           </>
         )}
       </div>
-    </TemplateWrapper>
   );
 }

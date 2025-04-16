@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import Notification from "antd/es/notification";
-import Template from "../Template";
+import Template from "../Layout";
 import Card from "antd/es/card";
 import {
   FileTextOutlined,
@@ -86,7 +86,7 @@ export default function Home() {
   }, [fetchData]);
 
   return (
-    <Template defaultIndex="1">
+    <>
       {loading ? <div className="home-container">
         <LoadingOutlined />
       </div> : (
@@ -162,7 +162,7 @@ export default function Home() {
         </Row>
       </>
     </div>  
-      )}
-    </Template>
+      )}    
+    </>
   );
 }

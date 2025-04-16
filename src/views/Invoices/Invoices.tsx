@@ -3,120 +3,40 @@ import { Tag, Table, Divider, Button, Drawer, Checkbox, notification } from 'ant
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { ExportToCsv } from 'export-to-csv';
-import { LinkOutlined, DownloadOutlined, PlusOutlined, UserOutlined, EyeOutlined, RollbackOutlined } from '@ant-design/icons';
-import type { ColumnsType, TableRowSelection } from 'antd/es/table';
+import { DownloadOutlined, PlusOutlined, UserOutlined, EyeOutlined, RollbackOutlined } from '@ant-design/icons';
 
-import { Invoice as FetchInvoice } from "../../networking/invoice";
-
-import Template from "../Template";
+import Axios from "../../networking/adaptor";
 
 import "./Invoices.scss";
 
+import { useQuery } from "@tanstack/react-query";
+import { InvoiceType } from "./interface/Invoice";
+import { columns } from "./data/columns";
+import { TableRowSelection } from "antd/es/table/interface";
 
-type Invoice = {
-  id: number;
-  status: "PENDING" | "PAID" | "DRAFT";
-  total: number;
-  invoiceNumber: string;
-  name: string;
-  email: string;
-  date: string;
-  invoiceId: string;
-  currency: string
-  createdAt: string
-  paidAt: string;
-  banking: {
-    channel: string;
-    brand: string;
-    last4: string;
-    bank: string
-  }
-};
-
-type InvoicesProps = {
-  invoices: Invoice[];
-};
-
-type InvoiceResponse = {
-  success: boolean;
-  message: string;
-  data: InvoicesProps;
-};
-
-function getColorFromStatus(status: string): string {
-  switch (status) {
-    case 'PENDING':
-      return 'yellow';
-    case 'PAID':
-      return 'green';
-    case 'DRAFT':
-      return 'default';
-    default:
-      return 'default';
-  }
-}
-
-const columns: ColumnsType<Invoice> = [
-  {
-    title: 'Invoice #',
-    dataIndex: 'invoiceNumber',
-    key: 'invoiceNumber',
-    width: '10%',
-  },
-  {
-    title: 'Customer',
-    dataIndex: 'name',
-    width: '20%',
-  },
-  {
-    title: 'Email',
-    dataIndex: 'email',
-    key: 'email',
-    width: '20%',
-    sortDirections: ['descend', 'ascend'],
-  },
-  {
-    title: 'Status',
-    dataIndex: 'status',
-    key: 'status',
-    width: '20%',
-    render: (value: string) => (
-      <Tag color={getColorFromStatus(value)}>{value}</Tag>
-    )
-  },
-  {
-    title: 'Amount',
-    dataIndex: 'total',
-    key: 'total',
-    width: '20%',
-    render: (value, record) => (
-      <span className="total">{record.currency} {value / 100}</span>
-    )
-  },
-  {
-    title: 'Preview',
-    dataIndex: 'invoiceId',
-    key: 'invoiceId',
-    width: '10%',
-    render: (value) => (
-      <div>
-        <a href={'/invoice/' + value}>Preview</a>
-        <LinkOutlined />
-      </div>
-    )
-  }
-];
 
 export default function Invoice() {
   const navigate = useNavigate();
-  const [data, setData] = React.useState<Invoice[]>([]);
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
   const [isOpenInvoiceDetails, setIsOpenInvoiceDetails] = React.useState(false);
-  const [selectedRecord, setSelectedInvoice] = React.useState<Invoice>();
+  const [selectedRecord, setSelectedInvoice] = React.useState<InvoiceType>();
   const [page, setPage] = React.useState<number>(1);
   const [limit, setLimit] = React.useState<number>(10);
 
-  const handleSelect = React.useCallback((record: Invoice, selected: boolean) => {
+  const { data, error, isError, isLoading } = useQuery<{
+    data: {
+      data : {
+        invoices: InvoiceType[]
+      }
+    }
+  }>({
+    queryKey: ["invoices"],
+    queryFn: async () => {
+      return Axios.get(`/invoice?page=${page}&limit=${limit}`);
+    },
+  });
+
+  const handleSelect = React.useCallback((record: InvoiceType, selected: boolean) => {
     setSelectedRowKeys((keys) => selected ? 
       [...keys, record.invoiceId] : 
       keys.filter(key => key !== record.invoiceId)
@@ -124,22 +44,24 @@ export default function Invoice() {
   }, []);
 
   const toggleSelectAll = React.useCallback(() => {
-    setSelectedRowKeys((keys) =>
-      keys.length === data.length ? [] : data.map((r) => r.invoiceId)
-    );
+    if (data) {
+      setSelectedRowKeys((keys) =>
+        keys.length === data.data.data.invoices.length ? [] : data.data.data.invoices.map((r) => r.invoiceId)
+      );
+    }
   }, [data]);
 
   const headerCheckbox = React.useMemo(() => (
     <Checkbox
       checked={selectedRowKeys.length > 0}
       indeterminate={
-        selectedRowKeys.length > 0 && selectedRowKeys.length < data.length
+        selectedRowKeys.length > 0 && selectedRowKeys.length < (data ? data.data.data.invoices.length : 0)
       }
       onChange={toggleSelectAll}
     />
-  ), [selectedRowKeys, data.length, toggleSelectAll]);
+  ), [selectedRowKeys, data?.data.data.invoices?.length, toggleSelectAll]);
 
-  const rowSelection: TableRowSelection<Invoice> = {
+  const rowSelection: TableRowSelection<InvoiceType> = {
     selectedRowKeys,
     type: "checkbox",
     fixed: true,
@@ -147,25 +69,6 @@ export default function Invoice() {
     columnTitle: headerCheckbox,
     onSelectAll: toggleSelectAll
   };
-
-  const fetchInvoice = React.useCallback(async () => {
-    try {
-      const response = await FetchInvoice.fetchInvoices(page, limit);
-      const data = response.data as InvoiceResponse;
-      if (!data.success) {
-        notification.error({
-          message: "Something went wrong could not fetch invoices",
-        });
-      } else {
-        setData(data.data.invoices);
-      }
-    } catch (error) {
-      console.error(error);
-      notification.error({
-        message: "Something went wrong please try again",
-      });
-    }
-  }, [page, limit]);
 
   const onClose = React.useCallback(() => {
     setIsOpenInvoiceDetails(!isOpenInvoiceDetails);
@@ -215,12 +118,7 @@ export default function Invoice() {
     }
   }, []);
 
-  React.useEffect(() => {
-    fetchInvoice();
-  }, [fetchInvoice]);
-
   return (
-    <Template defaultIndex="3">
       <div className="home-container">
         <div className="home-header">
           <div className="header-invoice">
@@ -259,7 +157,9 @@ export default function Invoice() {
           })}
           columns={columns}
           rowKey={(record) => record.invoiceId}
-          dataSource={data}
+          dataSource={data?.data.data.invoices}
+          loading={isLoading}
+
         />
         <Drawer
           title={`Invoice ${selectedRecord?.invoiceNumber}`}
@@ -319,6 +219,5 @@ export default function Invoice() {
           </div>
         </Drawer>
       </div>
-    </Template>
   );
 }

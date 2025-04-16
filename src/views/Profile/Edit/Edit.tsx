@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { EditOutlined } from "@ant-design/icons";
 import Notification from "antd/es/notification";
 import { useNavigate } from "react-router-dom";
-import TemplateWrapper from "../../Template";
+import TemplateWrapper from "../../Layout";
 import Button from "../../../components/common/Button";
 import Server from "../../../networking/server";
 import { useStoreActions } from "easy-peasy";
@@ -87,7 +87,6 @@ export default function Edit() {
   };
 
   return (
-    <TemplateWrapper defaultIndex="7">
       <div className="profile-container-edit">
         <div className="container-container">
           <div className="image-container">
@@ -131,6 +130,5 @@ export default function Edit() {
           </div>
         </div>
       </div>
-    </TemplateWrapper>
   );
 }

@@ -10,11 +10,9 @@ button.btn.btn-primary {
   width: 100%;
   font-family: $font-family;
   &:hover {
-    transform: scale(0.9);
     background-color: $primary-color;
     background: $primary-color;
     border-radius: 12px;
-    border: 1px solid $primary-color;
   }
 }
 
@@ -28,11 +26,9 @@ button.btn.btn-secondary {
   color: $primary-color;
   font-family: $font-family;
   &:hover {
-    transform: scale(1);
     background-color: $primary-color;
     background: $primary-color;
     border-radius: 12px;
-    border: 1px solid $primary-color;
     color: #fff;
   }
 }
