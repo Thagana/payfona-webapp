@@ -26,11 +26,10 @@ import "./Home.scss";
 import { Invoice } from "../../networking/invoice";
 import { Col, Row } from "antd/es/grid";
 
-import { LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined } from "@ant-design/icons";
 import { Line } from "../../interface/Line";
 import { options, revenueOptions } from "./data/data";
 import { getPieData } from "../../helper/getPieData";
-
 
 ChartJS.register(
   CategoryScale,
@@ -39,9 +38,8 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  ArcElement
+  ArcElement,
 );
-
 
 export default function Home() {
   const navigate = useNavigate();
@@ -87,82 +85,88 @@ export default function Home() {
 
   return (
     <>
-      {loading ? <div className="home-container">
-        <LoadingOutlined />
-      </div> : (
-      <div className="home-container">
-      <div className="cards mx-2 my-2">
-        <Card style={{ width: 500 }}>
-          <Row gutter={[8, 18]}>
-            <Col span={6}>
-              <div className="icons">
-                <FileTextOutlined className="card-icon" color="blue" />
-              </div>
-            </Col>
-            <Col span={18}>
-              <div>
-                <div className="header">Number of Invoices</div>
-                <div className="card-body">{numberOfInvoices}</div>
-              </div>
-            </Col>
-          </Row>
-        </Card>
-        <Card style={{ width: 500 }}>
-          <Row gutter={[8, 18]}>
-            <Col span={6}>
-              <div className="icons">
-                <FileProtectOutlined className="card-icon" />
-              </div>
-            </Col>
-            <Col span={18}>
-              <div className="header">Paid invoices</div>
-              <div className="card-body">
-                {numberOfPaidInvoices} / {numberOfInvoices}
-              </div>
-            </Col>
-          </Row>
-        </Card>
-        <Card style={{ width: 500 }}>
-          <Row gutter={[8, 18]}>
-            <Col span={6}>
-              <div className="icons">
-                <MoneyCollectOutlined className="card-icon" />
-              </div>
-            </Col>
-            <Col span={18}>
-              <div className="header">Total Revenue made</div>
-              <div className="card-body">{totalRevenue}</div>
-            </Col>
-          </Row>
-        </Card>
-      </div>
-      <>
-        <Row gutter={[12, 12]} className="mx-2 my-2">
-          <Col span={12}>
-            <Card>
-              {revenue ? (
-                <Bar options={revenueOptions} data={revenue} />
-              ) : (<div>Revenue data not found</div>)}
-            </Card>
-          </Col>
-          <Col span={12}>
-            <Card>
-              <Row>
-                <Col span={12}>
-                  <Pie data={getPieData(pieData)} />
+      {loading ? (
+        <div className="home-container">
+          <LoadingOutlined />
+        </div>
+      ) : (
+        <div className="home-container">
+          <div className="cards mx-2 my-2">
+            <Card style={{ width: 500 }}>
+              <Row gutter={[8, 18]}>
+                <Col span={6}>
+                  <div className="icons">
+                    <FileTextOutlined className="card-icon" color="blue" />
+                  </div>
                 </Col>
-                <Col span={12}>
-                    {lineData ? (
-                      <Bar options={options} data={lineData} />
-                    ): <div>Failed to load data</div>}
+                <Col span={18}>
+                  <div>
+                    <div className="header">Number of Invoices</div>
+                    <div className="card-body">{numberOfInvoices}</div>
+                  </div>
                 </Col>
               </Row>
             </Card>
-          </Col>
-        </Row>
-      </>
-    </div>  
-      )}    
+            <Card style={{ width: 500 }}>
+              <Row gutter={[8, 18]}>
+                <Col span={6}>
+                  <div className="icons">
+                    <FileProtectOutlined className="card-icon" />
+                  </div>
+                </Col>
+                <Col span={18}>
+                  <div className="header">Paid invoices</div>
+                  <div className="card-body">
+                    {numberOfPaidInvoices} / {numberOfInvoices}
+                  </div>
+                </Col>
+              </Row>
+            </Card>
+            <Card style={{ width: 500 }}>
+              <Row gutter={[8, 18]}>
+                <Col span={6}>
+                  <div className="icons">
+                    <MoneyCollectOutlined className="card-icon" />
+                  </div>
+                </Col>
+                <Col span={18}>
+                  <div className="header">Total Revenue made</div>
+                  <div className="card-body">{totalRevenue}</div>
+                </Col>
+              </Row>
+            </Card>
+          </div>
+          <>
+            <Row gutter={[12, 12]} className="mx-2 my-2">
+              <Col span={12}>
+                <Card>
+                  {revenue ? (
+                    <Bar options={revenueOptions} data={revenue} />
+                  ) : (
+                    <div>Revenue data not found</div>
+                  )}
+                </Card>
+              </Col>
+              <Col span={12}>
+                <Card>
+                  <Row>
+                    <Col span={12}>
+                      <Pie data={getPieData(pieData)} />
+                    </Col>
+                    <Col span={12}>
+                      {lineData ? (
+                        <Bar options={options} data={lineData} />
+                      ) : (
+                        <div>Failed to load data</div>
+                      )}
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+            </Row>
+          </>
+        </div>
+      )}
     </>
   );
 }

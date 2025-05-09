@@ -21,7 +21,7 @@ export default function Edit() {
   const [file, setFile] = React.useState<any>();
 
   const updateProfile = useStoreActions<Model>(
-    (action) => action.updateProfile
+    (action) => action.updateProfile,
   );
 
   const handleUpdateFirstName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,7 +30,7 @@ export default function Edit() {
   };
 
   const handleUpdateLastName = async (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const value = e.currentTarget.value;
     setLastName(value);
@@ -48,7 +48,7 @@ export default function Edit() {
         });
       } else {
         // update global state
-        updateProfile({ type: 'NAMES', firstName, lastName });
+        updateProfile({ type: "NAMES", firstName, lastName });
         navigate("/profile");
         Notification.success({
           message: "Successfully update profile information",
@@ -73,7 +73,7 @@ export default function Edit() {
         });
       } else {
         navigate("/profile");
-        updateProfile({ type: 'PROFILE', avatar: response.data.url })
+        updateProfile({ type: "PROFILE", avatar: response.data.url });
         Notification.success({
           message: "Successfully update profile information",
         });
@@ -87,48 +87,52 @@ export default function Edit() {
   };
 
   return (
-      <div className="profile-container-edit">
-        <div className="container-container">
-          <div className="image-container">
-            <img src={location.state.avatar} className="image" />
-            <div className="pencil-container">
-              <EditOutlined size={40} />
-            </div>
-          </div>
-          <input
-            className="form-control"
-            type="file"
-            id="formFile"
-            onChange={handleChange}
-          />
-          <div className="details">
-            <div className="form-group">
-              <label>First Name</label>
-              <input
-                name="firstName"
-                placeholder="First Name"
-                value={firstName}
-                onChange={handleUpdateFirstName}
-                className="form-control"
-              />
-            </div>
-            <div className="form-group">
-              <label>Last Name</label>
-              <input
-                name="lastName"
-                placeholder="Last Name"
-                value={lastName}
-                onChange={handleUpdateLastName}
-                className="form-control"
-              />
-            </div>
-          </div>
-          <div className="edit-container">
-            <Button state="primary" type="button" onClick={handleUpdatingInformation}>
-              Update Profile
-            </Button>
+    <div className="profile-container-edit">
+      <div className="container-container">
+        <div className="image-container">
+          <img src={location.state.avatar} className="image" />
+          <div className="pencil-container">
+            <EditOutlined size={40} />
           </div>
         </div>
+        <input
+          className="form-control"
+          type="file"
+          id="formFile"
+          onChange={handleChange}
+        />
+        <div className="details">
+          <div className="form-group">
+            <label>First Name</label>
+            <input
+              name="firstName"
+              placeholder="First Name"
+              value={firstName}
+              onChange={handleUpdateFirstName}
+              className="form-control"
+            />
+          </div>
+          <div className="form-group">
+            <label>Last Name</label>
+            <input
+              name="lastName"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={handleUpdateLastName}
+              className="form-control"
+            />
+          </div>
+        </div>
+        <div className="edit-container">
+          <Button
+            state="primary"
+            type="button"
+            onClick={handleUpdatingInformation}
+          >
+            Update Profile
+          </Button>
+        </div>
       </div>
+    </div>
   );
 }

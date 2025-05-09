@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from "framer-motion";
 
 import "./SignUp.scss";
 
@@ -13,19 +13,18 @@ type FirstInputs = {
   email: string;
 };
 
-
 export default function SingUp() {
   const [onNext, setOnNext] = React.useState(false);
   const [firstDate, setFirstData] = React.useState<FirstInputs>({
-    firstName: '',
-    lastName: '',
-    email: ''
-  })
+    firstName: "",
+    lastName: "",
+    email: "",
+  });
 
   const handleNavigateNext = (data: FirstInputs) => {
     setFirstData(data);
     setOnNext(!onNext);
-  }
+  };
 
   return (
     <div className="sign-up-container">
@@ -48,7 +47,7 @@ export default function SingUp() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-             <SecondPartSignUp data={firstDate} />
+              <SecondPartSignUp data={firstDate} />
             </motion.div>
           </AnimatePresence>
         )}

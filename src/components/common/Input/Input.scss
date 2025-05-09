@@ -1,4 +1,4 @@
-@import "../../../scss/utils";
+@import "../../../scss/variables";
 
 input.form-control {
   min-width: 400px;
@@ -13,7 +13,7 @@ input.form-control {
     height: 120px;
     animation: spin 2s linear infinite;
   }
-  border: 1px solid $primary-color;
+  border: 1px solid $primary;
   @keyframes spin {
     0% {
       transform: rotate(0deg);
@@ -26,5 +26,5 @@ input.form-control {
 
 label.label {
   font-weight: 400;
-  color: $primary-color;
+  color: $primary;
 }

@@ -13,8 +13,8 @@ export default function ChangePassword() {
   const [isSecond, setIsSecond] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [otp, setOtp] = React.useState("");
-  const [password1, setPassword1] = React.useState('');
-  const [password2, setPassword2] = React.useState('');
+  const [password1, setPassword1] = React.useState("");
+  const [password2, setPassword2] = React.useState("");
   const [eyeToggle, setEyeToggle] = React.useState(false);
 
   const navigate = useNavigate();
@@ -35,33 +35,33 @@ export default function ChangePassword() {
   };
   const handleSubmit = async (event: React.SyntheticEvent) => {
     try {
-        event.preventDefault();
-        setLoading(true);
-        const response = await Server.Auth.changePassword({
-          password1,
-          password2,
-          otp
-        });
-        if (!response.data.success) {
-          setLoading(false);
-          Notification.error({
-            message: response.data.message,
-          });
-        } else {
-          setLoading(false);
-          navigate("/login");
-          Notification.success({
-            message: response.data.message,
-          });
-        }
-      } catch (error) {
+      event.preventDefault();
+      setLoading(true);
+      const response = await Server.Auth.changePassword({
+        password1,
+        password2,
+        otp,
+      });
+      if (!response.data.success) {
         setLoading(false);
-        console.log(error);
         Notification.error({
-          message: "Something went wrong please try again later",
+          message: response.data.message,
+        });
+      } else {
+        setLoading(false);
+        navigate("/login");
+        Notification.success({
+          message: response.data.message,
         });
       }
-  }
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+      Notification.error({
+        message: "Something went wrong please try again later",
+      });
+    }
+  };
   return (
     <div className="change-password-container">
       <header className="header">Change Password</header>
@@ -97,7 +97,7 @@ export default function ChangePassword() {
               </label>
               <input
                 type="password"
-                className='form-control'
+                className="form-control"
                 placeholder="Enter your password"
                 value={password1}
                 onChange={(val) => setPassword1(val.target.value)}
@@ -109,7 +109,7 @@ export default function ChangePassword() {
               </label>
               <input
                 type="password"
-                className='form-control'
+                className="form-control"
                 placeholder="Enter your password"
                 value={password2}
                 onChange={(val) => setPassword2(val.target.value)}
@@ -117,7 +117,7 @@ export default function ChangePassword() {
             </div>
             <div className="form-group">
               <button className="btn btn-primary btn-lg" onClick={handleSubmit}>
-                { loading ? 'Loading ...' : 'Submit' }
+                {loading ? "Loading ..." : "Submit"}
               </button>
             </div>
           </form>

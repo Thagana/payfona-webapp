@@ -1,1 +1,1 @@
-export {default} from './CreateInvoice';
+export { default } from "./CreateInvoice";

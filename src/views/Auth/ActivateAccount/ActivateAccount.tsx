@@ -3,15 +3,15 @@ import { useNavigate } from "react-router-dom";
 import Notification from "antd/es/notification";
 import "./ActivateAccount.scss";
 import Server from "../../../networking/server";
-import OtpInput from 'react-otp-input';
+import OtpInput from "react-otp-input";
 
 type Inputs = {
-  activate: string
+  activate: string;
 };
 
 export default function ActivateAccount() {
   const [loading, setLoading] = React.useState(false);
-  const [otp, setOtp] = React.useState('');
+  const [otp, setOtp] = React.useState("");
 
   const navigate = useNavigate();
   const onSubmit = async (event: React.SyntheticEvent) => {
@@ -40,20 +40,19 @@ export default function ActivateAccount() {
     }
   };
 
-
   return (
     <div className="activate-container">
       <header className="header">Activate Account</header>
       <div className="form-container">
         <form className="form" onSubmit={onSubmit}>
           <div className="form-group d-flex">
-          <OtpInput
+            <OtpInput
               value={otp}
               onChange={setOtp}
               numInputs={4}
               inputStyle={{
                 width: 70,
-                height: 70
+                height: 70,
               }}
               renderSeparator={<span>-</span>}
               renderInput={(props) => <input {...props} />}

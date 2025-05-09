@@ -1,1 +1,1 @@
-export {default} from './NoInvoiceGui';
+export { default } from "./NoInvoiceGui";
