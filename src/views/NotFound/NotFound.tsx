@@ -1,7 +1,5 @@
-import * as React from 'react'
+import * as React from "react";
 
 export default function NotFound() {
-  return (
-    <div>NotFound</div>
-  )
+  return <div>NotFound</div>;
 }

@@ -21,7 +21,7 @@ export class Auth {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
   }
   static registerUser(data: {
@@ -32,14 +32,15 @@ export class Auth {
     phoneNumber: string;
     businessName: string;
   }) {
-    const { firstName, lastName, email, password, phoneNumber, businessName } = data;
+    const { firstName, lastName, email, password, phoneNumber, businessName } =
+      data;
     return Axios.post("/auth/register", {
       firstName,
       lastName,
       email,
       password,
       phoneNumber,
-      businessName
+      businessName,
     });
   }
   static updateImage(uri: string, name: string, token: string) {
@@ -53,7 +54,7 @@ export class Auth {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
   }
   static async signInUser(data: { email: string; password: string }) {
@@ -64,17 +65,21 @@ export class Auth {
     });
   }
   static async requestChangePassword(data: { email: string }) {
-    const {email} = data;
-    return Axios.post('/auth/password_request', {
-      email
-    })
+    const { email } = data;
+    return Axios.post("/auth/password_request", {
+      email,
+    });
   }
-  static async changePassword(data: { password1: string, password2: string, otp: string }) {
+  static async changePassword(data: {
+    password1: string;
+    password2: string;
+    otp: string;
+  }) {
     const { password1, password2, otp } = data;
-    return Axios.post('/auth/update_password', {
+    return Axios.post("/auth/update_password", {
       password: password1,
       password1: password2,
-      token: otp
-    })
+      token: otp,
+    });
   }
 }

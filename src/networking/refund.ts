@@ -1,7 +1,7 @@
-import Axios from './adaptor';
+import Axios from "./adaptor";
 
 export class Refund {
-    static fetchRefunds() {
-        return Axios.get('/refund');
-    }
+  static fetchRefunds() {
+    return Axios.get("/refund");
+  }
 }

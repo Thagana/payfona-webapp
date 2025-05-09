@@ -1,1 +1,1 @@
-export {default} from './PayView';
+export { default } from "./PayView";

@@ -3,15 +3,14 @@ import Invoice from "../Invoice";
 import "./Invoices.scss";
 
 type Invoices = {
-  status: 'PENDING' | 'PAID' | 'DRAFT',
+  status: "PENDING" | "PAID" | "DRAFT";
   total: number;
   invoiceNumber: string;
   name: string;
   email: string;
   date: string;
   invoiceId: string;
-}
-
+};
 
 type Props = {
   data: {
@@ -23,8 +22,8 @@ type Props = {
     hasPreviousPage: boolean;
     nextPage: number | null;
     previousPage: number | null;
-  }
-}
+  };
+};
 
 export default function Invoices(props: Props) {
   const { invoices, totalItems } = props.data;

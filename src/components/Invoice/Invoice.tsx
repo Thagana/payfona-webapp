@@ -27,7 +27,7 @@ interface Invoice {
   };
   invoice_number: string;
   invoice_date: string;
-  payment_link: string,
+  payment_link: string;
   logo: string;
   items: {
     key: string;
@@ -35,26 +35,34 @@ interface Invoice {
     quantity: number;
     price: number;
     amount: number;
-  }[]
-  currency: "ZAR" | "USD"
+  }[];
+  currency: "ZAR" | "USD";
 }
 
 type Props = {
-  status: "PENDING" | "PAID" | "DRAFT"
-  name: string
-  total: number
-  invoiceNumber: string
-  email: string
-  date: string
-  invoiceId: string
-}
+  status: "PENDING" | "PAID" | "DRAFT";
+  name: string;
+  total: number;
+  invoiceNumber: string;
+  email: string;
+  date: string;
+  invoiceId: string;
+};
 
 export default function Invoice(props: Props) {
   const search = queryString.parse(useLocation().search) as unknown as {
     payload: string;
   };
   const payload = JSON.parse(search.payload) as Invoice;
-  const { to, from, invoice_date, invoice_number, items, payment_link, currency } = payload
+  const {
+    to,
+    from,
+    invoice_date,
+    invoice_number,
+    items,
+    payment_link,
+    currency,
+  } = payload;
 
   const columns: ColumnsType<DataType> = [
     {
@@ -90,7 +98,11 @@ export default function Invoice(props: Props) {
           </div>
           <div className="logo-container">
             <img
-              src={payload.logo ? payload.logo : "https://avatars.githubusercontent.com/u/68122202?s=400&u=4abc9827a8ca8b9c19b06b9c5c7643c87da51e10&v=4"}
+              src={
+                payload.logo
+                  ? payload.logo
+                  : "https://avatars.githubusercontent.com/u/68122202?s=400&u=4abc9827a8ca8b9c19b06b9c5c7643c87da51e10&v=4"
+              }
               className="logo"
             />
           </div>
@@ -118,17 +130,20 @@ export default function Invoice(props: Props) {
         </div>
         <div className="sub-table">
           <div className="total">
-            Total: {currency} {' '}
+            Total: {currency}{" "}
             {data.reduce((a, b) => {
               return a + b.price * b.quantity;
             }, 0)}
           </div>
         </div>
         <div className="pay-now-link">
-          <a href={payment_link} className="pay-now-link">Pay Now!</a>
+          <a href={payment_link} className="pay-now-link">
+            Pay Now!
+          </a>
         </div>
         <div className="invoice-footer">
-          Copy right reserved for company @ payfona.com {new Date().getFullYear()}
+          Copy right reserved for company @ payfona.com{" "}
+          {new Date().getFullYear()}
         </div>
       </div>
     </div>

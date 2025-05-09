@@ -1,89 +1,89 @@
-@import '../../../scss/utils';
+@import "../../../scss/utils";
 
 .wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    font-family: $font-family;
-    background-color: #fff;
-    margin: 0px 60px;
-    .wrapper-invoice {
-      .header {
-        padding: 10px;
-        display: flex;
-        justify-content: space-between;
-        .title {
-          font-size: 26px;
-        }
-        .logo-container {
-          .logo {
-            width: 200px;
-            height: 200px;
-          }
-        }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  font-family: $font-family;
+  background-color: #fff;
+  margin: 0px 60px;
+  .wrapper-invoice {
+    .header {
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      .title {
+        font-size: 26px;
       }
-      .details-container {
-        display: flex;
-        align-items: center;
-        gap: 50px;
-        padding: 15px 0px;
-        .details-from {
-          .from {
-            font-weight: lighter;
-          }
-          .name {
-            font-weight: 600;
-            font-size: larger;
-          }
-        }
-        .details-for {
-          .for {
-            font-weight: lighter;
-          }
-          .name {
-            font-weight: 600;
-          }
+      .logo-container {
+        .logo {
+          width: 200px;
+          height: 200px;
         }
       }
-      .invoice-items {
-        table.table {
-          .item.form-control {
-            width: 10px;
-            min-width: 600px;
-          }
-          .price.form-control {
-            width: 10px;
-            min-width: 150px;
-          }
-          .amount.form-control {
-            width: 10px;
-            min-width: 120px;
-          }
-          .quantity.form-control {
-            width: 10px;
-            min-width: 90px;
-          }
-        }
-      }
-      .invoice-meta {
-        padding: 15px 0px;
-      }
-      .sub-table {
-        display: flex;
-        justify-content: flex-end;
-        padding: 10px 0px;
-      }
-      .pay-now-link {
-        padding: 10px 0px;
-        line-height: 40px;
-        text-align: center;
-      }
-      .invoice-footer {
-        text-align: center;
-      }   
     }
+    .details-container {
+      display: flex;
+      align-items: center;
+      gap: 50px;
+      padding: 15px 0px;
+      .details-from {
+        .from {
+          font-weight: lighter;
+        }
+        .name {
+          font-weight: 600;
+          font-size: larger;
+        }
+      }
+      .details-for {
+        .for {
+          font-weight: lighter;
+        }
+        .name {
+          font-weight: 600;
+        }
+      }
+    }
+    .invoice-items {
+      table.table {
+        .item.form-control {
+          width: 10px;
+          min-width: 600px;
+        }
+        .price.form-control {
+          width: 10px;
+          min-width: 150px;
+        }
+        .amount.form-control {
+          width: 10px;
+          min-width: 120px;
+        }
+        .quantity.form-control {
+          width: 10px;
+          min-width: 90px;
+        }
+      }
+    }
+    .invoice-meta {
+      padding: 15px 0px;
+    }
+    .sub-table {
+      display: flex;
+      justify-content: flex-end;
+      padding: 10px 0px;
+    }
+    .pay-now-link {
+      padding: 10px 0px;
+      line-height: 40px;
+      text-align: center;
+    }
+    .invoice-footer {
+      text-align: center;
+    }
+  }
 }
 
 .modal-content {

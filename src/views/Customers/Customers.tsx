@@ -6,16 +6,12 @@ import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import {
   DeleteFilled,
-  DeleteOutlined,
   EyeFilled,
-  LoadingOutlined,
   PlusOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { useQuery, useMutation } from "@tanstack/react-query";
-
-const { Text } = Typography;
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import Axios from "../../networking/adaptor";
 
@@ -29,13 +25,44 @@ export default function Customer() {
   const [searchText, setSearchText] = React.useState("");
   const [searchedColumn, setSearchedColumn] = React.useState("");
   const searchInput = React.useRef<InputRef>(null);
+  const ref = React.useRef();
 
-  const { isPending, isError, isSuccess, mutate } = useMutation({
+  // Get QueryClient from the context
+  const queryClient = useQueryClient();
+
+  const {
+    isPending: isMutationPeding,
+    isError: isMutationError,
+    isSuccess: isMutationSuccess,
+    mutate,
+  } = useMutation({
     mutationFn: (id: number) => {
       return Axios.delete(`/customer/${id}`);
     },
+    // Add onSuccess callback to invalidate and refetch customers query
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+      notification.open({
+        message: "Customer deleted successfully",
+        type: "success",
+      });
+    },
+    onError: (error) => {
+      notification.open({
+        message: "Something went wrong trying to delete customer",
+        type: "error",
+      });
+    },
   });
-  const customers = useQuery({
+
+  const {
+    isError: isQueryError,
+    isSuccess: isQuerySuccess,
+    isPending: isQueryPending,
+    isFetching: isQueryFetching,
+    data,
+    isLoading: isQueryLoading,
+  } = useQuery({
     queryKey: ["customers"],
     queryFn: async () => {
       return Axios.get("/customer");
@@ -47,7 +74,7 @@ export default function Customer() {
   const handleSearch = (
     selectedKeys: string[],
     confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: DataIndex
+    dataIndex: DataIndex,
   ) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -60,7 +87,7 @@ export default function Customer() {
   };
 
   const getColumnSearchProps = (
-    dataIndex: DataIndex
+    dataIndex: DataIndex,
   ): ColumnType<DataType> => ({
     filterDropdown: ({
       setSelectedKeys,
@@ -140,6 +167,7 @@ export default function Customer() {
     render: (text: string) =>
       searchedColumn === dataIndex ? (
         <Highlighter
+          ref={ref}
           highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
           searchWords={[searchText]}
           autoEscape
@@ -150,28 +178,13 @@ export default function Customer() {
       ),
   });
 
-  const handleDeleteCustomer = async (id: number) => {
-    try {
-      mutate(id);
-    } catch (error) {
-      notification.open({
-        message: "Something went wrong trying to delete customer",
-        type: "error",
-      });
-    }
+  const handleDeleteCustomer = (id: number) => {
+    mutate(id);
   };
 
-
-  const handleEdit = async (id: number) => {
-    try {
-      navigation(`/customers/create/${id}`)
-    } catch (error) {
-      notification.open({
-        message: "Something went wrong trying to delete customer",
-        type: "error",
-      });
-    }
-  }
+  const handleEdit = (id: number) => {
+    navigation(`/customers/create/${id}`);
+  };
 
   const columns: ColumnsType<DataType> = [
     {
@@ -212,9 +225,13 @@ export default function Customer() {
             icon={<DeleteFilled color="red" />}
             onClick={() => handleDeleteCustomer(record.id)}
           >
-              Delete
+            Delete
           </Button>
-          <Button type="default" icon={<EyeFilled />} onClick={() => handleEdit(record.id)}>
+          <Button
+            type="default"
+            icon={<EyeFilled />}
+            onClick={() => handleEdit(record.id)}
+          >
             Edit
           </Button>
         </Space>
@@ -243,8 +260,8 @@ export default function Customer() {
       <div className="table">
         <Table
           columns={columns}
-          dataSource={customers?.data?.data?.data}
-          loading={customers.isLoading}
+          dataSource={data?.data?.data}
+          loading={isQueryLoading || isMutationPeding}
         />
       </div>
     </div>
