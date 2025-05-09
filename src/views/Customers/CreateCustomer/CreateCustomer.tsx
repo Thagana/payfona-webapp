@@ -86,10 +86,12 @@ export default function CreateCustomer() {
               />
               {errors.phoneNumber && <span>Phone Number is required</span>}
             </div>
-            <div className="form-group">
-              <button className="btn btn-priamry">
-                {mutation.isPending ? "Loading ..." : "Submit"}
-              </button>
+            <div className="row py-2">
+              <div className="col-md-12">
+                <button className="btn btn-primary btn-block">
+                  {mutation.isPending ? "Loading ..." : "Submit"}
+                </button>
+              </div>
             </div>
           </form>
         </div>

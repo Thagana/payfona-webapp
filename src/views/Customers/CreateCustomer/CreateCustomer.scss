@@ -3,46 +3,4 @@
   height: 100vh;
   align-items: center;
   justify-content: center;
-  .customer-form-card {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-
-    .card-title {
-      text-align: center;
-      margin-bottom: 1rem;
-      color: #1677ff;
-    }
-
-    .ant-form-item-label {
-      font-weight: 500;
-    }
-
-    .ant-input-affix-wrapper {
-      border-radius: 6px;
-
-      .site-form-item-icon {
-        color: #bfbfbf;
-      }
-    }
-
-    .submit-button-container {
-      margin-top: 1.5rem;
-    }
-
-    .ant-btn {
-      height: 45px;
-      border-radius: 6px;
-      font-weight: 500;
-
-      &.ant-btn-primary {
-        background-color: #1677ff;
-
-        &:hover {
-          background-color: #4096ff;
-        }
-      }
-    }
-  }
 }
