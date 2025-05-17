@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Layout, Menu, Button } from "antd";
 import {
   MenuUnfoldOutlined,
@@ -22,7 +22,6 @@ const { Header, Sider, Content } = Layout;
 const MianLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [isOnline, setOnline] = useState(navigator.onLine);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const handleOnlineStatus = () => setOnline(navigator.onLine);
@@ -45,44 +44,42 @@ const MianLayout: React.FC = () => {
     );
   }
 
+  const logOutHandler = () => {
+    //
+  };
+
   const menuItems = [
-    { key: "1", label: "Dashboard", icon: <LineChartOutlined />, path: "/" },
+    { key: "/", label: <Link to="/">Home</Link>, icon: <LineChartOutlined /> },
     {
-      key: "2",
-      label: "Customers",
+      key: "/customers",
+      label: <Link to="/customers">Customers</Link>,
       icon: <AccountBookOutlined />,
-      path: "/customers",
     },
     {
-      key: "3",
-      label: "Invoice",
+      key: "/invoices",
+      label: <Link to="/invoices">Invoices</Link>,
       icon: <MoneyCollectOutlined />,
-      path: "/invoices",
     },
     {
-      key: "7",
-      label: "Invoice Refunds",
+      key: "/invoice-refunds",
+      label: <Link to="/invoice-refunds">Invoice Refunds</Link>,
       icon: <RollbackOutlined />,
-      path: "/invoice-refunds",
     },
     {
-      key: "4",
-      label: "Subscriptions",
+      key: "/subscriptions",
+      label: <Link to="/subscriptions">Subscriptions</Link>,
       icon: <AccountBookOutlined />,
-      path: "/subscriptions",
+      path: "subscriptions",
     },
     {
-      key: "5",
-      label: "Bank Accounts",
+      key: "/accounts",
+      label: <Link to="/accounts">Bank Accounts</Link>,
       icon: <BankOutlined />,
-      path: "/accounts",
     },
     {
-      key: "6",
-      label: "Log Out",
+      key: "logout",
+      label: <Button onClick={logOutHandler}>Logout</Button>,
       icon: <LogoutOutlined />,
-      path: "/login",
-      logout: true,
     },
   ];
 
@@ -97,20 +94,7 @@ const MianLayout: React.FC = () => {
         <div className="logo">
           <img src={image} className="brand-logo" alt="Northern Breeze" />
         </div>
-        <Menu mode="vertical">
-          {menuItems.map(({ key, label, icon, path, logout }) => (
-            <Menu.Item
-              key={key}
-              icon={icon}
-              onClick={() => {
-                if (logout) localStorage.clear();
-                navigate(path);
-              }}
-            >
-              {label}
-            </Menu.Item>
-          ))}
-        </Menu>
+        <Menu items={menuItems} />
       </Sider>
       <Layout className="site-layout">
         <Header

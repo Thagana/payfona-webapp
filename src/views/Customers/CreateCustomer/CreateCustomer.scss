@@ -1,6 +1,8 @@
-.create-customer-container {
-  background-color: #fff;
-  height: 100vh;
+@import "../../../scss/forms";
+
+.create-customer {
+  display: flex;
   align-items: center;
   justify-content: center;
+  height: 70vh;
 }

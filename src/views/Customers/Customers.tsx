@@ -39,7 +39,6 @@ export default function Customer() {
     mutationFn: (id: number) => {
       return Axios.delete(`/customer/${id}`);
     },
-    // Add onSuccess callback to invalidate and refetch customers query
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       notification.open({
@@ -220,20 +219,20 @@ export default function Customer() {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button
-            type="primary"
-            icon={<DeleteFilled color="red" />}
+          <button
+            className="btn btn-icon bg-danger text-white"
             onClick={() => handleDeleteCustomer(record.id)}
           >
+            <DeleteFilled color="red" />
             Delete
-          </Button>
-          <Button
-            type="default"
-            icon={<EyeFilled />}
+          </button>
+          <button
+            className="btn bg-light btn-icon btn-outline-primary"
             onClick={() => handleEdit(record.id)}
           >
+            <EyeFilled />
             Edit
-          </Button>
+          </button>
         </Space>
       ),
     },
@@ -247,14 +246,13 @@ export default function Customer() {
     <div className="customer-container">
       <div className="row p-2">
         <div className="col-md-12">
-          <Button
+          <button
             onClick={handleAddCustomer}
-            type="primary"
-            size="large"
-            icon={<PlusOutlined />}
+            className="btn btn-primary btn-icon"
           >
+            <PlusOutlined />
             Customer
-          </Button>
+          </button>
         </div>
       </div>
       <div className="table">

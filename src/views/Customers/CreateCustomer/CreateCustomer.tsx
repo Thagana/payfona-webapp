@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useMutation, QueryClient } from "@tanstack/react-query";
-import { Input, Typography } from "antd";
+import { Input, Typography, notification } from "antd";
 
 const { Text } = Typography;
 
@@ -26,76 +26,74 @@ export default function CreateCustomer() {
     formState: { errors },
   } = useForm<FormData>();
   const navigation = useNavigate();
-  const mutation = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async (data: FormData) => {
       return await Axios.post("/customer", data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
-      navigation("customers");
+      navigation("/customers");
+    },
+    onError: () => {
+      notification.open({
+        message: "Failed to create customer",
+      });
     },
   });
 
   const onSubmit = async (data: FormData) => {
-    mutation.mutate(data);
-    navigation("/customers");
+    mutate(data);
   };
 
   return (
-    <div className="container">
-      <div className="row">
-        <div className="col-md-12">
-          <form className="form" onSubmit={handleSubmit(onSubmit)}>
-            <div className="form-group">
-              <label className="label">First Name</label>
-              <Input
-                {...register("firstName")}
-                type="text"
-                name="firstName"
-                className="form-control"
-              />
-              {errors.firstName && <Text>First Name is Required</Text>}
-            </div>
-            <div className="form-group">
-              <label className="label">Last Name</label>
-              <Input
-                type="text"
-                {...register("lastName")}
-                name="lastName"
-                className="form-control"
-              />
-              {errors.lastName && <span>Last Name is required</span>}
-            </div>
-            <div className="form-group">
-              <label className="label">Email</label>
-              <Input
-                type="email"
-                {...register("email")}
-                name="email"
-                className="form-control"
-              />
-              {errors.email && <span>Email is required</span>}
-            </div>
-            <div className="form-group">
-              <label className="label">Phone Number</label>
-              <Input
-                type="text"
-                {...register("phoneNumber")}
-                name="phoneNumber"
-                className="form-control"
-              />
-              {errors.phoneNumber && <span>Phone Number is required</span>}
-            </div>
-            <div className="row py-2">
-              <div className="col-md-12">
-                <button className="btn btn-primary btn-block">
-                  {mutation.isPending ? "Loading ..." : "Submit"}
-                </button>
-              </div>
-            </div>
-          </form>
+    <div className="container-fluid create-customer">
+      <form className="form" onSubmit={handleSubmit(onSubmit)}>
+        <div className="form-group">
+          <input
+            placeholder="First Name"
+            {...register("firstName", { required: true })}
+            type="text"
+            name="firstName"
+            className="form-control"
+          />
+          {errors.firstName && <Text>First Name is Required</Text>}
         </div>
-      </div>
+        <div className="form-group">
+          <input
+            placeholder="Last Name"
+            type="text"
+            {...register("lastName", { required: true })}
+            name="lastName"
+            className="form-control"
+          />
+          {errors.lastName && <span>Last Name is required</span>}
+        </div>
+        <div className="form-group">
+          <input
+            placeholder="Email"
+            type="email"
+            {...register("email", { required: true })}
+            name="email"
+            className="form-control"
+          />
+          {errors.email && <span>Email is required</span>}
+        </div>
+        <div className="form-group">
+          <input
+            placeholder="Phone Number"
+            type="text"
+            {...register("phoneNumber", { required: true })}
+            name="phoneNumber"
+            className="form-control"
+          />
+          {errors.phoneNumber && <span>Phone Number is required</span>}
+        </div>
+        <div className="form-group">
+          <button className="btn btn-primary p-2">
+            {isPending ? "Loading ..." : "Submit"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }

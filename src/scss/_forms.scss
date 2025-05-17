@@ -3,12 +3,16 @@
 
 @import "./variables";
 
+.form-group {
+  padding: 0.25rem 0.75rem;
+}
+
 // Base form control
 .form-control {
   font-family: $font-family-base;
   border-radius: $border-radius;
   border: 1px solid lighten($primary, 40%);
-  padding: 0.5rem 0.75rem;
+  padding: 1.25rem;
   transition:
     border-color 0.15s ease-in-out,
     box-shadow 0.15s ease-in-out;
@@ -19,7 +23,7 @@
   }
 
   &::placeholder {
-    color: lighten($primary, 50%);
+    color: $primary;
     opacity: 0.75;
   }
 
@@ -238,4 +242,10 @@ select.form-select {
   flex-wrap: wrap;
   align-items: center;
   gap: 1rem;
+}
+
+.form-group {
+  .btn {
+    width: 100%;
+  }
 }

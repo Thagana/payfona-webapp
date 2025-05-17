@@ -32,11 +32,10 @@ export default function Invoice() {
   const navigate = useNavigate();
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
   const [isOpenInvoiceDetails, setIsOpenInvoiceDetails] = React.useState(false);
-  const [selectedRecord, setSelectedInvoice] = React.useState<InvoiceType>();
   const [page, setPage] = React.useState<number>(1);
   const [limit, setLimit] = React.useState<number>(10);
 
-  const { data, error, isError, isLoading } = useQuery<{
+  const { data, isLoading } = useQuery<{
     data: {
       data: {
         invoices: InvoiceType[];
@@ -190,90 +189,11 @@ export default function Invoice() {
       </div>
       <Table
         rowSelection={rowSelection}
-        onRow={(record) => ({
-          onClick: () => {
-            setIsOpenInvoiceDetails(!isOpenInvoiceDetails);
-            setSelectedInvoice(record);
-          },
-        })}
         columns={columns}
         rowKey={(record) => record.invoiceId}
         dataSource={data?.data.data.invoices}
         loading={isLoading}
       />
-      <Drawer
-        title={`Invoice ${selectedRecord?.invoiceNumber}`}
-        placement="right"
-        onClose={onClose}
-        open={isOpenInvoiceDetails}
-        className="invoice-drawer"
-      >
-        <div className="invoice-details">
-          <div className="row-item">
-            <span>
-              <UserOutlined />
-            </span>
-            <span>{selectedRecord?.name}</span>
-          </div>
-          <div className="row-item">
-            <span>Amount Due</span>
-            <span>
-              {selectedRecord?.currency} {selectedRecord?.total}
-            </span>
-          </div>
-          <div className="row-item">
-            <span>Invoice Created</span>
-            <span>
-              {format(
-                new Date(selectedRecord?.createdAt || "2008/06/06"),
-                "y/M/d",
-              )}
-            </span>
-          </div>
-          <div className="row-item">
-            <span>Invoice Due</span>
-            <span>
-              {format(new Date(selectedRecord?.date || "2008/06/06"), "y/M/d")}
-            </span>
-          </div>
-          <div className="row-item">
-            <span>Status</span>
-            <span>
-              {statusFormatter(
-                selectedRecord?.date,
-                selectedRecord?.status,
-                selectedRecord?.paidAt,
-              )}
-            </span>
-          </div>
-          <div className="row-item">
-            <span>Method</span>
-            <span>
-              {selectedRecord?.banking.channel} {selectedRecord?.banking.brand}{" "}
-              ********{selectedRecord?.banking.last4}
-            </span>
-          </div>
-          <Divider />
-          <div className="row-item">
-            <span>
-              <Button>
-                <RollbackOutlined />
-              </Button>
-            </span>
-            <span className="buttons-inline">
-              <Button
-                onClick={() => handleViewInvoice(selectedRecord?.invoiceId)}
-              >
-                <EyeOutlined />
-              </Button>
-              <Button onClick={downloadInvoice}>
-                <DownloadOutlined />
-              </Button>
-            </span>
-          </div>
-          <Divider />
-        </div>
-      </Drawer>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 // _variables.scss
 // Custom variables to override Bootstrap defaults
-
+@use "sass:color";
 // Colors
 $primary: #31004a;
 $secondary: lighten($primary, 25%); // #6e1aa0
@@ -13,19 +13,20 @@ $light: #f8f9fa;
 $dark: darken($primary, 10%); // #1c002b
 
 // Color shades
-$primary-100: tint-color($primary, 80%);
-$primary-200: tint-color($primary, 60%);
-$primary-300: tint-color($primary, 40%);
-$primary-400: tint-color($primary, 20%);
+$primary-100: lighten($primary, 80%);
+$primary-200: lighten($primary, 60%);
+$primary-300: lighten($primary, 40%);
+$primary-400: lighten($primary, 20%);
 $primary-500: $primary;
-$primary-600: shade-color($primary, 20%);
-$primary-700: shade-color($primary, 40%);
-$primary-800: shade-color($primary, 60%);
-$primary-900: shade-color($primary, 80%);
+$primary-600: darken($primary, 20%);
+$primary-700: darken($primary, 40%);
+$primary-800: darken($primary, 60%);
+$primary-900: darken($primary, 80%);
 
 // Typography
 $font-family-monospace: "Red Hat Mono", monospace;
 $font-family-base: $font-family-monospace;
+$font-family: "Red Hat Mono", monospace;
 $font-weight-normal: 400;
 $font-weight-bold: 700;
 $font-size-base: 1rem;

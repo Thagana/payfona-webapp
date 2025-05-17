@@ -143,7 +143,9 @@ export default function Home() {
                   {revenue ? (
                     <Bar options={revenueOptions} data={revenue} />
                   ) : (
-                    <div>Revenue data not found</div>
+                    <div className="revenue-not-found">
+                      Revenue data not found
+                    </div>
                   )}
                 </Card>
               </Col>
