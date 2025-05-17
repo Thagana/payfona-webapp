@@ -63,6 +63,10 @@ export default function AppRouter() {
             element={<PrivateRoutes component={AddCustomer} />}
           />
           <Route
+            path="/customers/edit/:id"
+            element={<PrivateRoutes component={AddCustomer} />}
+          />
+          <Route
             path="/profile"
             element={<PrivateRoutes component={Profile} />}
           />

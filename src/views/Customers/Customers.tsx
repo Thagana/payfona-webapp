@@ -30,12 +30,7 @@ export default function Customer() {
   // Get QueryClient from the context
   const queryClient = useQueryClient();
 
-  const {
-    isPending: isMutationPeding,
-    isError: isMutationError,
-    isSuccess: isMutationSuccess,
-    mutate,
-  } = useMutation({
+  const { isPending: isMutationPeding, mutate } = useMutation({
     mutationFn: (id: number) => {
       return Axios.delete(`/customer/${id}`);
     },
@@ -166,7 +161,6 @@ export default function Customer() {
     render: (text: string) =>
       searchedColumn === dataIndex ? (
         <Highlighter
-          ref={ref}
           highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
           searchWords={[searchText]}
           autoEscape
@@ -182,7 +176,7 @@ export default function Customer() {
   };
 
   const handleEdit = (id: number) => {
-    navigation(`/customers/create/${id}`);
+    navigation(`/customers/edit/${id}`);
   };
 
   const columns: ColumnsType<DataType> = [
