@@ -1,22 +1,23 @@
 // _variables.scss
 // Custom variables to override Bootstrap defaults
+@use "sass:color";
 
 // Colors
 $primary: #31004a;
-$secondary: lighten($primary, 25%); // #6e1aa0
-$tertiary: lighten($primary, 45%); // #aa53dc
+$secondary: #6e1aa0; // #6e1aa0
+$tertiary: #aa53dc; // #aa53dc
 $success: #198754;
 $info: #0dcaf0;
 $warning: #ffc107;
 $danger: #dc3545;
 $light: #f8f9fa;
-$dark: darken($primary, 10%); // #1c002b
+$dark: #1c002b;
 
 // Color shades
-$primary-100: tint-color($primary, 80%);
-$primary-200: tint-color($primary, 60%);
-$primary-300: tint-color($primary, 40%);
-$primary-400: tint-color($primary, 20%);
+$primary-100: color.mix(white, $primary, 80%);
+$primary-200: color.mix(white, $primary, 60%);
+$primary-300: color.mix(white, $primary, 40%);
+$primary-400: color.mix(white, $primary, 20%);
 $primary-500: $primary;
 $primary-600: shade-color($primary, 20%);
 $primary-700: shade-color($primary, 40%);
@@ -38,7 +39,7 @@ $body-color: $dark;
 // Links
 $link-color: $primary;
 $link-decoration: none;
-$link-hover-color: darken($primary, 15%);
+$link-hover-color: #1c002b;
 $link-hover-decoration: underline;
 
 // Components

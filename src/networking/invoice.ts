@@ -18,7 +18,7 @@ export class Invoice {
     return Adaptor.get("/invoice/dashboard");
   }
   static createInvoice(data: InvoicePayload) {
-    return Adaptor.post("/invoice/create_invoice", data, {
+    return Adaptor.post("/invoice/create-invoice", data, {
       headers: {
         "Content-Type": "application/json",
       },

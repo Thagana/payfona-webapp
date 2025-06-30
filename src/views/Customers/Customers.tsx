@@ -39,7 +39,6 @@ export default function Customer() {
     mutationFn: (id: number) => {
       return Axios.delete(`/customer/${id}`);
     },
-    // Add onSuccess callback to invalidate and refetch customers query
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       notification.open({
@@ -48,6 +47,7 @@ export default function Customer() {
       });
     },
     onError: (error) => {
+      console.error(error);
       notification.open({
         message: "Something went wrong trying to delete customer",
         type: "error",
@@ -69,7 +69,7 @@ export default function Customer() {
     },
   });
 
-  const navigation = useNavigate();
+  const navigate = useNavigate();
 
   const handleSearch = (
     selectedKeys: string[],
@@ -183,7 +183,7 @@ export default function Customer() {
   };
 
   const handleEdit = (id: number) => {
-    navigation(`/customers/create/${id}`);
+    navigate(`/customers/edit/${id}`);
   };
 
   const columns: ColumnsType<DataType> = [
@@ -240,7 +240,7 @@ export default function Customer() {
   ];
 
   const handleAddCustomer = () => {
-    navigation("/customers/create");
+    navigate("/customers/create");
   };
 
   return (

@@ -7,15 +7,14 @@
   idx.extensions = [
     "svelte.svelte-vscode"
     "vue.volar"
+    "Tomi.xajssnippets"
   ];
   idx.previews = {
     previews = {
       web = {
         command = [
-          "npm"
-          "run"
+          "yarn"
           "dev"
-          "--"
           "--port"
           "$PORT"
           "--host"

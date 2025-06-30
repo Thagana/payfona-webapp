@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
-import { useMutation, QueryClient } from "@tanstack/react-query";
-import { Input, Typography } from "antd";
+import { useMutation, QueryClient, useQuery } from "@tanstack/react-query";
+import { Typography } from "antd";
 
 const { Text } = Typography;
 
@@ -8,9 +8,9 @@ import Axios from "../../../networking/adaptor";
 
 const queryClient = new QueryClient();
 
-import "./CreateCustomer.scss";
+import "./Customer.scss";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 type FormData = {
   firstName: string;
@@ -23,32 +23,54 @@ export default function CreateCustomer() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<FormData>();
-  const navigation = useNavigate();
+
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const query = useQuery({
+    queryKey: ["customer", id],
+    queryFn: async () => {
+      return await Axios.get(`/customer/${id}`);
+    },
+  });
+
+  const data = query.data?.data?.data;
+
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
       return await Axios.post("/customer", data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
-      navigation("customers");
+      navigate("/customers");
     },
   });
 
   const onSubmit = async (data: FormData) => {
     mutation.mutate(data);
-    navigation("/customers");
   };
 
+  if (id) {
+    if (data) {
+      const { firstName, lastName, email, phoneNumber } = data;
+      setValue("firstName", firstName);
+      setValue("lastName", lastName);
+      setValue("email", email);
+      setValue("phoneNumber", phoneNumber);
+    }
+  }
+
   return (
-    <div className="container">
+    <div className="h-100 d-flex align-items-center justify-content-center">
       <div className="row">
-        <div className="col-md-12">
-          <form className="form" onSubmit={handleSubmit(onSubmit)}>
+        <div className="col-12">
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-group">
               <label className="label">First Name</label>
-              <Input
+              <input
                 {...register("firstName")}
                 type="text"
                 name="firstName"
@@ -58,7 +80,7 @@ export default function CreateCustomer() {
             </div>
             <div className="form-group">
               <label className="label">Last Name</label>
-              <Input
+              <input
                 type="text"
                 {...register("lastName")}
                 name="lastName"
@@ -68,7 +90,7 @@ export default function CreateCustomer() {
             </div>
             <div className="form-group">
               <label className="label">Email</label>
-              <Input
+              <input
                 type="email"
                 {...register("email")}
                 name="email"
@@ -78,7 +100,7 @@ export default function CreateCustomer() {
             </div>
             <div className="form-group">
               <label className="label">Phone Number</label>
-              <Input
+              <input
                 type="text"
                 {...register("phoneNumber")}
                 name="phoneNumber"
