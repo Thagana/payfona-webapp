@@ -1,12 +1,12 @@
 import Axios from "./adaptor";
 export class Auth {
   static passwordUpdateRequest(email: string) {
-    return Axios.post("/auth/password_request", {
+    return Axios.post("/auth/password-request", {
       email,
     });
   }
   static updatePassword(password: string, token: string) {
-    return Axios.put("/auth/update_password", {
+    return Axios.put("/auth/update-password", {
       password,
       token,
     });
@@ -66,7 +66,7 @@ export class Auth {
   }
   static async requestChangePassword(data: { email: string }) {
     const { email } = data;
-    return Axios.post("/auth/password_request", {
+    return Axios.post("/auth/password-request", {
       email,
     });
   }
@@ -76,7 +76,7 @@ export class Auth {
     otp: string;
   }) {
     const { password1, password2, otp } = data;
-    return Axios.post("/auth/update_password", {
+    return Axios.post("/auth/update-password", {
       password: password1,
       password1: password2,
       token: otp,

@@ -2,7 +2,7 @@ import Axios from "./adaptor";
 
 export class Transactions {
   static verifyPayment(data: { token: string; id: number; source: string }) {
-    return Axios.post("/transaction/verify_payment", {
+    return Axios.post("/transaction/verify-payment", {
       reference: data.token,
       userId: data.id,
       source: data.source,
