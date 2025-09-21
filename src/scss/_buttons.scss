@@ -1,6 +1,6 @@
 // _buttons.scss
 // Custom button styles extending Bootstrap
-
+@use "sass:color";
 @import "./variables";
 
 // Base button styles
@@ -34,19 +34,19 @@
 
   &:hover,
   &:focus {
-    background-color: darken($primary, 7.5%);
-    border-color: darken($primary, 10%);
+    background-color: color.scale($primary, $lightness: -7.5%);
+    border-color: color.scale($primary, $lightness: -10%);
   }
 
   &:active {
-    background-color: darken($primary, 10%);
-    border-color: darken($primary, 12.5%);
+    background-color: color.scale($primary, $lightness: -10%);
+    border-color: color.scale($primary, $lightness: -12.5%);
   }
 
   &:disabled,
   &.disabled {
-    background-color: lighten($primary, 15%);
-    border-color: lighten($primary, 15%);
+    background-color: color.scale($primary, $lightness: 15%);
+    border-color: color.scale($primary, $lightness: 15%);
     opacity: 0.65;
   }
 }
@@ -59,13 +59,13 @@
 
   &:hover,
   &:focus {
-    background-color: darken($secondary, 7.5%);
-    border-color: darken($secondary, 10%);
+    background-color: color.scale($secondary, $lightness: -7.5%);
+    border-color: color.scale($secondary, $lightness: -10%);
   }
 
   &:active {
-    background-color: darken($secondary, 10%);
-    border-color: darken($secondary, 12.5%);
+    background-color: color.scale($secondary, $lightness: -10%);
+    border-color: color.scale($secondary, $lightness: -12.5%);
   }
 }
 
@@ -77,13 +77,13 @@
 
   &:hover,
   &:focus {
-    background-color: darken($tertiary, 7.5%);
-    border-color: darken($tertiary, 10%);
+    background-color: color.scale($tertiary, $lightness: -7.5%);
+    border-color: color.scale($tertiary, $lightness: -10%);
   }
 
   &:active {
-    background-color: darken($tertiary, 10%);
-    border-color: darken($tertiary, 12.5%);
+    background-color: color.scale($tertiary, $lightness: -10%);
+    border-color: color.scale($tertiary, $lightness: -12.5%);
   }
 }
 
@@ -181,7 +181,7 @@
   text-decoration: none;
 
   &:hover {
-    color: darken($primary, 15%);
+    color: color.scale($primary, $lightness: -15%);
     text-decoration: underline;
   }
 }

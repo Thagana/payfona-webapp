@@ -13,7 +13,7 @@ export class Auth {
   }
   static verifyAccount(token: string) {
     return Axios.post(
-      "/auth/verify_account",
+      "/auth/verify-account",
       {
         token,
       },

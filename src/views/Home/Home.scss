@@ -1,17 +1,17 @@
-@import "../../scss/utils";
+@import "../../scss/variables";
 
 .home-container {
-  font-family: $font-family;
+  font-family: $font-family-base;
   display: flex;
   .cards {
     display: flex;
     flex-direction: row;
     gap: 5px;
     .header {
-      font-family: $font-family;
+      font-family: $font-family-base;
     }
     .card-body {
-      font-family: $font-family;
+      font-family: $font-family-base;
     }
     .icons {
       background-color: #8300c41c;

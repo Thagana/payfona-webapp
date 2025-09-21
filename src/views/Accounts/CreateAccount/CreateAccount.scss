@@ -1,4 +1,4 @@
-@import "../../../scss/utils";
+@import "../../../scss/variables";
 
 .create-account-container {
   display: flex;
@@ -7,5 +7,5 @@
   justify-content: center;
   flex-direction: column;
   height: 100vh;
-  font-family: $font-family;
+  font-family: $font-family-base;
 }

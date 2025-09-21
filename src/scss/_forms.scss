@@ -1,13 +1,14 @@
 // _forms.scss
 // Custom form and input field styles extending Bootstrap
 
+@use "sass:color";
 @import "./variables";
 
 // Base form control
 .form-control {
   font-family: $font-family-base;
   border-radius: $border-radius;
-  border: 1px solid lighten($primary, 40%);
+  border: 1px solid color.scale($primary, $lightness: 40%);
   padding: 0.5rem 0.75rem;
   transition:
     border-color 0.15s ease-in-out,
@@ -19,7 +20,7 @@
   }
 
   &::placeholder {
-    color: lighten($primary, 50%);
+    color: color.scale($primary, $lightness: 50%);
     opacity: 0.75;
   }
 
@@ -52,7 +53,7 @@
 
 // Form text helper
 .form-text {
-  color: lighten($dark, 25%);
+  color: color.scale($dark, $lightness: 25%);
   font-size: 0.875rem;
   margin-top: 0.25rem;
 }
@@ -131,7 +132,7 @@ select.form-select {
 .input-group {
   .input-group-text {
     background-color: $primary-100;
-    border: 1px solid lighten($primary, 40%);
+    border: 1px solid color.scale($primary, $lightness: 40%);
     color: $primary-700;
   }
 
@@ -148,7 +149,7 @@ select.form-select {
   }
 
   > label {
-    color: lighten($primary, 50%);
+    color: color.scale($primary, $lightness: 50%);
   }
 }
 
@@ -174,7 +175,7 @@ select.form-select {
     background-color: $primary;
 
     &:active {
-      background-color: lighten($primary, 35%);
+      background-color: color.scale($primary, $lightness: 35%);
     }
   }
 
@@ -182,7 +183,7 @@ select.form-select {
     background-color: $primary;
 
     &:active {
-      background-color: lighten($primary, 35%);
+      background-color: color.scale($primary, $lightness: 35%);
     }
   }
 

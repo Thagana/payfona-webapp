@@ -22,7 +22,7 @@ import Customer from "../views/Customers/Customers";
 import InvoiceRefund from "../views/Refund/InvoiceRefund";
 import ViewInvoice from "../views/ViewInvoice";
 import Layout from "../views/Layout";
-import AddCustomer from "../views/Customers/CreateCustomer";
+import AddCustomer from "../views/Customers/Customer";
 
 export default function AppRouter() {
   const location = useLocation();
@@ -60,6 +60,10 @@ export default function AppRouter() {
           />
           <Route
             path="/customers/create"
+            element={<PrivateRoutes component={AddCustomer} />}
+          />
+          <Route
+            path="/customers/edit/:id"
             element={<PrivateRoutes component={AddCustomer} />}
           />
           <Route
