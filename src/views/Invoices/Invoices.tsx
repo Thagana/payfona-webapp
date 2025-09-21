@@ -21,12 +21,15 @@ import {
 
 import Axios from "../../networking/adaptor";
 
+const { Search } = Input;
+
 import "./Invoices.scss";
 
 import { useQuery } from "@tanstack/react-query";
 import { InvoiceType } from "./interface/Invoice";
 import { columns } from "./data/columns";
 import { TableRowSelection } from "antd/es/table/interface";
+import Input, { SearchProps } from "antd/es/input";
 
 export default function Invoice() {
   const navigate = useNavigate();
@@ -159,11 +162,20 @@ export default function Invoice() {
     [],
   );
 
+  const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
+    console.log(info?.source, value);
+
   return (
     <div className="home-container">
       <div className="home-header">
         <div className="header-invoice">
-          <div className="header">Invoice</div>
+          <Search
+            placeholder="input search text"
+            allowClear
+            enterButton="Search"
+            size="large"
+            onSearch={onSearch}
+          />
         </div>
         <div>
           <div className="actions">
