@@ -1,4 +1,9 @@
 .customer-container {
+  .customer-search {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
   button,
   span {
     display: inline-flex;

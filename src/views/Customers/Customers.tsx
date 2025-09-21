@@ -1,6 +1,5 @@
 import * as React from "react";
-import Highlighter from "react-highlight-words";
-import type { InputRef } from "antd";
+import type { GetProps, InputRef } from "antd";
 import { Button, Input, notification, Space, Table, Typography } from "antd/es";
 import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
@@ -19,6 +18,10 @@ import { DataType } from "./interface/DataType";
 
 type DataIndex = keyof DataType;
 
+type SearchProps = GetProps<typeof Input.Search>;
+
+const { Search } = Input;
+
 import "./Customers.scss";
 
 export default function Customer() {
@@ -30,12 +33,7 @@ export default function Customer() {
   // Get QueryClient from the context
   const queryClient = useQueryClient();
 
-  const {
-    isPending: isMutationPeding,
-    isError: isMutationError,
-    isSuccess: isMutationSuccess,
-    mutate,
-  } = useMutation({
+  const { isPending: isMutationPeding, mutate } = useMutation({
     mutationFn: (id: number) => {
       return Axios.delete(`/customer/${id}`);
     },
@@ -164,18 +162,7 @@ export default function Customer() {
         setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    render: (text: string) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          ref={ref}
-          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ""}
-        />
-      ) : (
-        text
-      ),
+    render: (text: string) => text,
   });
 
   const handleDeleteCustomer = (id: number) => {
@@ -243,10 +230,22 @@ export default function Customer() {
     navigate("/customers/create");
   };
 
+  const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
+    console.log(info?.source, value);
+
   return (
     <div className="customer-container">
-      <div className="row p-2">
-        <div className="col-md-12">
+      <div className="customer-search row p-2">
+        <div className="col-auto">
+          <Search
+            placeholder="input search text"
+            allowClear
+            enterButton="Search"
+            size="large"
+            onSearch={onSearch}
+          />
+        </div>
+        <div className="col-auto">
           <Button
             onClick={handleAddCustomer}
             type="primary"
