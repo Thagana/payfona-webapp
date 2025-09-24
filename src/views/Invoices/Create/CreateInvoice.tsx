@@ -25,7 +25,8 @@ const { Title, Text } = Typography;
 
 import Axios from "../../../networking/adaptor";
 import { InvoicePayload } from "../../../interface/InvoicePayload";
-import { useNavigate, useNavigation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 interface Item {
   description: string;
   price: number;
@@ -58,7 +59,7 @@ const InvoicePage = () => {
 
   const { mutate, isError, isPending, isPaused } = useMutation({
     mutationFn: (invoice: InvoicePayload) => {
-      return Axios.post("/invoice/create_invoice", invoice);
+      return Axios.post("/invoice/create-invoice", invoice);
     },
   });
 
@@ -83,7 +84,7 @@ const InvoicePage = () => {
 
   const subtotal = items.reduce(
     (sum, item) => sum + item.price * item.quantity,
-    0
+    0,
   );
 
   const handleSubmit = () => {
@@ -98,11 +99,17 @@ const InvoicePage = () => {
         logo: "https://avatars.githubusercontent.com/u/68122202?s=400&u=4abc9827a8ca8b9c19b06b9c5c7643c87da51e10&v=4",
       };
       mutate(invoice);
-      navigation("/invoices");
+      if (!isPending) {
+        navigation("/invoices");
+      }
     } catch (error) {
       notification.open({
         message: "Something went wrong please try again later",
       });
+    } finally {
+      if (!isPending && !isError) {
+        navigation("/invoices");
+      }
     }
   };
 
@@ -136,7 +143,7 @@ const InvoicePage = () => {
 
           <Row gutter={24}>
             <Col span={12}>
-              <Card bordered={false}>
+              <Card>
                 <Text type="secondary">From (Your Information)</Text>
                 <Input
                   placeholder="Your name or company name"

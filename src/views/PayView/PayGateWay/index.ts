@@ -1,1 +1,1 @@
-export {default} from './PayGateWay';
+export { default } from "./PayGateWay";

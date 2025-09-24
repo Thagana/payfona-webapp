@@ -14,9 +14,9 @@ export class Users {
   }
 
   static updateProfileImage(data: FormData) {
-    return Axios.put('/users/update-image',data)
+    return Axios.put("/users/update-image", data);
   }
-  static updateProfile(data: { firstName: string, lastName: string }) {
+  static updateProfile(data: { firstName: string; lastName: string }) {
     return Axios.put("/users/update", {
       firstName: data.firstName,
       lastName: data.lastName,

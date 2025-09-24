@@ -8,7 +8,7 @@ type Props = {
   register: UseFormRegister<any>;
   required: boolean;
   errors: {
-    [key: string]: any
+    [key: string]: any;
   };
   isTouched: boolean;
   type: string;
@@ -17,7 +17,16 @@ type Props = {
 };
 
 export default function Input(props: Props) {
-  const { label, register, required, errors, type, placeholder, value, isTouched } = props;
+  const {
+    label,
+    register,
+    required,
+    errors,
+    type,
+    placeholder,
+    value,
+    isTouched,
+  } = props;
   return (
     <>
       <label htmlFor={label} className="label">
@@ -25,7 +34,7 @@ export default function Input(props: Props) {
       </label>
       <input
         type={type}
-        className={`form-control ${isTouched ? (errors[`${value}`] ? "is-invalid" : "is-valid") : "" }`}
+        className={`form-control ${isTouched ? (errors[`${value}`] ? "is-invalid" : "is-valid") : ""}`}
         {...register(value, { required })}
         placeholder={placeholder}
       />

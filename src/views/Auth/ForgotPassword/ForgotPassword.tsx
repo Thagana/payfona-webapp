@@ -4,7 +4,7 @@ import Notification from "antd/es/notification";
 import { useNavigate } from "react-router-dom";
 import Server from "../../../networking/server";
 
-import './ForgotPassword.scss';
+import "./ForgotPassword.scss";
 
 export default function ForgotPassword() {
   const [loading, setLoading] = React.useState(false);
@@ -14,18 +14,17 @@ export default function ForgotPassword() {
     getFieldState,
     formState: { errors, isDirty, isValid },
   } = useForm<{
-    email: string
+    email: string;
   }>();
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<{
-    email: string
+    email: string;
   }> = async (data: { email: string }) => {
     try {
       setLoading(true);
       const response = await Server.Auth.requestChangePassword({
         email: data.email,
-
       });
       if (!response.data.success) {
         Notification.error({

@@ -12,38 +12,42 @@ export default function Profile() {
   const navigate = useNavigate();
   const profile = useStoreState<Model>((state) => state.profile);
   return (
-      <div className="profile-container">
-        <div className="container-container">
-          <div className="image-container">
-            <img src={profile.avatar} className="image" />
+    <div className="profile-container">
+      <div className="container-container">
+        <div className="image-container">
+          <img src={profile.avatar} className="image" />
+        </div>
+        <div className="details">
+          <div className="names">
+            <UserOutlined />
+            <span>
+              {profile.firstName} {profile.lastName}
+            </span>
           </div>
-          <div className="details">
-            <div className="names">
-              <UserOutlined />
-              <span>
-                {profile.firstName} {profile.lastName}
-              </span>
-            </div>
-            <div className="names">
-              <MailOutlined />
-              <span>{profile.email}</span>
-            </div>
-          </div>
-          <div className="edit-container">
-            <Button state="primary"  type="button" onClick={() => {
-                navigate('/profile/edit', {
-                  state: {
-                    firstName: profile.firstName,
-                    lastName: profile.lastName,
-                    avatar: profile.avatar,
-                    email: profile.email,
-                  }
-                });
-            }}>
-              Update Profile
-            </Button>
+          <div className="names">
+            <MailOutlined />
+            <span>{profile.email}</span>
           </div>
         </div>
+        <div className="edit-container">
+          <Button
+            state="primary"
+            type="button"
+            onClick={() => {
+              navigate("/profile/edit", {
+                state: {
+                  firstName: profile.firstName,
+                  lastName: profile.lastName,
+                  avatar: profile.avatar,
+                  email: profile.email,
+                },
+              });
+            }}
+          >
+            Update Profile
+          </Button>
+        </div>
       </div>
+    </div>
   );
 }

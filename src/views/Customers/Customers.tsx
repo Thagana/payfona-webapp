@@ -1,37 +1,78 @@
 import * as React from "react";
-import Highlighter from "react-highlight-words";
-import type { InputRef } from "antd";
-import { Button, Input, Space, Table } from "antd/es";
+import type { GetProps, InputRef } from "antd";
+import { Button, Input, notification, Space, Table, Typography } from "antd/es";
 import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
-import { SearchOutlined } from "@ant-design/icons";
+import {
+  DeleteFilled,
+  EyeFilled,
+  PlusOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import Axios from "../../networking/adaptor";
 
-import { DataType } from './interface/DataType';
+import { DataType } from "./interface/DataType";
 
 type DataIndex = keyof DataType;
+
+type SearchProps = GetProps<typeof Input.Search>;
+
+const { Search } = Input;
+
+import "./Customers.scss";
 
 export default function Customer() {
   const [searchText, setSearchText] = React.useState("");
   const [searchedColumn, setSearchedColumn] = React.useState("");
   const searchInput = React.useRef<InputRef>(null);
+  const ref = React.useRef();
 
-  const customers = useQuery({
+  // Get QueryClient from the context
+  const queryClient = useQueryClient();
+
+  const { isPending: isMutationPeding, mutate } = useMutation({
+    mutationFn: (id: number) => {
+      return Axios.delete(`/customer/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+      notification.open({
+        message: "Customer deleted successfully",
+        type: "success",
+      });
+    },
+    onError: (error) => {
+      console.error(error);
+      notification.open({
+        message: "Something went wrong trying to delete customer",
+        type: "error",
+      });
+    },
+  });
+
+  const {
+    isError: isQueryError,
+    isSuccess: isQuerySuccess,
+    isPending: isQueryPending,
+    isFetching: isQueryFetching,
+    data,
+    isLoading: isQueryLoading,
+  } = useQuery({
     queryKey: ["customers"],
     queryFn: async () => {
       return Axios.get("/customer");
     },
   });
 
-  const navigation = useNavigate();
+  const navigate = useNavigate();
 
   const handleSearch = (
     selectedKeys: string[],
     confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: DataIndex
+    dataIndex: DataIndex,
   ) => {
     confirm();
     setSearchText(selectedKeys[0]);
@@ -44,7 +85,7 @@ export default function Customer() {
   };
 
   const getColumnSearchProps = (
-    dataIndex: DataIndex
+    dataIndex: DataIndex,
   ): ColumnType<DataType> => ({
     filterDropdown: ({
       setSelectedKeys,
@@ -121,32 +162,28 @@ export default function Customer() {
         setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    render: (text: string) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ""}
-        />
-      ) : (
-        text
-      ),
+    render: (text: string) => text,
   });
+
+  const handleDeleteCustomer = (id: number) => {
+    mutate(id);
+  };
+
+  const handleEdit = (id: number) => {
+    navigate(`/customers/edit/${id}`);
+  };
 
   const columns: ColumnsType<DataType> = [
     {
       title: "First Name",
       dataIndex: "firstName",
       key: "firstName",
-      width: "30%",
       ...getColumnSearchProps("firstName"),
     },
     {
       title: "Last Name",
       dataIndex: "lastName",
       key: "lastName",
-      width: "20%",
       ...getColumnSearchProps("lastName"),
     },
     {
@@ -158,34 +195,72 @@ export default function Customer() {
       sortDirections: ["descend", "ascend"],
     },
     {
-        title: "Phone Number",
-        dataIndex: "phoneNumber",
-        key: "phone_numberail",
-        ...getColumnSearchProps("phone_number"),
-        sorter: (a, b) => a.email.length - b.email.length,
-        sortDirections: ["descend", "ascend"],
-      },
+      title: "Phone Number",
+      dataIndex: "phoneNumber",
+      key: "phone_numberail",
+      ...getColumnSearchProps("phoneNumber"),
+      sorter: (a, b) => a.email.length - b.email.length,
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Space size="middle">
+          <Button
+            type="primary"
+            icon={<DeleteFilled color="red" />}
+            onClick={() => handleDeleteCustomer(record.id)}
+          >
+            Delete
+          </Button>
+          <Button
+            type="default"
+            icon={<EyeFilled />}
+            onClick={() => handleEdit(record.id)}
+          >
+            Edit
+          </Button>
+        </Space>
+      ),
+    },
   ];
 
   const handleAddCustomer = () => {
-    navigation("/customers/create");
+    navigate("/customers/create");
   };
-  
+
+  const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
+    console.log(info?.source, value);
 
   return (
     <div className="customer-container">
-      <div className="row p-2">
-        <div className="col-md-12">
-          <Button className="primary" onClick={handleAddCustomer}>
-            Add Customer
+      <div className="customer-search row p-2">
+        <div className="col-auto">
+          <Search
+            placeholder="input search text"
+            allowClear
+            enterButton="Search"
+            size="large"
+            onSearch={onSearch}
+          />
+        </div>
+        <div className="col-auto">
+          <Button
+            onClick={handleAddCustomer}
+            type="primary"
+            size="large"
+            icon={<PlusOutlined />}
+          >
+            Customer
           </Button>
         </div>
       </div>
       <div className="table">
         <Table
           columns={columns}
-          dataSource={customers?.data?.data?.data}
-          loading={customers.isLoading}
+          dataSource={data?.data?.data}
+          loading={isQueryLoading || isMutationPeding}
         />
       </div>
     </div>

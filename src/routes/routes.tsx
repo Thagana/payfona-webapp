@@ -22,7 +22,7 @@ import Customer from "../views/Customers/Customers";
 import InvoiceRefund from "../views/Refund/InvoiceRefund";
 import ViewInvoice from "../views/ViewInvoice";
 import Layout from "../views/Layout";
-import AddCustomer from "../views/Customers/AddCustomer";
+import AddCustomer from "../views/Customers/Customer";
 
 export default function AppRouter() {
   const location = useLocation();
@@ -33,60 +33,64 @@ export default function AppRouter() {
       initial={false}
       onExitComplete={() => window.scrollTo(0, 0)}
     >
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route
-              path="/invoices"
-              element={<PrivateRoutes component={Invoices} />}
-            />
-            <Route
-              path="/invoice/:invoiceId"
-              element={<PrivateRoutes component={InvoiceDetail} />}
-            />
-            <Route path="/view_invoice/:invoiceId" element={<ViewInvoice />} />
-            <Route
-              path="/invoice/create"
-              element={<PrivateRoutes component={CreateInvoice} />}
-            />
-            <Route path="/invoice/pay-now" element={<PayView />} />
-            <Route
-              path="/invoice-refunds"
-              element={<PrivateRoutes component={InvoiceRefund} />}
-            />
-            <Route
-              path="/customers"
-              element={<PrivateRoutes component={Customer} />}
-            />
-            <Route
-                path="/customers/create"
-                element={<PrivateRoutes component={AddCustomer}/>}
-                />
-            <Route
-              path="/profile"
-              element={<PrivateRoutes component={Profile} />}
-            />
-            <Route
-              path="/profile/edit"
-              element={<PrivateRoutes component={Edit} />}
-            />
-            <Route
-              path="/accounts"
-              element={<PrivateRoutes component={Accounts} />}
-            />
-            <Route
-              path="/accounts/create"
-              element={<PrivateRoutes component={CreateAccount} />}
-            />
-          </Route>
-          <Route path="/activate" element={<ActivateAccount />} />
-          <Route path="/register" element={<SignUp />} />
-          <Route path="/login" element={<SignIn />} />
-          <Route path="/forgot-password-request" element={<ForgotPassword />} />
-          <Route path="/change-password" element={<ChangePassword />} />
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route
+            path="/invoices"
+            element={<PrivateRoutes component={Invoices} />}
+          />
+          <Route
+            path="/invoice/:invoiceId"
+            element={<PrivateRoutes component={InvoiceDetail} />}
+          />
+          <Route path="/view_invoice/:invoiceId" element={<ViewInvoice />} />
+          <Route
+            path="/invoice/create"
+            element={<PrivateRoutes component={CreateInvoice} />}
+          />
+          <Route path="/invoice/pay-now" element={<PayView />} />
+          <Route
+            path="/invoice-refunds"
+            element={<PrivateRoutes component={InvoiceRefund} />}
+          />
+          <Route
+            path="/customers"
+            element={<PrivateRoutes component={Customer} />}
+          />
+          <Route
+            path="/customers/create"
+            element={<PrivateRoutes component={AddCustomer} />}
+          />
+          <Route
+            path="/customers/edit/:id"
+            element={<PrivateRoutes component={AddCustomer} />}
+          />
+          <Route
+            path="/profile"
+            element={<PrivateRoutes component={Profile} />}
+          />
+          <Route
+            path="/profile/edit"
+            element={<PrivateRoutes component={Edit} />}
+          />
+          <Route
+            path="/accounts"
+            element={<PrivateRoutes component={Accounts} />}
+          />
+          <Route
+            path="/accounts/create"
+            element={<PrivateRoutes component={CreateAccount} />}
+          />
+        </Route>
+        <Route path="/activate" element={<ActivateAccount />} />
+        <Route path="/register" element={<SignUp />} />
+        <Route path="/login" element={<SignIn />} />
+        <Route path="/forgot-password-request" element={<ForgotPassword />} />
+        <Route path="/change-password" element={<ChangePassword />} />
 
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </AnimatePresence>
   );
 }
