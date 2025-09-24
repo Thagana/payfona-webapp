@@ -21,12 +21,15 @@ import {
 
 import Axios from "../../networking/adaptor";
 
+const { Search } = Input;
+
 import "./Invoices.scss";
 
 import { useQuery } from "@tanstack/react-query";
 import { InvoiceType } from "./interface/Invoice";
 import { columns } from "./data/columns";
 import { TableRowSelection } from "antd/es/table/interface";
+import Input, { SearchProps } from "antd/es/input";
 
 export default function Invoice() {
   const navigate = useNavigate();
@@ -159,121 +162,51 @@ export default function Invoice() {
     [],
   );
 
+  const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
+    console.log(info?.source, value);
+
   return (
     <div className="home-container">
-      <div className="home-header">
+      <div className="home-header p-2">
         <div className="header-invoice">
-          <div className="header">Invoice</div>
+          <Search
+            placeholder="input search text"
+            allowClear
+            enterButton="Search"
+            size="large"
+            onSearch={onSearch}
+          />
         </div>
         <div>
           <div className="actions">
             <div className="create-invoice">
-              <button
+              <Button
                 className="btn btn-primary btn-outlined add-invoice"
                 onClick={handleExport}
               >
                 <DownloadOutlined />
                 <div className="add-invoice-text">Export</div>
-              </button>
+              </Button>
             </div>
             <div className="create-invoice">
-              <button
+              <Button
                 className="btn btn-primary add-invoice"
                 onClick={handleNewInvoice}
               >
                 <PlusOutlined />
                 <div className="add-invoice-text">New Invoice</div>
-              </button>
+              </Button>
             </div>
           </div>
         </div>
       </div>
       <Table
         rowSelection={rowSelection}
-        onRow={(record) => ({
-          onClick: () => {
-            setIsOpenInvoiceDetails(!isOpenInvoiceDetails);
-            setSelectedInvoice(record);
-          },
-        })}
         columns={columns}
         rowKey={(record) => record.invoiceId}
         dataSource={data?.data.data.invoices}
         loading={isLoading}
       />
-      <Drawer
-        title={`Invoice ${selectedRecord?.invoiceNumber}`}
-        placement="right"
-        onClose={onClose}
-        open={isOpenInvoiceDetails}
-        className="invoice-drawer"
-      >
-        <div className="invoice-details">
-          <div className="row-item">
-            <span>
-              <UserOutlined />
-            </span>
-            <span>{selectedRecord?.name}</span>
-          </div>
-          <div className="row-item">
-            <span>Amount Due</span>
-            <span>
-              {selectedRecord?.currency} {selectedRecord?.total}
-            </span>
-          </div>
-          <div className="row-item">
-            <span>Invoice Created</span>
-            <span>
-              {format(
-                new Date(selectedRecord?.createdAt || "2008/06/06"),
-                "y/M/d",
-              )}
-            </span>
-          </div>
-          <div className="row-item">
-            <span>Invoice Due</span>
-            <span>
-              {format(new Date(selectedRecord?.date || "2008/06/06"), "y/M/d")}
-            </span>
-          </div>
-          <div className="row-item">
-            <span>Status</span>
-            <span>
-              {statusFormatter(
-                selectedRecord?.date,
-                selectedRecord?.status,
-                selectedRecord?.paidAt,
-              )}
-            </span>
-          </div>
-          <div className="row-item">
-            <span>Method</span>
-            <span>
-              {selectedRecord?.banking.channel} {selectedRecord?.banking.brand}{" "}
-              ********{selectedRecord?.banking.last4}
-            </span>
-          </div>
-          <Divider />
-          <div className="row-item">
-            <span>
-              <Button>
-                <RollbackOutlined />
-              </Button>
-            </span>
-            <span className="buttons-inline">
-              <Button
-                onClick={() => handleViewInvoice(selectedRecord?.invoiceId)}
-              >
-                <EyeOutlined />
-              </Button>
-              <Button onClick={downloadInvoice}>
-                <DownloadOutlined />
-              </Button>
-            </span>
-          </div>
-          <Divider />
-        </div>
-      </Drawer>
     </div>
   );
 }

@@ -1,25 +1,29 @@
-@import "../../scss/variables";
+@use "../../scss/variables";
 
 .home-container {
-  font-family: $font-family-base;
+  font-family: variables.$font-family-base;
   display: flex;
   .cards {
     display: flex;
     flex-direction: row;
     gap: 5px;
     .header {
-      font-family: $font-family-base;
+      font-family: variables.$font-family-base;
     }
     .card-body {
-      font-family: $font-family-base;
+      font-family: variables.$font-family-base;
+      font-size: 25px;
     }
     .icons {
-      background-color: #8300c41c;
-      border-radius: 10px;
-      padding: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: variables.$primary-200;
+      border-radius: 50px;
+      padding: 20px;
       .card-icon {
-        font-size: 40px;
-        color: $primary;
+        font-size: 30px;
+        color: white;
       }
     }
   }

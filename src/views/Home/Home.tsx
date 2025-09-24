@@ -1,12 +1,13 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import Notification from "antd/es/notification";
-import Template from "../Layout";
 import Card from "antd/es/card";
 import {
   FileTextOutlined,
   FileProtectOutlined,
   MoneyCollectOutlined,
+  CalendarOutlined,
+  WarningOutlined,
 } from "@ant-design/icons";
 import {
   Chart as ChartJS,
@@ -20,7 +21,6 @@ import {
 } from "chart.js";
 
 import { Bar } from "react-chartjs-2";
-import { Pie } from "react-chartjs-2";
 
 import "./Home.scss";
 import { Invoice } from "../../networking/invoice";
@@ -28,8 +28,7 @@ import { Col, Row } from "antd/es/grid";
 
 import { LoadingOutlined } from "@ant-design/icons";
 import { Line } from "../../interface/Line";
-import { options, revenueOptions } from "./data/data";
-import { getPieData } from "../../helper/getPieData";
+import { revenueOptions } from "./data/data";
 
 ChartJS.register(
   CategoryScale,
@@ -42,14 +41,16 @@ ChartJS.register(
 );
 
 export default function Home() {
-  const navigate = useNavigate();
-
   const [numberOfInvoices, setNumberOfInvoices] = React.useState(0);
   const [totalRevenue, setTotalRevenue] = React.useState(0);
   const [numberOfPaidInvoices, setNumberOfPaidInvoices] = React.useState(0);
   const [lineData, setLineData] = React.useState<Line>();
   const [pieData, setPieData] = React.useState<number[]>([]);
   const [revenue, setRevenue] = React.useState<Line>();
+  const [revenueIncrease, setRevenueIncrease] = React.useState<{
+    percent: number;
+    trend: "up" | "down";
+  } | null>(null);
   const [loading, setLoading] = React.useState(false);
 
   const fetchData = React.useCallback(async () => {
@@ -68,6 +69,7 @@ export default function Home() {
         setLineData(invoices.line);
         setPieData(invoices.pieChart);
         setRevenue(invoices.revenue);
+        setRevenueIncrease(invoices.revenueChange);
       }
       setLoading(false);
     } catch (error) {
@@ -105,6 +107,9 @@ export default function Home() {
                     <div className="card-body">{numberOfInvoices}</div>
                   </div>
                 </Col>
+                <Col>
+                  <div className="discription">+12% from last month</div>
+                </Col>
               </Row>
             </Card>
             <Card style={{ width: 500 }}>
@@ -120,6 +125,9 @@ export default function Home() {
                     {numberOfPaidInvoices} / {numberOfInvoices}
                   </div>
                 </Col>
+                <Col>
+                  <div className="discription">+12% from last month</div>
+                </Col>
               </Row>
             </Card>
             <Card style={{ width: 500 }}>
@@ -133,38 +141,64 @@ export default function Home() {
                   <div className="header">Total Revenue made</div>
                   <div className="card-body">{totalRevenue}</div>
                 </Col>
+                <Col>
+                  {revenueIncrease ? (
+                    <div className="discription">
+                      {" "}
+                      {revenueIncrease.trend === "down" &&
+                      revenueIncrease.percent !== 0
+                        ? "-"
+                        : "+"}
+                      {revenueIncrease.percent}% from last month
+                    </div>
+                  ) : null}
+                </Col>
+              </Row>
+            </Card>
+            <Card style={{ width: 500 }}>
+              <Row gutter={[8, 18]}>
+                <Col span={6}>
+                  <div className="icons">
+                    <CalendarOutlined className="card-icon" />
+                  </div>
+                </Col>
+                <Col span={18}>
+                  <div className="header">Total Subscriptions</div>
+                  <div className="card-body">{totalRevenue}</div>
+                </Col>
+                <Col>
+                  <div className="discription">+12% from last month</div>
+                </Col>
+              </Row>
+            </Card>
+            <Card style={{ width: 500 }}>
+              <Row gutter={[8, 18]}>
+                <Col span={6}>
+                  <div className="icons">
+                    <WarningOutlined className="card-icon" />
+                  </div>
+                </Col>
+                <Col span={18}>
+                  <div className="header">Overdue Payments</div>
+                  <div className="card-body">{totalRevenue}</div>
+                </Col>
+                <Col>
+                  <div className="discription">+12% from last month</div>
+                </Col>
               </Row>
             </Card>
           </div>
-          <>
-            <Row gutter={[12, 12]} className="mx-2 my-2">
-              <Col span={12}>
-                <Card>
-                  {revenue ? (
-                    <Bar options={revenueOptions} data={revenue} />
-                  ) : (
-                    <div>Revenue data not found</div>
-                  )}
-                </Card>
-              </Col>
-              <Col span={12}>
-                <Card>
-                  <Row>
-                    <Col span={12}>
-                      <Pie data={getPieData(pieData)} />
-                    </Col>
-                    <Col span={12}>
-                      {lineData ? (
-                        <Bar options={options} data={lineData} />
-                      ) : (
-                        <div>Failed to load data</div>
-                      )}
-                    </Col>
-                  </Row>
-                </Card>
-              </Col>
-            </Row>
-          </>
+          <Row className="mx-2 my-2">
+            <Col span={12}>
+              <Card>
+                {revenue ? (
+                  <Bar options={revenueOptions} data={revenue} />
+                ) : (
+                  <div>Revenue data not found</div>
+                )}
+              </Card>
+            </Col>
+          </Row>
         </div>
       )}
     </>

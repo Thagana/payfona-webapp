@@ -1,6 +1,7 @@
 // _variables.scss
 // Custom variables to override Bootstrap defaults
 @use "sass:color";
+@import "node_modules/bootstrap/scss/functions";
 
 // Colors
 $primary: #31004a;
@@ -25,8 +26,8 @@ $primary-800: shade-color($primary, 60%);
 $primary-900: shade-color($primary, 80%);
 
 // Typography
-$font-family-monospace: "Red Hat Mono", monospace;
-$font-family-base: $font-family-monospace;
+$font-family: "Red Hat Mono", monospace;
+$font-family-base: $font-family;
 $font-weight-normal: 400;
 $font-weight-bold: 700;
 $font-size-base: 1rem;
