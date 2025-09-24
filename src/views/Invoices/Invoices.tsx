@@ -96,22 +96,9 @@ export default function Invoice() {
     onSelectAll: toggleSelectAll,
   };
 
-  const onClose = React.useCallback(() => {
-    setIsOpenInvoiceDetails(!isOpenInvoiceDetails);
-  }, [isOpenInvoiceDetails]);
-
   const handleNewInvoice = React.useCallback(() => {
     navigate("/invoice/create");
   }, [navigate]);
-
-  const handleViewInvoice = React.useCallback(
-    (id: string | undefined) => {
-      if (id) {
-        navigate(`/invoice/${id}`);
-      }
-    },
-    [navigate],
-  );
 
   const handleExport = React.useCallback(() => {
     const options = {

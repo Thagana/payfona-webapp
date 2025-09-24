@@ -23,6 +23,9 @@ import InvoiceRefund from "../views/Refund/InvoiceRefund";
 import ViewInvoice from "../views/ViewInvoice";
 import Layout from "../views/Layout";
 import AddCustomer from "../views/Customers/Customer";
+import Subscriptions from "../views/Subscriptions";
+import Subscription from "../views/Subscriptions/Subscription/Subscription";
+import Plan from "../views/Subscriptions/Plans/Plan";
 
 export default function AppRouter() {
   const location = useLocation();
@@ -81,6 +84,22 @@ export default function AppRouter() {
           <Route
             path="/accounts/create"
             element={<PrivateRoutes component={CreateAccount} />}
+          />
+          <Route
+            path="/subscriptions"
+            element={<PrivateRoutes component={Subscriptions} />}
+          />
+          <Route
+            path="/subscriptions"
+            element={<PrivateRoutes component={Subscriptions} />}
+          />
+          <Route
+            path="/subscriptions/subscription"
+            element={<PrivateRoutes component={Subscription} />}
+          />
+          <Route
+            path="/subscriptions/plan"
+            element={<PrivateRoutes component={Plan} />}
           />
         </Route>
         <Route path="/activate" element={<ActivateAccount />} />

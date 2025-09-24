@@ -35,7 +35,7 @@ export default function Customer() {
 
   const { isPending: isMutationPeding, mutate } = useMutation({
     mutationFn: (id: number) => {
-      return Axios.delete(`/customer/${id}`);
+      return Axios.delete(`/customers/${id}`);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
@@ -63,7 +63,7 @@ export default function Customer() {
   } = useQuery({
     queryKey: ["customers"],
     queryFn: async () => {
-      return Axios.get("/customer");
+      return Axios.get("/customers");
     },
   });
 
