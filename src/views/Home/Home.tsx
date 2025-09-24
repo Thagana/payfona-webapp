@@ -47,6 +47,10 @@ export default function Home() {
   const [lineData, setLineData] = React.useState<Line>();
   const [pieData, setPieData] = React.useState<number[]>([]);
   const [revenue, setRevenue] = React.useState<Line>();
+  const [revenueIncrease, setRevenueIncrease] = React.useState<{
+    percent: number;
+    trend: "up" | "down";
+  } | null>(null);
   const [loading, setLoading] = React.useState(false);
 
   const fetchData = React.useCallback(async () => {
@@ -65,6 +69,7 @@ export default function Home() {
         setLineData(invoices.line);
         setPieData(invoices.pieChart);
         setRevenue(invoices.revenue);
+        setRevenueIncrease(invoices.revenueChange);
       }
       setLoading(false);
     } catch (error) {
@@ -137,7 +142,16 @@ export default function Home() {
                   <div className="card-body">{totalRevenue}</div>
                 </Col>
                 <Col>
-                  <div className="discription">+12% from last month</div>
+                  {revenueIncrease ? (
+                    <div className="discription">
+                      {" "}
+                      {revenueIncrease.trend === "down" &&
+                      revenueIncrease.percent !== 0
+                        ? "-"
+                        : "+"}
+                      {revenueIncrease.percent}% from last month
+                    </div>
+                  ) : null}
                 </Col>
               </Row>
             </Card>
