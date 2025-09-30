@@ -26,6 +26,7 @@ import AddCustomer from "../views/Customers/Customer";
 import Subscriptions from "../views/Subscriptions";
 import Subscription from "../views/Subscriptions/Subscription/Subscription";
 import Plan from "../views/Subscriptions/Plans/Plan";
+import Transactions from "../views/Transactions";
 
 export default function AppRouter() {
   const location = useLocation();
@@ -100,6 +101,10 @@ export default function AppRouter() {
           <Route
             path="/subscriptions/plan"
             element={<PrivateRoutes component={Plan} />}
+          />
+          <Route
+            path="/transactions"
+            element={<PrivateRoutes component={Transactions} />}
           />
         </Route>
         <Route path="/activate" element={<ActivateAccount />} />
