@@ -31,9 +31,9 @@ export default function CreateCustomer() {
   const { id } = useParams();
 
   const query = useQuery({
-    queryKey: ["customer", id],
+    queryKey: ["customers", id],
     queryFn: async () => {
-      return await Axios.get(`/customer/${id}`);
+      return await Axios.get(`/customers/${id}`);
     },
   });
 
@@ -41,7 +41,7 @@ export default function CreateCustomer() {
 
   const mutation = useMutation({
     mutationFn: async (data: FormData) => {
-      return await Axios.post("/customer", data);
+      return await Axios.post("/customers", data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
