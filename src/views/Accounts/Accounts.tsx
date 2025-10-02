@@ -2,11 +2,10 @@ import * as React from "react";
 import { useStoreActions, useStoreState } from "easy-peasy";
 import { Model } from "../../store/model";
 import { useNavigate } from "react-router-dom";
-import { Space, Table, Tag } from "antd";
+import { Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import Notification from "antd/es/notification";
 import Button from "../../components/common/Button";
-import TemplateWrapper from "../Layout";
 
 import { Account } from "../../store/model";
 

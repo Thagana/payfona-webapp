@@ -1,4 +1,4 @@
-@import "../../scss/variables";
+@use "../../scss/variables";
 
 .home-container {
   display: flex;
@@ -34,7 +34,7 @@
           display: flex;
           flex-direction: row;
           align-items: center;
-          font-family: $font-family-base;
+          font-family: variables.$font-family-base;
           .add-invoice-text {
             margin: 0px 5px;
           }

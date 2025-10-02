@@ -1,4 +1,4 @@
-@import "../../scss/utils";
+@use "../../scss/utils";
 
 .profile-container {
   display: flex;
@@ -7,7 +7,7 @@
   align-items: center;
   flex-direction: row;
   .image-container {
-    border: 6px solid $primary-900;
+    border: 6px solid primary-900.$primary-900;
     border-radius: 50%;
     .image {
       width: 400px;
