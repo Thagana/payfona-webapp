@@ -1,5 +1,4 @@
 import * as React from "react";
-import { useNavigate } from "react-router-dom";
 import Notification from "antd/es/notification";
 import Card from "antd/es/card";
 import {
@@ -9,6 +8,8 @@ import {
   CalendarOutlined,
   WarningOutlined,
   LoadingOutlined,
+  ArrowDownOutlined,
+  ArrowUpOutlined,
 } from "@ant-design/icons";
 import {
   Chart as ChartJS,
@@ -26,6 +27,7 @@ import "./Home.scss";
 import { Invoice } from "../../networking/invoice";
 import { Line } from "../../interface/Line";
 import { revenueOptions } from "./data/data";
+import { sub } from "date-fns";
 
 ChartJS.register(
   CategoryScale,
@@ -44,9 +46,19 @@ export default function Home() {
   const [lineData, setLineData] = React.useState<Line>();
   const [pieData, setPieData] = React.useState<number[]>([]);
   const [revenue, setRevenue] = React.useState<Line>();
+  const [numberOfOverdueInvoice, setNumberOfOverdueInvoice] = React.useState(0);
+  const [numberOfSubscriptions, setNumberOfSubscriptions] = React.useState(0);
+  const [invoiceChange, setInvoiceIncreate] = React.useState<{
+    percent: number;
+    trend: "up" | "down" | "neutral";
+  } | null>(null);
   const [revenueIncrease, setRevenueIncrease] = React.useState<{
     percent: number;
-    trend: "up" | "down";
+    trend: "up" | "down" | "neutral";
+  } | null>(null);
+  const [subscriptionChange, setSubscriptionChange] = React.useState<{
+    percent: number;
+    trend: "up" | "down" | "neutral";
   } | null>(null);
   const [loading, setLoading] = React.useState(true); // default true (first load)
 
@@ -67,6 +79,10 @@ export default function Home() {
         setPieData(invoices.pieChart);
         setRevenue(invoices.revenue);
         setRevenueIncrease(invoices.revenueChange);
+        setInvoiceIncreate(invoices.invoiceChange);
+        setNumberOfOverdueInvoice(invoices.numberOfOverdueInvoices);
+        setNumberOfSubscriptions(invoices.numberOfSubscriptions);
+        setSubscriptionChange(invoices.subscriptionsChange);
       }
     } catch (error) {
       console.log(error);
@@ -87,7 +103,10 @@ export default function Home() {
     icon: React.ReactNode;
     title: string;
     value: React.ReactNode;
-    description?: string | React.ReactNode;
+    description?: {
+      trend: "up" | "down" | "neutral" | undefined;
+      percent: number;
+    };
   }> = ({ icon, title, value, description }) => (
     <Card style={{ width: 500 }}>
       {loading ? (
@@ -102,11 +121,35 @@ export default function Home() {
             <div className="card-body">{value}</div>
           </Col>
           <Col>
-            <div className="discription">{description}</div>
+            <div className="discription">
+              {description ? (
+                <Description
+                  trend={description.trend}
+                  percent={description.percent}
+                />
+              ) : null}
+            </div>
           </Col>
         </Row>
       )}
     </Card>
+  );
+
+  const Description = ({
+    trend,
+    percent,
+  }: {
+    trend: "up" | "down" | "neutral" | undefined;
+    percent: number;
+  }) => (
+    <div className="discription">
+      {trend === "neutral" ? null : trend === "down" ? (
+        <ArrowDownOutlined />
+      ) : (
+        <ArrowUpOutlined />
+      )}
+      {percent}%
+    </div>
   );
 
   // First load guard: show a centered loader until first fetch completes
@@ -125,44 +168,40 @@ export default function Home() {
           icon={<FileTextOutlined className="card-icon" />}
           title="Number of Invoices"
           value={numberOfInvoices}
-          description="+12% from last month"
+          description={{
+            trend: invoiceChange?.trend,
+            percent: invoiceChange?.percent || 0,
+          }}
         />
 
         <InfoCard
           icon={<FileProtectOutlined className="card-icon" />}
           title="Paid invoices"
           value={`${numberOfPaidInvoices} / ${numberOfInvoices}`}
-          description="+12% from last month"
+          description={{
+            trend: invoiceChange?.trend,
+            percent: invoiceChange?.percent || 0,
+          }}
         />
 
         <InfoCard
           icon={<MoneyCollectOutlined className="card-icon" />}
           title="Total Revenue made"
           value={totalRevenue}
-          description={
-            revenueIncrease
-              ? `${
-                  revenueIncrease.trend === "down" &&
-                  revenueIncrease.percent !== 0
-                    ? "-"
-                    : "+"
-                }${revenueIncrease.percent}% from last month`
-              : null
-          }
+          description={revenueIncrease || { trend: "up", percent: 0 }}
         />
 
         <InfoCard
           icon={<CalendarOutlined className="card-icon" />}
           title="Total Subscriptions"
-          value={totalRevenue}
-          description="+12% from last month"
+          value={numberOfSubscriptions}
+          description={subscriptionChange || { trend: "up", percent: 0 }}
         />
 
         <InfoCard
           icon={<WarningOutlined className="card-icon" />}
           title="Overdue Payments"
-          value={totalRevenue}
-          description="+12% from last month"
+          value={numberOfOverdueInvoice}
         />
       </div>
 

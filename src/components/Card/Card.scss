@@ -1,10 +1,10 @@
-@import "../../scss/variables";
+@use "../../scss/variables";
 
 .card-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: auto;
-  background-color: $primary-900;
+  background-color: variables.$primary-900;
   overflow: hidden;
   margin: 1rem;
   box-shadow: 0 20px 34px hsla(20deg, 1%, 52%, 0.29);
@@ -28,7 +28,7 @@
 
   .card-details {
     padding: 1.5rem;
-    font-family: $font-family-base;
+    font-family: variables.$font-family-base;
     font-size: min(2rem, 1rem);
   }
   :hover {
