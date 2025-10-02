@@ -28,7 +28,7 @@
 
   .card-details {
     padding: 1.5rem;
-    font-family: $font-family-base;
+    font-family: variables.$font-family-base;
     font-size: min(2rem, 1rem);
   }
   :hover {

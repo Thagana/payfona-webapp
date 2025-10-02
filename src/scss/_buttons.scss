@@ -5,7 +5,7 @@
 
 // Base button styles
 .btn {
-  font-family: $font-family-base;
+  font-family: variables.$font-family-base;
   font-weight: $font-weight-normal;
   border-radius: $border-radius;
   transition: all 0.2s ease-in-out;

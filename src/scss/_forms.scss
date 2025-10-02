@@ -6,7 +6,7 @@
 
 // Base form control
 .form-control {
-  font-family: $font-family-base;
+  font-family: variables.$font-family-base;
   border-radius: $border-radius;
   border: 1px solid color.scale($primary, $lightness: 40%);
   padding: 0.5rem 0.75rem;
