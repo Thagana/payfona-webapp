@@ -36,7 +36,7 @@
       cursor: pointer;
       transition: color 0.3s;
       &:hover {
-        color: $primary-900;
+        color: utils.$primary-900;
       }
     }
   }

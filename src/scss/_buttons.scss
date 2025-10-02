@@ -6,118 +6,118 @@
 // Base button styles
 .btn {
   font-family: variables.$font-family-base;
-  font-weight: $font-weight-normal;
-  border-radius: $border-radius;
+  font-weight: variables.$font-weight-normal;
+  border-radius: variables.$border-radius;
   transition: all 0.2s ease-in-out;
   letter-spacing: 0.03em;
 
   &:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba($primary, 0.15);
+    box-shadow: 0 4px 8px rgba(variables.$primary, 0.15);
   }
 
   &:active {
     transform: translateY(0);
-    box-shadow: 0 2px 4px rgba($primary, 0.1);
+    box-shadow: 0 2px 4px rgba(variables.$primary, 0.1);
   }
 
   &:focus {
-    box-shadow: 0 0 0 0.25rem rgba($primary, 0.25);
+    box-shadow: 0 0 0 0.25rem rgba(variables.$primary, 0.25);
   }
 }
 
 // Primary button
 .btn-primary {
-  background-color: $primary;
-  border-color: $primary;
+  background-color: variables.$primary;
+  border-color: variables.$primary;
   color: #fff;
 
   &:hover,
   &:focus {
-    background-color: color.scale($primary, $lightness: -7.5%);
-    border-color: color.scale($primary, $lightness: -10%);
+    background-color: color.scale(variables.$primary, $lightness: -7.5%);
+    border-color: color.scale(variables.$primary, $lightness: -10%);
   }
 
   &:active {
-    background-color: color.scale($primary, $lightness: -10%);
-    border-color: color.scale($primary, $lightness: -12.5%);
+    background-color: color.scale(variables.$primary, $lightness: -10%);
+    border-color: color.scale(variables.$primary, $lightness: -12.5%);
   }
 
   &:disabled,
   &.disabled {
-    background-color: color.scale($primary, $lightness: 15%);
-    border-color: color.scale($primary, $lightness: 15%);
+    background-color: color.scale(variables.$primary, $lightness: 15%);
+    border-color: color.scale(variables.$primary, $lightness: 15%);
     opacity: 0.65;
   }
 }
 
 // Secondary button
 .btn-secondary {
-  background-color: $secondary;
-  border-color: $secondary;
+  background-color: variables.$secondary;
+  border-color: variables.$secondary;
   color: #fff;
 
   &:hover,
   &:focus {
-    background-color: color.scale($secondary, $lightness: -7.5%);
-    border-color: color.scale($secondary, $lightness: -10%);
+    background-color: color.scale(variables.$secondary, $lightness: -7.5%);
+    border-color: color.scale(variables.$secondary, $lightness: -10%);
   }
 
   &:active {
-    background-color: color.scale($secondary, $lightness: -10%);
-    border-color: color.scale($secondary, $lightness: -12.5%);
+    background-color: color.scale(variables.$secondary, $lightness: -10%);
+    border-color: color.scale(variables.$secondary, $lightness: -12.5%);
   }
 }
 
 // Tertiary button
 .btn-tertiary {
-  background-color: $tertiary;
-  border-color: $tertiary;
-  color: $dark;
+  background-color: variables.$tertiary;
+  border-color: variables.$tertiary;
+  color: variables.$dark;
 
   &:hover,
   &:focus {
-    background-color: color.scale($tertiary, $lightness: -7.5%);
-    border-color: color.scale($tertiary, $lightness: -10%);
+    background-color: color.scale(variables.$tertiary, $lightness: -7.5%);
+    border-color: color.scale(variables.$tertiary, $lightness: -10%);
   }
 
   &:active {
-    background-color: color.scale($tertiary, $lightness: -10%);
-    border-color: color.scale($tertiary, $lightness: -12.5%);
+    background-color: color.scale(variables.$tertiary, $lightness: -10%);
+    border-color: color.scale(variables.$tertiary, $lightness: -12.5%);
   }
 }
 
 // Outline buttons
 .btn-outline-primary {
-  border-color: $primary;
-  color: $primary;
+  border-color: variables.$primary;
+  color: variables.$primary;
 
   &:hover,
   &:focus {
-    background-color: $primary;
+    background-color: variables.$primary;
     color: #fff;
   }
 }
 
 .btn-outline-secondary {
-  border-color: $secondary;
-  color: $secondary;
+  border-color: variables.$secondary;
+  color: variables.$secondary;
 
   &:hover,
   &:focus {
-    background-color: $secondary;
+    background-color: variables.$secondary;
     color: #fff;
   }
 }
 
 .btn-outline-tertiary {
-  border-color: $tertiary;
-  color: $tertiary;
+  border-color: variables.$tertiary;
+  color: variables.$tertiary;
 
   &:hover,
   &:focus {
-    background-color: $tertiary;
-    color: $dark;
+    background-color: variables.$tertiary;
+    color: variables.$dark;
   }
 }
 
@@ -177,11 +177,11 @@
 
 // Special buttons
 .btn-link {
-  color: $primary;
+  color: variables.$primary;
   text-decoration: none;
 
   &:hover {
-    color: color.scale($primary, $lightness: -15%);
+    color: color.scale(variables.$primary, $lightness: -15%);
     text-decoration: underline;
   }
 }
