@@ -1,23 +1,9 @@
 import * as React from "react";
-import {
-  Tag,
-  Table,
-  Divider,
-  Button,
-  Drawer,
-  Checkbox,
-  notification,
-} from "antd/es";
+import { Tag, Table, Button, Checkbox } from "antd/es";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { ExportToCsv } from "export-to-csv";
-import {
-  DownloadOutlined,
-  PlusOutlined,
-  UserOutlined,
-  EyeOutlined,
-  RollbackOutlined,
-} from "@ant-design/icons";
+import { DownloadOutlined, PlusOutlined } from "@ant-design/icons";
 
 import Axios from "../../networking/adaptor";
 
@@ -34,12 +20,10 @@ import Input, { SearchProps } from "antd/es/input";
 export default function Invoice() {
   const navigate = useNavigate();
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
-  const [isOpenInvoiceDetails, setIsOpenInvoiceDetails] = React.useState(false);
-  const [selectedRecord, setSelectedInvoice] = React.useState<InvoiceType>();
   const [page, setPage] = React.useState<number>(1);
   const [limit, setLimit] = React.useState<number>(10);
 
-  const { data, error, isError, isLoading } = useQuery<{
+  const { data, isLoading } = useQuery<{
     data: {
       data: {
         invoices: InvoiceType[];
@@ -154,7 +138,7 @@ export default function Invoice() {
 
   return (
     <div className="home-container">
-      <div className="home-header p-2">
+      <div className="home-header py-2">
         <div className="header-invoice">
           <Search
             placeholder="input search text"
