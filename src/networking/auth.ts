@@ -82,4 +82,9 @@ export class Auth {
       token: otp,
     });
   }
+  static async resendVerificationCode(email: string) {
+    return Axios.post("/auth/resend-verification-code", {
+      email,
+    });
+  }
 }
