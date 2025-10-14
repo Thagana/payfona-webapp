@@ -27,6 +27,7 @@ import Subscriptions from "../views/Subscriptions";
 import Subscription from "../views/Subscriptions/Subscription/Subscription";
 import Plan from "../views/Subscriptions/Plans/Plan";
 import Transactions from "../views/Transactions";
+import Plans from "../views/Subscriptions/Plans";
 
 export default function AppRouter() {
   const location = useLocation();
@@ -91,12 +92,12 @@ export default function AppRouter() {
             element={<PrivateRoutes component={Subscriptions} />}
           />
           <Route
-            path="/subscriptions"
-            element={<PrivateRoutes component={Subscriptions} />}
-          />
-          <Route
             path="/subscriptions/subscription"
             element={<PrivateRoutes component={Subscription} />}
+          />
+          <Route
+            path="/subscriptions/plans"
+            element={<PrivateRoutes component={Plans} />}
           />
           <Route
             path="/subscriptions/plan"

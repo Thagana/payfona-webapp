@@ -1,11 +1,40 @@
-@use "../../../scss/variables";
-
 .create-account-container {
   display: flex;
-  background-color: #f5f5f5;
-  align-items: center;
   justify-content: center;
-  flex-direction: column;
-  height: 100vh;
-  font-family: variables.$font-family-base;
+  align-items: flex-start;
+  padding: 2rem;
+  background-color: #f9fafb;
+  min-height: 100vh;
+
+  .form {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 450px;
+
+    .form-group {
+      margin-bottom: 1.5rem;
+
+      .label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #374151;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+      }
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
 }

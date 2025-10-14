@@ -53,14 +53,7 @@ export default function Customer() {
     },
   });
 
-  const {
-    isError: isQueryError,
-    isSuccess: isQuerySuccess,
-    isPending: isQueryPending,
-    isFetching: isQueryFetching,
-    data,
-    isLoading: isQueryLoading,
-  } = useQuery({
+  const { data, isLoading: isQueryLoading } = useQuery({
     queryKey: ["customers"],
     queryFn: async () => {
       return Axios.get("/customers");
