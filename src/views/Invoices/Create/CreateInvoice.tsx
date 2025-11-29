@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Row,
   Col,
@@ -39,6 +39,20 @@ interface Details {
   phoneNumber: string;
 }
 
+interface ValidationErrors {
+  from?: {
+    name?: string;
+    email?: string;
+    phoneNumber?: string;
+  };
+  to?: {
+    name?: string;
+    email?: string;
+    phoneNumber?: string;
+  };
+  items?: string[];
+}
+
 const InvoicePage = () => {
   const [items, setItems] = useState([
     { description: "", price: 0, quantity: 0 },
@@ -53,6 +67,9 @@ const InvoicePage = () => {
     email: "",
     phoneNumber: "",
   });
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
+    {},
+  );
 
   const navigation = useNavigate();
   const { mutate, isError, isPending } = useMutation({
@@ -60,10 +77,77 @@ const InvoicePage = () => {
       Axios.post("/invoice/create-invoice", invoice),
   });
 
+  const validateEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePhoneNumber = (phone: string): boolean => {
+    const phoneRegex = /^[\+]?[0-9\s\-\(\)]{10,}$/;
+    return phoneRegex.test(phone);
+  };
+
+  const validateDetails = (
+    details: Details,
+    type: "from" | "to",
+  ): { [key: string]: string } => {
+    const errors: { [key: string]: string } = {};
+
+    if (!details.name.trim()) {
+      errors.name = `${type === "from" ? "Your" : "Client"} name is required`;
+    }
+
+    if (!details.email.trim()) {
+      errors.email = "Email is required";
+    } else if (!validateEmail(details.email)) {
+      errors.email = "Please enter a valid email address";
+    }
+
+    if (details.phoneNumber && !validatePhoneNumber(details.phoneNumber)) {
+      errors.phoneNumber = "Please enter a valid phone number";
+    }
+
+    return errors;
+  };
+
+  const validateItems = (): string[] => {
+    const errors: string[] = [];
+
+    const validItems = items.filter(
+      (item) =>
+        item.description.trim() !== "" || item.price > 0 || item.quantity > 0,
+    );
+
+    if (validItems.length === 0) {
+      errors.push(
+        "At least one item with description, price, and quantity is required",
+      );
+      return errors;
+    }
+
+    validItems.forEach((item, index) => {
+      if (!item.description.trim()) {
+        errors.push(`Item ${index + 1}: Description is required`);
+      }
+      if (item.price <= 0) {
+        errors.push(`Item ${index + 1}: Price must be greater than 0`);
+      }
+      if (item.quantity <= 0) {
+        errors.push(`Item ${index + 1}: Quantity must be greater than 0`);
+      }
+    });
+
+    return errors;
+  };
+
   const handleAddItem = () =>
     setItems([...items, { description: "", price: 0, quantity: 0 }]);
-  const handleRemoveItem = (index: number) =>
-    setItems(items.filter((_, i) => i !== index));
+
+  const handleRemoveItem = (index: number) => {
+    if (items.length > 1) {
+      setItems(items.filter((_, i) => i !== index));
+    }
+  };
 
   const updateItem = (index: number, field: string, value: string | number) => {
     const newItems = [...items];
@@ -81,40 +165,63 @@ const InvoicePage = () => {
 
   const handleSubmit = () => {
     try {
+      // Clear previous validation errors
+      setValidationErrors({});
+
+      const fromErrors = validateDetails(formDetails, "from");
+      const toErrors = validateDetails(toDetails, "to");
+      const itemErrors = validateItems();
+
+      const newValidationErrors: ValidationErrors = {};
+
+      if (Object.keys(fromErrors).length > 0) {
+        newValidationErrors.from = fromErrors;
+      }
+
+      if (Object.keys(toErrors).length > 0) {
+        newValidationErrors.to = toErrors;
+      }
+
+      if (itemErrors.length > 0) {
+        newValidationErrors.items = itemErrors;
+      }
+
+      if (Object.keys(newValidationErrors).length > 0) {
+        setValidationErrors(newValidationErrors);
+
+        // Show error messages
+        Object.values(fromErrors).forEach((error) => message.error(error));
+        Object.values(toErrors).forEach((error) => message.error(error));
+        itemErrors.forEach((error) => message.error(error));
+
+        return;
+      }
+
       const invoice: InvoicePayload = {
         to: toDetails,
         from: formDetails,
-        items,
+        items: items.filter(
+          (item) =>
+            item.description.trim() !== "" ||
+            item.price > 0 ||
+            item.quantity > 0,
+        ),
         currency: "ZAR",
         invoiceDate: new Date().toISOString(),
         total: subtotal,
         logo: "https://placehold.co/80x80.png", // placeholder
       };
-      console.log("INVOICE-INVOICE", invoice);
-      const issues = [];
-      if (!invoice.from.email || !invoice.from.name) {
-        issues.push("Invoice sender details required");
-      }
-      if (!invoice.to.email || !invoice.to.name) {
-        issues.push("Invoice Reciepients details required");
-      }
-      const hasValid = invoice.items.some(
-        ({ description, price, quantity }) =>
-          description !== "" || price !== 0 || quantity !== 0,
-      );
 
-      if (!hasValid) {
-        issues.push("You must add atleadt one item");
-      }
-      console.log("ISSUES", issues);
-
-      if (issues.length > 0) {
-        issues.forEach((issue) => message.error(issue));
-      }
-
-      // mutate(invoice);
-      // if (!isPending) navigation("/invoices");
-    } catch {
+      mutate(invoice, {
+        onSuccess: () => {
+          message.success("Invoice sent successfully!");
+          navigation("/invoices");
+        },
+        onError: () => {
+          message.error("Failed to send invoice. Please try again.");
+        },
+      });
+    } catch (error) {
       notification.error({
         message: "Something went wrong. Please try again later.",
       });
@@ -146,18 +253,28 @@ const InvoicePage = () => {
           {/* From & To Information */}
           <Row gutter={24}>
             <Col span={12}>
-              <Card title="From (Your Information)" bordered={true}>
+              <Card
+                title="From (Your Information)"
+                style={{ border: "1px solid #d9d9d9" }}
+              >
                 <Form layout="vertical">
-                  <Form.Item>
+                  <Form.Item
+                    validateStatus={validationErrors.from?.name ? "error" : ""}
+                    help={validationErrors.from?.name}
+                  >
                     <Input
                       placeholder="Your name or company name"
                       value={formDetails.name}
                       onChange={(e) =>
                         setFromDetails({ ...formDetails, name: e.target.value })
                       }
+                      status={validationErrors.from?.name ? "error" : ""}
                     />
                   </Form.Item>
-                  <Form.Item>
+                  <Form.Item
+                    validateStatus={validationErrors.from?.email ? "error" : ""}
+                    help={validationErrors.from?.email}
+                  >
                     <Input
                       placeholder="your.email@example.com"
                       value={formDetails.email}
@@ -167,9 +284,15 @@ const InvoicePage = () => {
                           email: e.target.value,
                         })
                       }
+                      status={validationErrors.from?.email ? "error" : ""}
                     />
                   </Form.Item>
-                  <Form.Item>
+                  <Form.Item
+                    validateStatus={
+                      validationErrors.from?.phoneNumber ? "error" : ""
+                    }
+                    help={validationErrors.from?.phoneNumber}
+                  >
                     <Input
                       placeholder="Phone number"
                       value={formDetails.phoneNumber}
@@ -179,33 +302,50 @@ const InvoicePage = () => {
                           phoneNumber: e.target.value,
                         })
                       }
+                      status={validationErrors.from?.phoneNumber ? "error" : ""}
                     />
                   </Form.Item>
                 </Form>
               </Card>
             </Col>
             <Col span={12}>
-              <Card title="To (Client Information)" bordered={true}>
+              <Card
+                title="To (Client Information)"
+                style={{ border: "1px solid #d9d9d9" }}
+              >
                 <Form layout="vertical">
-                  <Form.Item>
+                  <Form.Item
+                    validateStatus={validationErrors.to?.name ? "error" : ""}
+                    help={validationErrors.to?.name}
+                  >
                     <Input
                       placeholder="Client name or company name"
                       value={toDetails.name}
                       onChange={(e) =>
                         setToDetails({ ...toDetails, name: e.target.value })
                       }
+                      status={validationErrors.to?.name ? "error" : ""}
                     />
                   </Form.Item>
-                  <Form.Item>
+                  <Form.Item
+                    validateStatus={validationErrors.to?.email ? "error" : ""}
+                    help={validationErrors.to?.email}
+                  >
                     <Input
                       placeholder="client.email@example.com"
                       value={toDetails.email}
                       onChange={(e) =>
                         setToDetails({ ...toDetails, email: e.target.value })
                       }
+                      status={validationErrors.to?.email ? "error" : ""}
                     />
                   </Form.Item>
-                  <Form.Item>
+                  <Form.Item
+                    validateStatus={
+                      validationErrors.to?.phoneNumber ? "error" : ""
+                    }
+                    help={validationErrors.to?.phoneNumber}
+                  >
                     <Input
                       placeholder="Phone number"
                       value={toDetails.phoneNumber}
@@ -215,6 +355,7 @@ const InvoicePage = () => {
                           phoneNumber: e.target.value,
                         })
                       }
+                      status={validationErrors.to?.phoneNumber ? "error" : ""}
                     />
                   </Form.Item>
                 </Form>
@@ -235,6 +376,20 @@ const InvoicePage = () => {
               Add Item
             </Button>
           </Row>
+
+          {validationErrors.items && (
+            <div style={{ marginTop: "0.5rem", marginBottom: "1rem" }}>
+              {validationErrors.items.map((error, index) => (
+                <Text
+                  key={index}
+                  type="danger"
+                  style={{ display: "block", fontSize: "12px" }}
+                >
+                  {error}
+                </Text>
+              ))}
+            </div>
+          )}
 
           <Table
             bordered
@@ -264,6 +419,7 @@ const InvoicePage = () => {
                 <Input
                   type="number"
                   min={0}
+                  step="0.01"
                   value={text}
                   onChange={(e) => updateItem(index, "price", e.target.value)}
                   prefix="R"
@@ -300,6 +456,7 @@ const InvoicePage = () => {
                   type="text"
                   icon={<DeleteOutlined />}
                   onClick={() => handleRemoveItem(index)}
+                  disabled={items.length === 1}
                 />
               )}
             />
@@ -312,8 +469,8 @@ const InvoicePage = () => {
                 width: 320,
                 border: "1px solid #f0f0f0",
                 background: "#fafafa",
+                padding: "1rem 1.5rem",
               }}
-              bodyStyle={{ padding: "1rem 1.5rem" }}
             >
               <Row justify="space-between">
                 <Text>Subtotal</Text>
@@ -337,6 +494,8 @@ const InvoicePage = () => {
                 type="primary"
                 icon={<SendOutlined />}
                 onClick={handleSubmit}
+                disabled={isPending}
+                loading={isPending}
               >
                 Send Invoice
               </Button>
