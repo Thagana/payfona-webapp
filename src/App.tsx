@@ -1,7 +1,10 @@
 import * as React from "react";
+
 import { BrowserRouter } from "react-router-dom";
 import { createStore, StoreProvider as Provider, persist } from "easy-peasy";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ConfigProvider } from "antd";
+import { antdTheme } from "./antdTheme";
 import "@total-typescript/ts-reset";
 
 const queryClient = new QueryClient();
@@ -22,9 +25,11 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
-        <BrowserRouter>
-          <AppRouter />
-        </BrowserRouter>
+        <ConfigProvider theme={antdTheme}>
+          <BrowserRouter>
+            <AppRouter />
+          </BrowserRouter>
+        </ConfigProvider>
       </Provider>
     </QueryClientProvider>
   );
