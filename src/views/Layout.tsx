@@ -13,6 +13,7 @@ import {
   NotificationOutlined,
   UserOutlined,
   RollbackOutlined,
+  CreditCardOutlined,
 } from "@ant-design/icons";
 import "./Layout.scss";
 import image from "../assets/payfona.png";
@@ -60,12 +61,6 @@ const MianLayout: React.FC = () => {
       path: "/invoices",
     },
     {
-      key: "7",
-      label: "Invoice Refunds",
-      icon: <RollbackOutlined />,
-      path: "/invoice-refunds",
-    },
-    {
       key: "4",
       label: "Subscriptions",
       icon: <AccountBookOutlined />,
@@ -73,12 +68,24 @@ const MianLayout: React.FC = () => {
     },
     {
       key: "5",
+      label: "Transactions",
+      icon: <CreditCardOutlined />,
+      path: "/transactions",
+    },
+    {
+      key: "6",
       label: "Bank Accounts",
       icon: <BankOutlined />,
       path: "/accounts",
     },
     {
-      key: "6",
+      key: "7",
+      label: "Invoice Refunds",
+      icon: <RollbackOutlined />,
+      path: "/invoice-refunds",
+    },
+    {
+      key: "8",
       label: "Log Out",
       icon: <LogoutOutlined />,
       path: "/login",

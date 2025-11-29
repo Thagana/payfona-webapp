@@ -26,8 +26,6 @@ export default function FirstPartSignUp(props: Props) {
     formState: { errors, isValid, isDirty },
   } = useForm<FirstInputs>();
 
-  const navigate = useNavigate();
-
   const onFirstPartSubmit: SubmitHandler<FirstInputs> = async (
     data: FirstInputs,
   ) => {

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { FieldErrorsImpl, UseFormRegister } from "react-hook-form";
+import { UseFormRegister } from "react-hook-form";
 import "./Input.scss";
 
 type Props = {
