@@ -7,4 +7,4 @@ export type Line = {
     borderColor: string[];
     borderWidth: number;
   }[];
-}
+};

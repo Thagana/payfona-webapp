@@ -1,4 +1,4 @@
-@import "../../../scss/utils";
+@use "../../../scss/utils";
 
 .log-in-container {
   display: flex;
@@ -24,13 +24,13 @@
     padding: 10px;
     max-width: 500px;
     .link {
-      color: $primary-color;
+      color: utils.$primary-900;
     }
     .form-control {
-        max-width: 450px;
-        width: 300px;
-        padding: 15px;
-        margin: 2px;
+      max-width: 450px;
+      width: 300px;
+      padding: 15px;
+      margin: 2px;
     }
     .eye-container {
       display: flex;

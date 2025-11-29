@@ -1,13 +1,12 @@
 import * as React from "react";
 import Table from "antd/es/table";
 import type { ColumnsType } from "antd/es/table";
-import Notification from 'antd/es/notification';
+import Notification from "antd/es/notification";
 
 import "./ViewInvoice.scss";
 
-import { Invoice as InvoiceNetworking } from '../../networking/invoice'
+import { Invoice as InvoiceNetworking } from "../../networking/invoice";
 import { useParams } from "react-router-dom";
-
 
 interface DataType {
   key: string;
@@ -30,7 +29,7 @@ interface Invoice {
   };
   invoice_number: string;
   invoice_date: string;
-  payment_link: string,
+  payment_link: string;
   logo: string;
   items: {
     key: string;
@@ -38,13 +37,13 @@ interface Invoice {
     quantity: number;
     price: number;
     amount: number;
-  }[]
-  currency: "ZAR" | "USD"
+  }[];
+  currency: "ZAR" | "USD";
 }
 
 export default function Invoice() {
   const { invoiceId } = useParams();
-  const [data, setData] = React.useState<Invoice>()
+  const [data, setData] = React.useState<Invoice>();
 
   const columns: ColumnsType<DataType> = [
     {
@@ -72,21 +71,21 @@ export default function Invoice() {
 
   const fetchInvoice = async () => {
     try {
-      const response = await InvoiceNetworking.fetchInvoice(invoiceId || '');
+      const response = await InvoiceNetworking.fetchInvoice(invoiceId || "");
       if (response.data.success) {
         setData(response.data.data.data);
       } else {
         Notification.error({
-          message: response.data.message
-        })
+          message: response.data.message,
+        });
       }
     } catch (error) {
       console.error(error);
       Notification.error({
-        message: 'Failed to find invoice'
-      })
+        message: "Failed to find invoice",
+      });
     }
-  }
+  };
 
   React.useEffect(() => {
     fetchInvoice();
@@ -101,7 +100,11 @@ export default function Invoice() {
           </div>
           <div className="logo-container">
             <img
-              src={data?.logo ? data.logo : "https://avatars.githubusercontent.com/u/68122202?s=400&u=4abc9827a8ca8b9c19b06b9c5c7643c87da51e10&v=4"}
+              src={
+                data?.logo
+                  ? data.logo
+                  : "https://avatars.githubusercontent.com/u/68122202?s=400&u=4abc9827a8ca8b9c19b06b9c5c7643c87da51e10&v=4"
+              }
               className="logo"
             />
           </div>
@@ -125,21 +128,28 @@ export default function Invoice() {
           <div className="date">Date: {data?.invoice_date}</div>
         </div>
         <div className="invoice-items">
-          <Table dataSource={data?.items} columns={columns} pagination={false} />
+          <Table
+            dataSource={data?.items}
+            columns={columns}
+            pagination={false}
+          />
         </div>
         <div className="sub-table">
           <div className="total">
-            Total: {data?.currency} {' '}
+            Total: {data?.currency}{" "}
             {data?.items.reduce((a, b) => {
               return a + b.price * b.quantity;
             }, 0)}
           </div>
         </div>
         <div className="pay-now-link">
-          <a href={data?.payment_link} className="pay-now-link">Pay Now!</a>
+          <a href={data?.payment_link} className="pay-now-link">
+            Pay Now!
+          </a>
         </div>
         <div className="invoice-footer">
-          Copy right reserved for company @ payfona.com {new Date().getFullYear()}
+          Copy right reserved for company @ payfona.com{" "}
+          {new Date().getFullYear()}
         </div>
       </div>
     </div>

@@ -42,7 +42,11 @@ export default function Article(props: Props) {
         });
       }}
     >
-      <img src={item.avatar} alt={item.first_name + " " + item.last_name} className="user-image" />
+      <img
+        src={item.avatar}
+        alt={item.first_name + " " + item.last_name}
+        className="user-image"
+      />
       <div className="card-details">
         <h2 className="header">{item.first_name + " " + item.last_name}</h2>
         <div>

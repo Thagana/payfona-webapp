@@ -1,91 +1,165 @@
-@import '../../../scss/utils';
+@use "../../../scss/variables";
 
 .wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    font-family: $font-family;
-    background-color: #fff;
-    margin: 0px 60px;
-    .wrapper-invoice {
-      .header {
-        padding: 10px;
-        display: flex;
-        justify-content: space-between;
-        .title {
-          font-size: 26px;
-        }
-        .logo-container {
-          .logo {
-            width: 200px;
-            height: 200px;
-          }
-        }
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: variables.$font-family-base;
+  background-color: #fff;
+  margin: 0 1.5rem; // smaller, responsive margin
+  padding: 2rem 0;
+
+  .wrapper-invoice {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+
+    /* Header */
+    .header {
+      padding: 1rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #222;
       }
-      .details-container {
-        display: flex;
-        align-items: center;
-        gap: 50px;
-        padding: 15px 0px;
-        .details-from {
-          .from {
-            font-weight: lighter;
-          }
-          .name {
-            font-weight: 600;
-            font-size: larger;
-          }
-        }
-        .details-for {
-          .for {
-            font-weight: lighter;
-          }
-          .name {
-            font-weight: 600;
-          }
+
+      .logo-container {
+        .logo {
+          max-width: 120px;
+          max-height: 120px;
+          object-fit: contain;
         }
       }
-      .invoice-items {
-        table.table {
-          .item.form-control {
-            width: 10px;
-            min-width: 600px;
-          }
-          .price.form-control {
-            width: 10px;
-            min-width: 150px;
-          }
-          .amount.form-control {
-            width: 10px;
-            min-width: 120px;
-          }
-          .quantity.form-control {
-            width: 10px;
-            min-width: 90px;
-          }
-        }
-      }
-      .invoice-meta {
-        padding: 15px 0px;
-      }
-      .sub-table {
-        display: flex;
-        justify-content: flex-end;
-        padding: 10px 0px;
-      }
-      .pay-now-link {
-        padding: 10px 0px;
-        line-height: 40px;
-        text-align: center;
-      }
-      .invoice-footer {
-        text-align: center;
-      }   
     }
+
+    /* From & To Details */
+    .details-container {
+      display: flex;
+      justify-content: space-between;
+      gap: 2rem;
+      padding: 1rem 0;
+      flex-wrap: wrap;
+
+      .details-from,
+      .details-for {
+        flex: 1;
+        min-width: 250px;
+
+        .from,
+        .for {
+          font-weight: 400;
+          color: #888;
+          margin-bottom: 0.25rem;
+        }
+
+        .name {
+          font-weight: 600;
+          font-size: 1rem;
+          margin-bottom: 0.5rem;
+        }
+      }
+    }
+
+    /* Invoice Items Table */
+    .invoice-items {
+      margin-top: 1rem;
+
+      table.table {
+        width: 100%;
+        border-collapse: collapse;
+
+        th,
+        td {
+          padding: 0.75rem;
+          border: 1px solid #f0f0f0;
+        }
+
+        th {
+          background: #fafafa;
+          font-weight: 600;
+          text-align: left;
+        }
+
+        .item.form-control {
+          min-width: 280px;
+        }
+        .price.form-control {
+          min-width: 120px;
+        }
+        .quantity.form-control {
+          min-width: 90px;
+        }
+        .amount.form-control {
+          min-width: 120px;
+        }
+      }
+    }
+
+    /* Invoice Meta Info */
+    .invoice-meta {
+      padding: 1rem 0;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    /* Subtotal & Totals */
+    .sub-table {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 1.5rem;
+
+      .totals-card {
+        background: #fafafa;
+        padding: 1rem 1.5rem;
+        border: 1px solid #eaeaea;
+        border-radius: 8px;
+        min-width: 260px;
+
+        .row {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 0.5rem;
+
+          &:last-child {
+            font-weight: 600;
+            font-size: 1.1rem;
+          }
+        }
+      }
+    }
+
+    /* Pay Now Section */
+    .pay-now-link {
+      margin-top: 1.5rem;
+      text-align: center;
+      font-weight: 500;
+
+      a {
+        color: variables.$primary;
+        text-decoration: underline;
+
+        &:hover {
+          color: darken(variables.$primary, 10%);
+        }
+      }
+    }
+
+    /* Footer */
+    .invoice-footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: #888;
+    }
+  }
 }
 
+/* Modal override */
 .modal-content {
-  padding: 5rem;
+  padding: 2rem;
+  border-radius: 8px;
 }

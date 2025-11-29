@@ -1,0 +1,167 @@
+// _theme.scss
+// Custom theme styles built on top of Bootstrap
+
+@use "./variables";
+
+// Add Google Font
+@import url("https://fonts.googleapis.com/css2?family=Red+Hat+Mono:wght@400;700&display=swap");
+
+// Add custom theme styles below
+body {
+  font-family: variables.$font-family-base;
+  background-color: variables.$body-bg;
+  color: variables.$body-color;
+}
+
+// Headings
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: variables.$font-family-base;
+  font-weight: variables.$font-weight-bold;
+  color: variables.$primary;
+}
+
+// Card customization
+.card {
+  border-color: variables.$primary-200;
+  box-shadow: 0 2px 5px rgba(variables.$primary, 0.1);
+
+  .card-header {
+    background-color: variables.$primary-100;
+    border-bottom: 1px solid variables.$primary-200;
+  }
+
+  .card-footer {
+    background-color: variables.$primary-100;
+    border-top: 1px solid variables.$primary-200;
+  }
+}
+
+// Navbar customization
+.navbar-custom {
+  background-color: variables.$primary;
+
+  .navbar-brand {
+    color: #fff;
+    font-weight: variables.$font-weight-bold;
+  }
+
+  .navbar-nav .nav-link {
+    color: rgba(#fff, 0.85);
+
+    &:hover,
+    &:focus {
+      color: #fff;
+    }
+
+    &.active {
+      color: #fff;
+      font-weight: variables.$font-weight-bold;
+    }
+  }
+}
+
+// Table customization
+.table {
+  thead {
+    background-color: variables.$primary-100;
+    color: variables.$primary-700;
+  }
+
+  &.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(variables.$primary-100, 0.4);
+  }
+
+  &.table-hover tbody tr:hover {
+    background-color: rgba(variables.$primary-200, 0.5);
+  }
+}
+
+// List group customization
+.list-group-item.active {
+  background-color: variables.$primary;
+  border-color: variables.$primary;
+}
+
+// Badges
+.badge.bg-primary {
+  background-color: variables.$primary !important;
+}
+
+.badge.bg-secondary {
+  background-color: variables.$secondary !important;
+}
+
+// Progress bars
+.progress-bar {
+  background-color: variables.$primary;
+}
+
+// Alert customization
+.alert-primary {
+  background-color: variables.$primary-100;
+  border-color: variables.$primary-200;
+  color: variables.$primary-800;
+}
+
+// Dropdown customization
+.dropdown-item {
+  &:active,
+  &.active {
+    background-color: variables.$primary;
+  }
+}
+
+// Pagination
+.pagination {
+  .page-item {
+    &.active .page-link {
+      background-color: variables.$primary;
+      border-color: variables.$primary;
+    }
+
+    .page-link {
+      color: variables.$primary;
+
+      &:hover {
+        color: variables.$primary-700;
+      }
+    }
+  }
+}
+
+// Code blocks
+pre,
+code {
+  font-family: variables.$font-family;
+  background-color: variables.$primary-100;
+  color: variables.$primary-700;
+  border-radius: variables.$border-radius;
+}
+
+// Custom text colors
+.text-primary {
+  color: variables.$primary !important;
+}
+
+.text-secondary {
+  color: variables.$secondary !important;
+}
+
+.bg-primary {
+  background-color: variables.$primary !important;
+}
+
+.bg-secondary {
+  background-color: variables.$secondary !important;
+}
+
+// Focus outline customization
+.form-control:focus,
+.btn:focus {
+  box-shadow: 0 0 0 0.25rem rgba(variables.$primary, 0.25);
+}

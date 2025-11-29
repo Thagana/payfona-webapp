@@ -1,29 +1,12 @@
-@import "../../scss/utils";
+@use "../../scss/variables";
 
 .home-container {
   display: flex;
   flex-direction: column;
-  .home-header { 
+  .home-header {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    .header-invoice {
-      .header {
-        color: rgb(12, 14, 22);
-        font-weight: bold;
-        transition: color 0.3s ease 0s;
-        font-size: 2rem;
-        line-height: 1.125;
-        letter-spacing: -1px;
-      }
-      .header-sub-text {
-        transition: color 0.3s ease 0s;
-        color: rgb(136, 142, 176);
-        font-size: 0.75rem;
-        line-height: 1.125;
-        letter-spacing: -0.25px;
-      }
-    }
     .actions {
       display: flex;
       flex-direction: row;
@@ -34,33 +17,12 @@
           display: flex;
           flex-direction: row;
           align-items: center;
-          font-family: $font-family;
+          font-family: variables.$font-family-base;
           .add-invoice-text {
             margin: 0px 5px;
           }
         }
       }
     }
-  }
-}
-
-.ant-drawer-content.invoice-drawer {
-  .invoice-details {
-    .row-item {
-      display: flex;
-      align-items: center;
-      flex-direction: row;
-      justify-content: space-between;
-      margin: 2rem 0rem;
-      .refund {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-    }
-  }
-  .buttons-inline {
-    display: flex;
-    align-items: center;
   }
 }

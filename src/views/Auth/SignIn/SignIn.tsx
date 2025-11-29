@@ -147,7 +147,10 @@ export default function SignIn() {
             </Link>
           </div>
           <div className="form-group">
-            <button className="btn btn-primary btn-lg" disabled={!isValid && !isDirty}>
+            <button
+              className="btn btn-primary btn-lg"
+              disabled={!isValid && !isDirty}
+            >
               {loading ? "Loading ..." : "Sign In"}
             </button>
           </div>

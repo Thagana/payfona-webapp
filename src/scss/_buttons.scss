@@ -1,38 +1,211 @@
-@import "./utils";
+// _buttons.scss
+// Custom button styles extending Bootstrap
+@use "sass:color";
+@use "./variables";
 
-button.btn.btn-primary {
-  background-color: $primary-color;
-  background: $primary-color;
-  border-radius: 5px;
-  border: 1px solid $primary-color;
-  margin: 5px;
-  padding: 10px;
-  width: 100%;
-  font-family: $font-family;
+// Base button styles
+.btn {
+  font-family: variables.$font-family-base;
+  font-weight: variables.$font-weight-normal;
+  border-radius: variables.$border-radius;
+  transition: all 0.2s ease-in-out;
+  letter-spacing: 0.03em;
+
   &:hover {
-    transform: scale(0.9);
-    background-color: $primary-color;
-    background: $primary-color;
-    border-radius: 12px;
-    border: 1px solid $primary-color;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(variables.$primary, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(variables.$primary, 0.1);
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 0.25rem rgba(variables.$primary, 0.25);
   }
 }
 
-button.btn.btn-secondary {
-  border-radius: 5px;
-  background-color: transparent;
-  margin: 5px;
-  padding: 10px;
-  width: 100%;
-  border: 2px solid $primary-color;
-  color: $primary-color;
-  font-family: $font-family;
-  &:hover {
-    transform: scale(1);
-    background-color: $primary-color;
-    background: $primary-color;
-    border-radius: 12px;
-    border: 1px solid $primary-color;
+// Primary button
+.btn-primary {
+  background-color: variables.$primary;
+  border-color: variables.$primary;
+  color: #fff;
+
+  &:hover,
+  &:focus {
+    background-color: color.scale(variables.$primary, $lightness: -7.5%);
+    border-color: color.scale(variables.$primary, $lightness: -10%);
+  }
+
+  &:active {
+    background-color: color.scale(variables.$primary, $lightness: -10%);
+    border-color: color.scale(variables.$primary, $lightness: -12.5%);
+  }
+
+  &:disabled,
+  &.disabled {
+    background-color: color.scale(variables.$primary, $lightness: 15%);
+    border-color: color.scale(variables.$primary, $lightness: 15%);
+    opacity: 0.65;
+  }
+}
+
+// Secondary button
+.btn-secondary {
+  background-color: variables.$secondary;
+  border-color: variables.$secondary;
+  color: #fff;
+
+  &:hover,
+  &:focus {
+    background-color: color.scale(variables.$secondary, $lightness: -7.5%);
+    border-color: color.scale(variables.$secondary, $lightness: -10%);
+  }
+
+  &:active {
+    background-color: color.scale(variables.$secondary, $lightness: -10%);
+    border-color: color.scale(variables.$secondary, $lightness: -12.5%);
+  }
+}
+
+// Tertiary button
+.btn-tertiary {
+  background-color: variables.$tertiary;
+  border-color: variables.$tertiary;
+  color: variables.$dark;
+
+  &:hover,
+  &:focus {
+    background-color: color.scale(variables.$tertiary, $lightness: -7.5%);
+    border-color: color.scale(variables.$tertiary, $lightness: -10%);
+  }
+
+  &:active {
+    background-color: color.scale(variables.$tertiary, $lightness: -10%);
+    border-color: color.scale(variables.$tertiary, $lightness: -12.5%);
+  }
+}
+
+// Outline buttons
+.btn-outline-primary {
+  border-color: variables.$primary;
+  color: variables.$primary;
+
+  &:hover,
+  &:focus {
+    background-color: variables.$primary;
     color: #fff;
+  }
+}
+
+.btn-outline-secondary {
+  border-color: variables.$secondary;
+  color: variables.$secondary;
+
+  &:hover,
+  &:focus {
+    background-color: variables.$secondary;
+    color: #fff;
+  }
+}
+
+.btn-outline-tertiary {
+  border-color: variables.$tertiary;
+  color: variables.$tertiary;
+
+  &:hover,
+  &:focus {
+    background-color: variables.$tertiary;
+    color: variables.$dark;
+  }
+}
+
+// Button sizes
+.btn-lg {
+  font-size: 1.125rem;
+  padding: 0.75rem 1.5rem;
+}
+
+.btn-sm {
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem;
+}
+
+// Icon buttons
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  i,
+  svg {
+    margin-right: 0.5rem;
+  }
+
+  &.btn-icon-only {
+    padding: 0.5rem;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+
+    i,
+    svg {
+      margin-right: 0;
+    }
+
+    &.btn-sm {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    &.btn-lg {
+      width: 3rem;
+      height: 3rem;
+    }
+  }
+}
+
+// Group buttons
+.btn-group {
+  .btn {
+    &:not(:first-child) {
+      margin-left: -1px;
+    }
+  }
+}
+
+// Special buttons
+.btn-link {
+  color: variables.$primary;
+  text-decoration: none;
+
+  &:hover {
+    color: color.scale(variables.$primary, $lightness: -15%);
+    text-decoration: underline;
+  }
+}
+
+// Loading button
+.btn-loading {
+  position: relative;
+
+  .spinner-border {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+  }
+
+  &.btn-loading-only {
+    color: transparent !important;
+
+    .spinner-border {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-top: -0.5rem;
+      margin-left: -0.5rem;
+      margin-right: 0;
+    }
   }
 }

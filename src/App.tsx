@@ -1,7 +1,13 @@
 import * as React from "react";
-import { BrowserRouter } from 'react-router-dom';
+
+import { BrowserRouter } from "react-router-dom";
 import { createStore, StoreProvider as Provider, persist } from "easy-peasy";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ConfigProvider } from "antd";
+import { antdTheme } from "./antdTheme";
 import "@total-typescript/ts-reset";
+
+const queryClient = new QueryClient();
 
 import AppRouter from "./routes/routes";
 
@@ -12,16 +18,20 @@ import "./App.scss";
 const store = createStore(
   persist(Store, {
     storage: "localStorage",
-  })
+  }),
 );
 
 function App() {
   return (
-    <Provider store={store}>
-        <BrowserRouter>
-          <AppRouter />
-        </BrowserRouter>
-    </Provider>
+    <QueryClientProvider client={queryClient}>
+      <Provider store={store}>
+        <ConfigProvider theme={antdTheme}>
+          <BrowserRouter>
+            <AppRouter />
+          </BrowserRouter>
+        </ConfigProvider>
+      </Provider>
+    </QueryClientProvider>
   );
 }
 

@@ -55,7 +55,7 @@ export interface Model {
     }
   >;
   updateAvatar: Action<this, { avatar: string }>;
-  updateAccount: Action<this, Account[]>
+  updateAccount: Action<this, Account[]>;
 }
 
 const model: Model = {
@@ -102,7 +102,7 @@ const model: Model = {
   updateAccount: action((state, payload) => {
     const oldState = state;
     oldState.accounts = payload;
-  })
+  }),
 };
 
 export default model;

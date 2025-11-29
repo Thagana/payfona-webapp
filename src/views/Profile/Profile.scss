@@ -1,26 +1,26 @@
-@import '../../scss/utils';
+@use "../../scss/utils";
 
 .profile-container {
-    display: flex;
-    justify-content: center;
-    height: 100vh;
-    align-items: center;
-    flex-direction: row;
-    .image-container {
-        border: 6px solid $primary-color;
-        border-radius: 50%;
-        .image {
-            width: 400px;
-            height: 400px;
-            border-radius: 50%;
-        }
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+  align-items: center;
+  flex-direction: row;
+  .image-container {
+    border: 6px solid utils.$primary-900;
+    border-radius: 50%;
+    .image {
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
     }
-    .details {
-        .names {
-            display: flex;
-            padding: 5px;
-            align-items: center;
-            font-size: 20px;
-        }
+  }
+  .details {
+    .names {
+      display: flex;
+      padding: 5px;
+      align-items: center;
+      font-size: 20px;
     }
+  }
 }

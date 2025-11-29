@@ -1,27 +1,57 @@
-/* @import "antd/dist/antd.css"; */
+@use "./scss/variables";
+@use "./scss/theme";
+@use "./scss/buttons";
+@use "./scss/forms";
 @import "bootstrap/dist/css/bootstrap.css";
 @import url("https://fonts.googleapis.com/css2?family=Red+Hat+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap");
-@import './scss/utils';
 
 html,
 body {
-  font-family: $font-family;
+  font-family: variables.$font-family;
 }
 
 p {
-  font-family: $font-family;
+  font-family: variables.$font-family;
 }
 
 div {
-  font-family: $font-family;
+  font-family: variables.$font-family;
 }
 
 span {
-  font-family: $font-family;
+  font-family: variables.$font-family;
 }
 
 a {
-  font-family: $font-family;
+  font-family: variables.$font-family;
   text-decoration: underline;
-  color: $primary-color;
+  color: variables.$primary-900;
+}
+
+/* antd-custom.css */
+.ant-typography h1,
+.ant-typography h2,
+.ant-typography h3,
+.ant-typography h4,
+.ant-typography h5,
+.ant-typography h6 {
+  font-family: "Red Hat Mono", monospace;
+  font-weight: 700;
+  color: #31004a;
+}
+
+/* Code blocks to match your theme */
+.ant-typography code,
+pre.ant-typography {
+  font-family: "Red Hat Mono", monospace;
+  background-color: #e1cce8;
+  color: #1d002c;
+  border-radius: 0.25rem;
+}
+
+/* List group active items */
+.ant-list-item-meta-title a:active,
+.ant-list-item.ant-list-item-active {
+  background-color: #31004a;
+  color: #ffffff;
 }

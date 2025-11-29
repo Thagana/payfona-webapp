@@ -1,0 +1,72 @@
+// _variables.scss
+// Custom variables to override Bootstrap defaults
+@use "sass:color";
+@use "node_modules/bootstrap/scss/functions";
+
+// Colors
+$primary: #31004a;
+$secondary: #6e1aa0; // #6e1aa0
+$tertiary: #aa53dc; // #aa53dc
+$success: #198754;
+$info: #0dcaf0;
+$warning: #ffc107;
+$danger: #dc3545;
+$light: #f8f9fa;
+$dark: #1c002b;
+
+// Color shades
+// Color shades
+$primary-100: color.mix(white, $primary, 80%);
+$primary-200: color.mix(white, $primary, 60%);
+$primary-300: color.mix(white, $primary, 40%);
+$primary-400: color.mix(white, $primary, 20%);
+$primary-500: $primary;
+$primary-600: color.mix(black, $primary, 20%);
+$primary-700: color.mix(black, $primary, 40%);
+$primary-800: color.mix(black, $primary, 60%);
+$primary-900: color.mix(black, $primary, 80%);
+
+// Typography
+$font-family: "Red Hat Mono", monospace;
+$font-family-base: $font-family;
+$font-weight-normal: 400;
+$font-weight-bold: 700;
+$font-size-base: 1rem;
+$line-height-base: 1.5;
+
+// Body
+$body-bg: #fff;
+$body-color: $dark;
+
+// Links
+$link-color: $primary;
+$link-decoration: none;
+$link-hover-color: #1c002b;
+$link-hover-decoration: underline;
+
+// Components
+$border-radius: 0.25rem;
+$border-radius-lg: 0.5rem;
+$border-radius-sm: 0.2rem;
+
+// Spacing
+$spacer: 1rem;
+
+// Grid breakpoints
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1400px,
+);
+
+// Z-index master list
+$zindex-dropdown: 1000;
+$zindex-sticky: 1020;
+$zindex-fixed: 1030;
+$zindex-modal-backdrop: 1040;
+$zindex-modal: 1050;
+$zindex-popover: 1060;
+$zindex-tooltip: 1070;
