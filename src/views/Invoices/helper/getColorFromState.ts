@@ -1,11 +1,11 @@
 export function getColorFromStatus(status: string): string {
   switch (status) {
     case "PENDING":
-      return "yellow";
+      return "orange";
     case "PAID":
       return "green";
     case "DRAFT":
-      return "default";
+      return "blue";
     default:
       return "default";
   }
