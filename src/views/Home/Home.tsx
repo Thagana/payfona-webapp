@@ -27,7 +27,6 @@ import "./Home.scss";
 import { Invoice } from "../../networking/invoice";
 import { Line } from "../../interface/Line";
 import { revenueOptions } from "./data/data";
-import { sub } from "date-fns";
 
 ChartJS.register(
   CategoryScale,

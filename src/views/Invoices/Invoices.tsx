@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Tag, Table, Button, Checkbox } from "antd/es";
+import { Tag, Table, Button, Checkbox, Card, Space, Typography } from "antd/es";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { ExportToCsv } from "export-to-csv";
@@ -8,6 +8,7 @@ import { DownloadOutlined, PlusOutlined } from "@ant-design/icons";
 import Axios from "../../networking/adaptor";
 
 const { Search } = Input;
+const { Title } = Typography;
 
 import "./Invoices.scss";
 
@@ -22,17 +23,25 @@ export default function Invoice() {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
   const [page, setPage] = React.useState<number>(1);
   const [limit, setLimit] = React.useState<number>(10);
+  const [searchTerm, setSearchTerm] = React.useState<string>("");
 
   const { data, isLoading } = useQuery<{
     data: {
       data: {
         invoices: InvoiceType[];
+        totalItems: number;
+        totalPages: number;
+        currentPage: number;
+        hasNextPage: boolean;
+        hasPreviousPage: boolean;
       };
     };
   }>({
-    queryKey: ["invoices"],
+    queryKey: ["invoices", page, limit, searchTerm],
     queryFn: async () => {
-      return Axios.get(`/invoice?page=${page}&limit=${limit}`);
+      return Axios.get(
+        `/invoice?page=${page}&limit=${limit}&search=${searchTerm}`,
+      );
     },
   });
 
@@ -56,6 +65,16 @@ export default function Invoice() {
       );
     }
   }, [data]);
+
+  const handlePageChange = React.useCallback(
+    (newPage: number, newPageSize?: number) => {
+      setPage(newPage);
+      if (newPageSize && newPageSize !== limit) {
+        setLimit(newPageSize);
+      }
+    },
+    [limit],
+  );
 
   const headerCheckbox = React.useMemo(
     () => (
@@ -133,51 +152,76 @@ export default function Invoice() {
     [],
   );
 
-  const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
-    console.log(info?.source, value);
+  const onSearch: SearchProps["onSearch"] = (value, _e, info) => {
+    setSearchTerm(value);
+    setPage(1); // Reset to first page when searching
+  };
 
   return (
-    <div className="home-container">
-      <div className="home-header py-2">
-        <div className="header-invoice">
-          <Search
-            placeholder="input search text"
-            allowClear
-            enterButton="Search"
-            size="large"
-            onSearch={onSearch}
-          />
-        </div>
-        <div>
-          <div className="actions">
-            <div className="create-invoice">
-              <Button
-                className="btn btn-primary btn-outlined add-invoice"
-                onClick={handleExport}
-              >
-                <DownloadOutlined />
-                <div className="add-invoice-text">Export</div>
-              </Button>
-            </div>
-            <div className="create-invoice">
-              <Button
-                className="btn btn-primary add-invoice"
-                onClick={handleNewInvoice}
-              >
-                <PlusOutlined />
-                <div className="add-invoice-text">New Invoice</div>
-              </Button>
+    <div className="invoices-container">
+      <Card className="invoices-header-card" bordered={false}>
+        <div className="invoices-header">
+          <div className="header-left">
+            <Title level={2} className="page-title">
+              Invoices
+            </Title>
+            <div className="search-section">
+              <Search
+                placeholder="Search invoices by number, customer, or email"
+                allowClear
+                enterButton="Search"
+                size="large"
+                onSearch={onSearch}
+                className="invoice-search"
+              />
             </div>
           </div>
+          <div className="header-right">
+            <Space size="middle" className="actions">
+              <Button
+                className="btn-export"
+                onClick={handleExport}
+                icon={<DownloadOutlined />}
+                disabled={selectedRowKeys.length === 0}
+              >
+                Export ({selectedRowKeys.length})
+              </Button>
+              <Button
+                type="primary"
+                className="btn-new-invoice"
+                onClick={handleNewInvoice}
+                icon={<PlusOutlined />}
+              >
+                New Invoice
+              </Button>
+            </Space>
+          </div>
         </div>
-      </div>
-      <Table
-        rowSelection={rowSelection}
-        columns={columns}
-        rowKey={(record) => record.invoiceId}
-        dataSource={data?.data.data.invoices}
-        loading={isLoading}
-      />
+      </Card>
+
+      <Card className="invoices-table-card" bordered={false}>
+        <Table
+          rowSelection={rowSelection}
+          columns={columns}
+          rowKey={(record) => record.invoiceId}
+          dataSource={data?.data.data.invoices}
+          loading={isLoading}
+          pagination={{
+            current: page,
+            pageSize: limit,
+            total: data?.data.data.totalItems || 0,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${total} invoices`,
+            pageSizeOptions: ["10", "20", "50", "100"],
+            onChange: handlePageChange,
+            onShowSizeChange: handlePageChange,
+          }}
+          scroll={{ x: 800 }}
+          className="invoices-table"
+        />
+      </Card>
     </div>
   );
 }
