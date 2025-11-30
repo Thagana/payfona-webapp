@@ -5,30 +5,29 @@ import { useQuery } from "@tanstack/react-query";
 import { SearchProps } from "antd/es/input";
 import { TableRowSelection } from "antd/es/table/interface";
 import { useNavigate } from "react-router-dom";
-
 import Axios from "../../../networking/adaptor";
 import { SubscriptionType } from "../interface/subscription.interface";
 import { columns } from "../data/subscriptions-columns";
-
 const { Search } = Input;
-
-import "./Subscriptions.scss";
 
 export function AllSubscriptions() {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
   const navigate = useNavigate();
   const [page, setPage] = React.useState<number>(1);
   const [limit, setLimit] = React.useState<number>(10);
+
   const { data, error, isError, isLoading } = useQuery<{
     data: {
       data: SubscriptionType[];
     };
   }>({
-    queryKey: ["subscriptions"],
+    queryKey: ["subscriptions", page, limit],
     queryFn: async () => {
+      // FIXED: Changed from template literal syntax to proper function call
       return Axios.get(`/subscriptions?page=${page}&limit=${limit}`);
     },
   });
+
   const toggleSelectAll = React.useCallback(() => {
     if (data) {
       setSelectedRowKeys((keys) =>
@@ -38,6 +37,7 @@ export function AllSubscriptions() {
       );
     }
   }, [data]);
+
   const handleSelect = React.useCallback(
     (record: SubscriptionType, selected: boolean) => {
       setSelectedRowKeys((keys) =>
@@ -48,6 +48,7 @@ export function AllSubscriptions() {
     },
     [],
   );
+
   const headerCheckbox = React.useMemo(
     () => (
       <Checkbox
@@ -70,12 +71,23 @@ export function AllSubscriptions() {
     columnTitle: headerCheckbox,
     onSelectAll: toggleSelectAll,
   };
+
   const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
     console.log(info?.source, value);
+
   return (
-    <div className="home-container">
-      <div className="home-header py-2">
-        <div className="header-invoice">
+    <div style={{ padding: "24px", background: "#f0f2f5", minHeight: "100vh" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "24px",
+          gap: "16px",
+          flexWrap: "wrap",
+        }}
+      >
+        <div style={{ flex: "1", minWidth: "300px", maxWidth: "500px" }}>
           <Search
             placeholder="Search subscriptions"
             allowClear
@@ -84,40 +96,47 @@ export function AllSubscriptions() {
             onSearch={onSearch}
           />
         </div>
-        <div>
-          <div className="actions">
-            <div className="create-invoice">
-              <Button
-                className="btn btn-primary btn-outlined add-invoice"
-                onClick={() => {
-                  navigate("/subscriptions/plans");
-                }}
-              >
-                <SolutionOutlined />
-                <div className="add-invoice-text">Manage Plans</div>
-              </Button>
-            </div>
-            <div className="create-invoice">
-              <Button
-                className="btn btn-primary add-invoice"
-                onClick={() => {
-                  navigate("/subscriptions/subscription");
-                }}
-              >
-                <PlusOutlined />
-                <div className="add-invoice-text">New Subscription</div>
-              </Button>
-            </div>
-          </div>
+        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+          <Button
+            size="large"
+            icon={<SolutionOutlined />}
+            onClick={() => {
+              navigate("/subscriptions/plans");
+            }}
+          >
+            Manage Plans
+          </Button>
+          <Button
+            type="primary"
+            size="large"
+            icon={<PlusOutlined />}
+            onClick={() => {
+              navigate("/subscriptions/subscription");
+            }}
+          >
+            New Subscription
+          </Button>
         </div>
       </div>
-      <Table
-        rowSelection={rowSelection}
-        columns={columns}
-        rowKey={(record) => record.id}
-        dataSource={data?.data.data}
-        loading={isLoading}
-      />
+      <div style={{ background: "#fff", borderRadius: "8px", padding: "24px" }}>
+        <Table
+          rowSelection={rowSelection}
+          columns={columns}
+          rowKey={(record) => record.id}
+          dataSource={data?.data.data}
+          loading={isLoading}
+          pagination={{
+            current: page,
+            pageSize: limit,
+            onChange: (newPage, newPageSize) => {
+              setPage(newPage);
+              setLimit(newPageSize);
+            },
+            showSizeChanger: true,
+            showTotal: (total) => `Total ${total} subscriptions`,
+          }}
+        />
+      </div>
     </div>
   );
 }

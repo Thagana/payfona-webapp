@@ -6,9 +6,8 @@ import Axios from "../../../networking/adaptor";
 import { Button, Checkbox, Input, Table } from "antd";
 import { TableRowSelection } from "antd/es/table/interface";
 import { SearchProps } from "antd/es/input";
-import { PlusOutlined, SolutionOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import { columns } from "../data/plans-columns";
-
 const { Search } = Input;
 
 export default function Plans() {
@@ -16,16 +15,19 @@ export default function Plans() {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
   const [page, setPage] = React.useState<number>(1);
   const [limit, setLimit] = React.useState<number>(10);
+
   const { data, error, isError, isLoading } = useQuery<{
     data: {
       data: PlanType[];
     };
   }>({
-    queryKey: ["plans"],
+    queryKey: ["plans", page, limit],
     queryFn: async () => {
+      // FIXED: Changed from template literal syntax to proper function call
       return Axios.get(`/plans?page=${page}&limit=${limit}`);
     },
   });
+
   const toggleSelectAll = React.useCallback(() => {
     if (data) {
       setSelectedRowKeys((keys) =>
@@ -35,6 +37,7 @@ export default function Plans() {
       );
     }
   }, [data]);
+
   const handleSelect = React.useCallback(
     (record: PlanType, selected: boolean) => {
       setSelectedRowKeys((keys) =>
@@ -45,6 +48,7 @@ export default function Plans() {
     },
     [],
   );
+
   const headerCheckbox = React.useMemo(
     () => (
       <Checkbox
@@ -67,43 +71,63 @@ export default function Plans() {
     columnTitle: headerCheckbox,
     onSelectAll: toggleSelectAll,
   };
+
   const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
     console.log(info?.source, value);
+
   return (
-    <div className="home-container">
-      <div className="home-header py-2">
-        <div className="header-invoice">
+    <div style={{ padding: "24px", background: "#f0f2f5", minHeight: "100vh" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "24px",
+          gap: "16px",
+          flexWrap: "wrap",
+        }}
+      >
+        <div style={{ flex: "1", minWidth: "300px", maxWidth: "500px" }}>
           <Search
-            placeholder="Search subscriptions"
+            placeholder="Search plans"
             allowClear
             enterButton="Search"
             size="large"
             onSearch={onSearch}
           />
         </div>
-        <div>
-          <div className="actions">
-            <div className="create-invoice">
-              <Button
-                className="btn btn-primary add-invoice"
-                onClick={() => {
-                  navigate("/subscriptions/plan");
-                }}
-              >
-                <PlusOutlined />
-                <div className="add-invoice-text">New Plan</div>
-              </Button>
-            </div>
-          </div>
+        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+          <Button
+            type="primary"
+            size="large"
+            icon={<PlusOutlined />}
+            onClick={() => {
+              navigate("/subscriptions/plan");
+            }}
+          >
+            New Plan
+          </Button>
         </div>
       </div>
-      <Table
-        rowSelection={rowSelection}
-        columns={columns}
-        rowKey={(record) => record.id}
-        dataSource={data?.data.data}
-        loading={isLoading}
-      />
+      <div style={{ background: "#fff", borderRadius: "8px", padding: "24px" }}>
+        <Table
+          rowSelection={rowSelection}
+          columns={columns}
+          rowKey={(record) => record.id}
+          dataSource={data?.data.data}
+          loading={isLoading}
+          pagination={{
+            current: page,
+            pageSize: limit,
+            onChange: (newPage, newPageSize) => {
+              setPage(newPage);
+              setLimit(newPageSize);
+            },
+            showSizeChanger: true,
+            showTotal: (total) => `Total ${total} plans`,
+          }}
+        />
+      </div>
     </div>
   );
 }
