@@ -162,8 +162,8 @@ export default function Customer() {
     mutate(id);
   };
 
-  const handleEdit = (id: number) => {
-    navigate(`/customers/edit/${id}`);
+  const handleEdit = (payload: any) => {
+    navigate(`/customers/edit/${payload.id}`);
   };
 
   const columns: ColumnsType<DataType> = [
@@ -210,7 +210,7 @@ export default function Customer() {
           <Button
             type="default"
             icon={<EyeFilled />}
-            onClick={() => handleEdit(record.id)}
+            onClick={() => handleEdit(record)}
           >
             Edit
           </Button>

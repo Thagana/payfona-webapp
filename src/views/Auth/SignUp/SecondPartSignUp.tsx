@@ -56,7 +56,7 @@ export default function SecondPartSignUp(props: Props) {
       }
     } catch (error) {
       setLoading(false);
-      console.log(error);
+      console.error(error);
       Notification.error({
         message: "Something went wrong please try again later",
       });

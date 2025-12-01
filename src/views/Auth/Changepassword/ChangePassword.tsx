@@ -27,7 +27,7 @@ export default function ChangePassword() {
         return;
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       Notification.error({
         message: "Something went wrong please try again later",
       });
@@ -56,7 +56,7 @@ export default function ChangePassword() {
       }
     } catch (error) {
       setLoading(false);
-      console.log(error);
+      console.error(error);
       Notification.error({
         message: "Something went wrong please try again later",
       });

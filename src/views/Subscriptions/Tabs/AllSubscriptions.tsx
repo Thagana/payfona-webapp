@@ -72,6 +72,8 @@ export function AllSubscriptions() {
     onSelectAll: toggleSelectAll,
   };
 
+  console.log(data);
+
   const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
     console.log(info?.source, value);
 
