@@ -143,13 +143,6 @@ export default function Home() {
 
       const invoices = response.data.data;
 
-      console.log("=== API Response Debug ===");
-      console.log("Full Response:", invoices);
-      console.log("Revenue Data:", invoices.revenue);
-      console.log("Line Data:", invoices.line);
-      console.log("Pie Data:", invoices.pieChart);
-      console.log("========================");
-
       setNumberOfInvoices(invoices.numberOfInvoices);
       setNumberOfPaidInvoices(invoices.numberOfPaidInvoices);
       setTotalRevenue(invoices.totalProfitMade);

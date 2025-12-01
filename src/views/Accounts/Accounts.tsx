@@ -204,10 +204,6 @@ export default function Accounts() {
     navigate("/accounts/create");
   };
 
-  const handleEdit = (id: number) => {
-    navigate(`/accounts/${id}/edit`);
-  };
-
   const handleDelete = (id: number) => {
     deleteMutation.mutate(id);
   };
@@ -280,13 +276,6 @@ export default function Accounts() {
               Make Default
             </Button>
           )}
-          <Button
-            type="default"
-            icon={<EditFilled />}
-            onClick={() => handleEdit(record.id)}
-          >
-            Edit
-          </Button>
           {record.isDefault ? (
             <Popconfirm
               title="Cannot delete default account"
