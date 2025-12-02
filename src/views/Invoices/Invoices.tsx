@@ -1,5 +1,14 @@
 import * as React from "react";
-import { Tag, Table, Button, Checkbox, Card, Space, Typography } from "antd/es";
+import {
+  Tag,
+  Table,
+  Button,
+  Checkbox,
+  Card,
+  Space,
+  Typography,
+  Input,
+} from "antd/es";
 import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { ExportToCsv } from "export-to-csv";
@@ -14,9 +23,9 @@ import "./Invoices.scss";
 
 import { useQuery } from "@tanstack/react-query";
 import { InvoiceType } from "./interface/Invoice";
-import { columns } from "./data/columns";
 import { TableRowSelection } from "antd/es/table/interface";
-import Input, { SearchProps } from "antd/es/input";
+import type { SearchProps } from "antd/es/input";
+import type { ColumnsType } from "antd/es/table";
 
 export default function Invoice() {
   const navigate = useNavigate();
@@ -24,6 +33,7 @@ export default function Invoice() {
   const [page, setPage] = React.useState<number>(1);
   const [limit, setLimit] = React.useState<number>(10);
   const [searchTerm, setSearchTerm] = React.useState<string>("");
+  const searchTimeoutRef = React.useRef<NodeJS.Timeout>();
 
   const { data, isLoading } = useQuery<{
     data: {
@@ -104,6 +114,22 @@ export default function Invoice() {
   }, [navigate]);
 
   const handleExport = React.useCallback(() => {
+    if (!data?.data.data.invoices) return;
+
+    const exportData = data.data.data.invoices
+      .filter((invoice) => selectedRowKeys.includes(invoice.invoiceId))
+      .map((invoice) => ({
+        "Invoice Number": invoice.invoiceNumber,
+        "Customer Name": invoice.name,
+        Email: invoice.email,
+        Status: invoice.status,
+        Total: `${invoice.currency} ${(invoice.total / 100).toFixed(2)}`,
+        Date: format(new Date(invoice.date), "yyyy-MM-dd"),
+        "Paid At": invoice.paidAt
+          ? format(new Date(invoice.paidAt), "yyyy-MM-dd")
+          : "N/A",
+      }));
+
     const options = {
       fieldSeparator: ",",
       quoteStrings: '"',
@@ -117,12 +143,8 @@ export default function Invoice() {
       filename: `Invoice_Report-${new Date().getTime()}`,
     };
     const csvExporter = new ExportToCsv(options);
-    csvExporter.generateCsv(data);
-  }, [data]);
-
-  const downloadInvoice = React.useCallback(() => {
-    // download invoice
-  }, []);
+    csvExporter.generateCsv(exportData);
+  }, [data, selectedRowKeys]);
 
   const statusFormatter = React.useCallback(
     (date?: string, status?: "PAID" | "DRAFT" | "PENDING", paidAt?: string) => {
@@ -130,32 +152,140 @@ export default function Invoice() {
         case "PAID":
           return (
             <Tag color="green">
-              PAID on {format(new Date(paidAt || "2008/06/06"), "y/M/d")}
+              PAID on {format(new Date(paidAt || ""), "yyyy/MM/dd")}
             </Tag>
           );
         case "DRAFT":
           return (
             <Tag color="default">
-              DRAFT {format(new Date(date || ""), "y/M/d")}
+              DRAFT {format(new Date(date || ""), "yyyy/MM/dd")}
             </Tag>
           );
         case "PENDING":
           return (
-            <Tag color="red">
-              OVERDUE {format(new Date(date || ""), "y/M/d")}
+            <Tag color="orange">
+              PENDING {format(new Date(date || ""), "yyyy/MM/dd")}
             </Tag>
           );
         default:
-          return <></>;
+          return <Tag>UNKNOWN</Tag>;
       }
     },
     [],
   );
 
-  const onSearch: SearchProps["onSearch"] = (value, _e, info) => {
+  const handleViewInvoice = React.useCallback(
+    (invoiceId: string) => {
+      navigate(`/invoice/${invoiceId}`);
+    },
+    [navigate],
+  );
+
+  const columns: ColumnsType<InvoiceType> = React.useMemo(
+    () => [
+      {
+        title: "Invoice #",
+        dataIndex: "invoiceNumber",
+        key: "invoiceNumber",
+        width: 120,
+        fixed: "left",
+        render: (text: string, record: InvoiceType) => (
+          <Button
+            type="link"
+            onClick={() => handleViewInvoice(record.invoiceId)}
+            style={{ padding: 0 }}
+          >
+            {text}
+          </Button>
+        ),
+      },
+      {
+        title: "Customer",
+        dataIndex: "name",
+        key: "name",
+        width: 180,
+      },
+      {
+        title: "Email",
+        dataIndex: "email",
+        key: "email",
+        width: 200,
+      },
+      {
+        title: "Status",
+        dataIndex: "status",
+        key: "status",
+        width: 180,
+        render: (status: string, record: InvoiceType) =>
+          statusFormatter(
+            record.date,
+            status as "PAID" | "DRAFT" | "PENDING",
+            record.paidAt,
+          ),
+      },
+      {
+        title: "Amount",
+        dataIndex: "total",
+        key: "total",
+        width: 150,
+        align: "right",
+        render: (total: number, record: InvoiceType) => (
+          <strong>
+            {record.currency} {(total / 100).toFixed(2)}
+          </strong>
+        ),
+        sorter: (a, b) => a.total - b.total,
+      },
+      {
+        title: "Date",
+        dataIndex: "date",
+        key: "date",
+        width: 120,
+        render: (date: string) => format(new Date(date), "yyyy-MM-dd"),
+        sorter: (a, b) =>
+          new Date(a.date).getTime() - new Date(b.date).getTime(),
+      },
+      {
+        title: "Created",
+        dataIndex: "createdAt",
+        key: "createdAt",
+        width: 120,
+        render: (date: string) => format(new Date(date), "yyyy-MM-dd"),
+        sorter: (a, b) =>
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+      },
+    ],
+    [statusFormatter, handleViewInvoice],
+  );
+
+  const onSearch: SearchProps["onSearch"] = (value) => {
     setSearchTerm(value);
     setPage(1); // Reset to first page when searching
   };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    // Clear existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    // Debounce search to avoid excessive API calls
+    searchTimeoutRef.current = setTimeout(() => {
+      setSearchTerm(value);
+      setPage(1);
+    }, 500);
+  };
+
+  // Cleanup timeout on unmount
+  React.useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="invoices-container">
@@ -172,6 +302,7 @@ export default function Invoice() {
                 enterButton="Search"
                 size="large"
                 onSearch={onSearch}
+                onChange={handleSearchChange}
                 className="invoice-search"
               />
             </div>

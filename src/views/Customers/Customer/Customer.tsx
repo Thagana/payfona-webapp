@@ -1,10 +1,9 @@
 import { useForm, Controller } from "react-hook-form";
-import { useMutation, QueryClient, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { Typography, Card, Button, Input, Form, Alert, Spin } from "antd";
 import { UserOutlined, MailOutlined, PhoneOutlined } from "@ant-design/icons";
 const { Text, Title } = Typography;
 import Axios from "../../../networking/adaptor";
-const queryClient = new QueryClient();
 import "./Customer.scss";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
@@ -28,6 +27,7 @@ export default function CreateCustomer() {
 
   const navigate = useNavigate();
   const { id } = useParams();
+  const queryClient = useQueryClient();
 
   const query = useQuery({
     queryKey: ["customers", id],

@@ -1,40 +1,336 @@
+// CreateAccount.scss - Modern styling
+
 .create-account-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 2rem;
-  background-color: #f9fafb;
+  background: #f5f5f5;
   min-height: 100vh;
+  padding: 24px 0;
 
-  .form {
-    background: #fff;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    width: 100%;
-    max-width: 450px;
+  h2 {
+    color: #262626;
+    margin: 0;
+  }
 
-    .form-group {
-      margin-bottom: 1.5rem;
+  .ant-card {
+    .ant-card-body {
+      padding: 32px;
 
-      .label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-        color: #374151;
+      @media (max-width: 576px) {
+        padding: 20px;
+      }
+    }
+  }
+
+  // Form styling
+  .ant-form {
+    .ant-form-item {
+      margin-bottom: 20px;
+
+      .ant-form-item-label {
+        padding-bottom: 4px;
+
+        label {
+          font-size: 14px;
+          font-weight: 500;
+          color: #262626;
+
+          &::before {
+            display: none !important; // Remove default required asterisk
+          }
+        }
       }
 
-      .form-control {
-        width: 100%;
-        padding: 0.75rem;
-        border-radius: 6px;
-        border: 1px solid #d1d5db;
+      .ant-input {
+        font-size: 15px;
+        transition: all 0.3s ease;
+
+        &:hover {
+          border-color: #4096ff;
+        }
+
+        &:focus {
+          border-color: #4096ff;
+          box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+        }
+      }
+
+      .ant-form-item-explain-error {
+        font-size: 13px;
+        margin-top: 4px;
+      }
+    }
+  }
+
+  // React Select styling
+  .bank-select {
+    .select__control {
+      transition: all 0.3s ease;
+      cursor: pointer;
+
+      &:hover {
+        border-color: #4096ff;
+      }
+
+      &.select__control--is-focused {
+        border-color: #4096ff;
+        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
       }
     }
 
-    .form-actions {
-      display: flex;
-      justify-content: flex-end;
+    .select__placeholder {
+      color: #bfbfbf;
+      font-size: 15px;
     }
+
+    .select__single-value {
+      color: #262626;
+      font-size: 15px;
+    }
+
+    .select__input-container {
+      color: #262626;
+      font-size: 15px;
+    }
+
+    .select__option {
+      cursor: pointer;
+      font-size: 15px;
+      padding: 12px 16px;
+
+      &.select__option--is-focused {
+        background: #f0f5ff;
+      }
+
+      &.select__option--is-selected {
+        background: #1890ff;
+        color: white;
+      }
+    }
+
+    .select__menu {
+      z-index: 10;
+    }
+
+    .select__loading-indicator {
+      color: #1890ff;
+    }
+
+    .select__indicator-separator {
+      background-color: #d9d9d9;
+    }
+
+    .select__dropdown-indicator {
+      color: #8c8c8c;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #4096ff;
+      }
+    }
+
+    .select__clear-indicator {
+      color: #8c8c8c;
+      cursor: pointer;
+      transition: color 0.3s ease;
+
+      &:hover {
+        color: #ff4d4f;
+      }
+    }
+  }
+
+  // Button styling
+  .ant-btn {
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+    &.ant-btn-primary {
+      box-shadow: 0 2px 4px rgba(24, 144, 255, 0.2);
+
+      &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+    }
+
+    &.ant-btn-default {
+      &:hover:not(:disabled) {
+        border-color: #4096ff;
+        color: #4096ff;
+      }
+    }
+
+    &.ant-btn-text {
+      &:hover:not(:disabled) {
+        background: #f0f0f0;
+      }
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  // Back button
+  .ant-btn-text {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #595959;
+
+    &:hover {
+      color: #1890ff;
+    }
+  }
+
+  // Loading spinner
+  .ant-spin {
+    .ant-spin-dot {
+      font-size: 24px;
+
+      .ant-spin-dot-item {
+        background-color: #1890ff;
+      }
+    }
+
+    .ant-spin-text {
+      color: #595959;
+      margin-top: 8px;
+    }
+  }
+
+  // Info box
+  .info-box {
+    background: #f0f5ff;
+    border: 1px solid #adc6ff;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+
+    .info-title {
+      font-size: 13px;
+      color: #1d39c4;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+
+    .info-text {
+      font-size: 13px;
+      color: #595959;
+      margin: 0;
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    padding: 16px 0;
+
+    h2 {
+      font-size: 20px !important;
+    }
+
+    .ant-card {
+      .ant-card-body {
+        padding: 20px;
+      }
+    }
+
+    .ant-form {
+      .ant-form-item {
+        margin-bottom: 16px;
+      }
+    }
+  }
+
+  @media (max-width: 576px) {
+    padding: 12px 0;
+
+    .container {
+      padding: 0 12px;
+    }
+
+    h2 {
+      font-size: 18px !important;
+    }
+
+    .ant-btn-large {
+      height: 40px;
+      font-size: 15px;
+    }
+
+    .ant-input-lg {
+      height: 40px;
+      font-size: 15px;
+    }
+  }
+}
+
+// Animation for form appearance
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.create-account-container {
+  .ant-card {
+    animation: fadeInUp 0.4s ease-out;
+  }
+}
+
+// Validation error styling
+.ant-form-item-has-error {
+  .ant-input {
+    border-color: #ff4d4f;
+
+    &:hover {
+      border-color: #ff4d4f;
+    }
+
+    &:focus {
+      border-color: #ff4d4f;
+      box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.1);
+    }
+  }
+
+  .select__control {
+    border-color: #ff4d4f !important;
+
+    &:hover {
+      border-color: #ff4d4f !important;
+    }
+
+    &.select__control--is-focused {
+      border-color: #ff4d4f !important;
+      box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.1) !important;
+    }
+  }
+}
+
+// Success state
+.ant-form-item-has-success {
+  .ant-input {
+    border-color: #52c41a;
+  }
+}
+
+// Loading overlay
+.ant-spin-nested-loading {
+  .ant-spin-container {
+    transition: opacity 0.3s ease;
+  }
+
+  .ant-spin-blur {
+    opacity: 0.3;
+    pointer-events: none;
   }
 }

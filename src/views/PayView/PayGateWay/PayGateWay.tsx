@@ -39,7 +39,7 @@ export default function PayGateWay(props: Props) {
         });
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       Notification.error({
         message: "Something went wrong please try again",
       });
