@@ -277,7 +277,7 @@ export default function Home() {
         labels: {
           font: {
             size: 14,
-            weight: "500" as const,
+            weight: 500 as const,
           },
           padding: 15,
           usePointStyle: true,
@@ -344,7 +344,7 @@ export default function Home() {
         labels: {
           font: {
             size: 14,
-            weight: "500" as const,
+            weight: 500 as const,
           },
           padding: 15,
           usePointStyle: true,
@@ -374,7 +374,7 @@ export default function Home() {
         labels: {
           font: {
             size: 13,
-            weight: "500" as const,
+            weight: 500 as const,
           },
           padding: 15,
           usePointStyle: true,
@@ -416,7 +416,7 @@ export default function Home() {
         labels: {
           font: {
             size: 13,
-            weight: "500" as const,
+            weight: 500 as const,
           },
           padding: 15,
           usePointStyle: true,
@@ -485,7 +485,6 @@ export default function Home() {
               height: "60px",
               background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
               borderRadius: "12px",
-              color: "white",
             }}
           >
             {icon}

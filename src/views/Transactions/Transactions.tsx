@@ -1,11 +1,10 @@
 import React from "react";
-import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Input, Table, Tag, Typography, Space } from "antd";
+import { DownloadOutlined } from "@ant-design/icons";
+import { Button, Checkbox, Input, Table, Tag, Typography } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import { SearchProps } from "antd/es/input";
 import { TableRowSelection } from "antd/es/table/interface";
 import { ColumnsType } from "antd/es/table";
-import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { ExportToCsv } from "export-to-csv";
 import Axios from "../../networking/adaptor";
@@ -16,13 +15,12 @@ const { Text } = Typography;
 
 export default function Transactions() {
   const [selectedRowKeys, setSelectedRowKeys] = React.useState<React.Key[]>([]);
-  const navigate = useNavigate();
   const [page, setPage] = React.useState<number>(1);
   const [limit, setLimit] = React.useState<number>(10);
   const [searchTerm, setSearchTerm] = React.useState<string>("");
   const searchTimeoutRef = React.useRef<NodeJS.Timeout>();
 
-  const { data, error, isError, isLoading } = useQuery<{
+  const { data, isLoading } = useQuery<{
     data: TransactionType[];
     totalItems?: number;
     totalPages?: number;
