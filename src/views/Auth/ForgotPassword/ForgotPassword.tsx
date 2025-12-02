@@ -42,7 +42,7 @@ export default function ForgotPassword() {
       }
     } catch (error) {
       setLoading(false);
-      console.log(error);
+      console.error(error);
       Notification.error({
         message: "Something went wrong please try again later",
       });

@@ -153,7 +153,7 @@ export default function Subscription() {
         <button
           type="button"
           className="btn btn-secondary btn-back"
-          onClick={() => navigate("/subscriptions/plans")}
+          onClick={() => navigate("/subscriptions")}
         >
           Back to Subscription
         </button>
@@ -227,7 +227,7 @@ export default function Subscription() {
               type="submit"
               disabled={!isValid || (!isDirty && !isEditMode)}
             >
-              {isEditMode ? "Update Plan" : "Create Plan"}
+              {isEditMode ? "Update Subscription" : "Create Subscription"}
             </button>
           </div>
         </form>

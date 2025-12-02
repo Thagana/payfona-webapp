@@ -27,8 +27,8 @@ import "./Customers.scss";
 export default function Customer() {
   const [searchText, setSearchText] = React.useState("");
   const [searchedColumn, setSearchedColumn] = React.useState("");
+  const [globalSearchText, setGlobalSearchText] = React.useState("");
   const searchInput = React.useRef<InputRef>(null);
-  const ref = React.useRef();
 
   // Get QueryClient from the context
   const queryClient = useQueryClient();
@@ -162,8 +162,8 @@ export default function Customer() {
     mutate(id);
   };
 
-  const handleEdit = (id: number) => {
-    navigate(`/customers/edit/${id}`);
+  const handleEdit = (payload: any) => {
+    navigate(`/customers/edit/${payload.id}`);
   };
 
   const columns: ColumnsType<DataType> = [
@@ -192,7 +192,7 @@ export default function Customer() {
       dataIndex: "phoneNumber",
       key: "phone_numberail",
       ...getColumnSearchProps("phoneNumber"),
-      sorter: (a, b) => a.email.length - b.email.length,
+      sorter: (a, b) => a.phoneNumber.length - b.phoneNumber.length,
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -210,7 +210,7 @@ export default function Customer() {
           <Button
             type="default"
             icon={<EyeFilled />}
-            onClick={() => handleEdit(record.id)}
+            onClick={() => handleEdit(record)}
           >
             Edit
           </Button>
@@ -223,19 +223,37 @@ export default function Customer() {
     navigate("/customers/create");
   };
 
-  const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
-    console.log(info?.source, value);
+  const onSearch: SearchProps["onSearch"] = (value) => {
+    setGlobalSearchText(value.toLowerCase());
+  };
+
+  // Filter data based on global search
+  const filteredData = React.useMemo(() => {
+    if (!data?.data?.data) return [];
+
+    if (!globalSearchText) return data.data.data;
+
+    return data.data.data.filter((item: DataType) => {
+      return (
+        item.firstName?.toLowerCase().includes(globalSearchText) ||
+        item.lastName?.toLowerCase().includes(globalSearchText) ||
+        item.email?.toLowerCase().includes(globalSearchText) ||
+        item.phoneNumber?.toLowerCase().includes(globalSearchText)
+      );
+    });
+  }, [data?.data?.data, globalSearchText]);
 
   return (
     <div className="customer-container">
       <div className="customer-search row p-2">
         <div className="col-auto">
           <Search
-            placeholder="input search text"
+            placeholder="Search customers"
             allowClear
             enterButton="Search"
             size="large"
             onSearch={onSearch}
+            onChange={(e) => setGlobalSearchText(e.target.value.toLowerCase())}
           />
         </div>
         <div className="col-auto">
@@ -252,7 +270,7 @@ export default function Customer() {
       <div className="table">
         <Table
           columns={columns}
-          dataSource={data?.data?.data}
+          dataSource={filteredData}
           loading={isQueryLoading || isMutationPeding}
         />
       </div>

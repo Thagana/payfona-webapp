@@ -1,16 +1,10 @@
-import { useForm } from "react-hook-form";
-import { useMutation, QueryClient, useQuery } from "@tanstack/react-query";
+import { useForm, Controller } from "react-hook-form";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { Typography, Card, Button, Input, Form, Alert, Spin } from "antd";
 import { UserOutlined, MailOutlined, PhoneOutlined } from "@ant-design/icons";
-
 const { Text, Title } = Typography;
-
 import Axios from "../../../networking/adaptor";
-
-const queryClient = new QueryClient();
-
 import "./Customer.scss";
-
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 
@@ -23,7 +17,7 @@ type FormData = {
 
 export default function CreateCustomer() {
   const {
-    register,
+    control,
     handleSubmit,
     setValue,
     formState: { errors },
@@ -33,6 +27,7 @@ export default function CreateCustomer() {
 
   const navigate = useNavigate();
   const { id } = useParams();
+  const queryClient = useQueryClient();
 
   const query = useQuery({
     queryKey: ["customers", id],
@@ -73,7 +68,14 @@ export default function CreateCustomer() {
 
   if (query.isLoading && id) {
     return (
-      <div className="h-100 d-flex align-items-center justify-content-center">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
         <Spin size="large" />
       </div>
     );
@@ -81,7 +83,7 @@ export default function CreateCustomer() {
 
   if (query.isError && id) {
     return (
-      <div className="h-100 d-flex align-items-center justify-content-center">
+      <div style={{ padding: "20px" }}>
         <Alert
           message="Error"
           description="Failed to load customer data"
@@ -93,193 +95,150 @@ export default function CreateCustomer() {
   }
 
   return (
-    <div
-      className="h-100 d-flex align-items-center justify-content-center"
-      style={{ background: "#f5f5f5", minHeight: "100vh", padding: "20px" }}
-    >
-      <Card
-        style={{
-          width: "100%",
-          maxWidth: 500,
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
-          borderRadius: "8px",
-        }}
-        bodyStyle={{ padding: "32px" }}
-      >
-        <div style={{ textAlign: "center", marginBottom: "32px" }}>
-          <Title level={2} style={{ margin: 0, color: "#1890ff" }}>
-            {id ? "Edit Customer" : "Create Customer"}
-          </Title>
-        </div>
+    <div className="create-customer-container">
+      <Card style={{ maxWidth: 500, margin: "0 auto", marginTop: 50 }}>
+        <Title level={3} style={{ textAlign: "center", color: "#1890ff" }}>
+          {id ? "Update Customer" : "Create Customer"}
+        </Title>
 
         {mutation.isError && (
           <Alert
             message="Error"
-            description={mutation.error?.message || "Failed to save customer"}
+            description="Failed to save customer"
             type="error"
             showIcon
-            style={{ marginBottom: "24px" }}
+            style={{ marginBottom: 20 }}
           />
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} style={{ width: "100%" }}>
-          <div style={{ marginBottom: "20px" }}>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                fontWeight: 500,
-                color: "#262626",
-              }}
-            >
-              First Name *
-            </label>
-            <Input
-              {...register("firstName", {
-                required: "First Name is required",
-                minLength: {
-                  value: 2,
-                  message: "First Name must be at least 2 characters",
-                },
-              })}
-              placeholder="Enter first name"
-              prefix={<UserOutlined style={{ color: "#bfbfbf" }} />}
-              size="large"
-              status={errors.firstName ? "error" : ""}
-            />
-            {errors.firstName && (
-              <Text
-                type="danger"
-                style={{ fontSize: "12px", display: "block", marginTop: "4px" }}
-              >
-                {errors.firstName.message}
+        <Form layout="vertical" onFinish={handleSubmit(onSubmit)}>
+          <Form.Item
+            label={
+              <Text>
+                First Name <span style={{ color: "red" }}>*</span>
               </Text>
-            )}
-          </div>
-
-          <div style={{ marginBottom: "20px" }}>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                fontWeight: 500,
-                color: "#262626",
-              }}
-            >
-              Last Name *
-            </label>
-            <Input
-              {...register("lastName", {
-                required: "Last Name is required",
-                minLength: {
-                  value: 2,
-                  message: "Last Name must be at least 2 characters",
-                },
-              })}
-              placeholder="Enter last name"
-              prefix={<UserOutlined style={{ color: "#bfbfbf" }} />}
-              size="large"
-              status={errors.lastName ? "error" : ""}
+            }
+            validateStatus={errors.firstName ? "error" : ""}
+            help={errors.firstName?.message}
+          >
+            <Controller
+              name="firstName"
+              control={control}
+              rules={{ required: "First Name is required" }}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  prefix={<UserOutlined />}
+                  placeholder="samuel"
+                  size="large"
+                  status={errors.firstName ? "error" : ""}
+                />
+              )}
             />
-            {errors.lastName && (
-              <Text
-                type="danger"
-                style={{ fontSize: "12px", display: "block", marginTop: "4px" }}
-              >
-                {errors.lastName.message}
-              </Text>
-            )}
-          </div>
+          </Form.Item>
 
-          <div style={{ marginBottom: "20px" }}>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                fontWeight: 500,
-                color: "#262626",
-              }}
-            >
-              Email *
-            </label>
-            <Input
-              {...register("email", {
+          <Form.Item
+            label={
+              <Text>
+                Last Name <span style={{ color: "red" }}>*</span>
+              </Text>
+            }
+            validateStatus={errors.lastName ? "error" : ""}
+            help={errors.lastName?.message}
+          >
+            <Controller
+              name="lastName"
+              control={control}
+              rules={{ required: "Last Name is required" }}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  prefix={<UserOutlined />}
+                  placeholder="mothwa"
+                  size="large"
+                  status={errors.lastName ? "error" : ""}
+                />
+              )}
+            />
+          </Form.Item>
+
+          <Form.Item
+            label={
+              <Text>
+                Email <span style={{ color: "red" }}>*</span>
+              </Text>
+            }
+            validateStatus={errors.email ? "error" : ""}
+            help={errors.email?.message}
+          >
+            <Controller
+              name="email"
+              control={control}
+              rules={{
                 required: "Email is required",
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                   message: "Invalid email address",
                 },
-              })}
-              type="email"
-              placeholder="Enter email address"
-              prefix={<MailOutlined style={{ color: "#bfbfbf" }} />}
-              size="large"
-              status={errors.email ? "error" : ""}
-            />
-            {errors.email && (
-              <Text
-                type="danger"
-                style={{ fontSize: "12px", display: "block", marginTop: "4px" }}
-              >
-                {errors.email.message}
-              </Text>
-            )}
-          </div>
-
-          <div style={{ marginBottom: "32px" }}>
-            <label
-              style={{
-                display: "block",
-                marginBottom: "8px",
-                fontWeight: 500,
-                color: "#262626",
               }}
-            >
-              Phone Number *
-            </label>
-            <Input
-              {...register("phoneNumber", {
-                required: "Phone Number is required",
-                pattern: {
-                  value: /^[\+]?[1-9][\d]{0,15}$/,
-                  message: "Invalid phone number format",
-                },
-              })}
-              placeholder="Enter phone number"
-              prefix={<PhoneOutlined style={{ color: "#bfbfbf" }} />}
-              size="large"
-              status={errors.phoneNumber ? "error" : ""}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  prefix={<MailOutlined />}
+                  placeholder="samuelmthwa79@gmail.com"
+                  size="large"
+                  status={errors.email ? "error" : ""}
+                />
+              )}
             />
-            {errors.phoneNumber && (
-              <Text
-                type="danger"
-                style={{ fontSize: "12px", display: "block", marginTop: "4px" }}
-              >
-                {errors.phoneNumber.message}
-              </Text>
-            )}
-          </div>
+          </Form.Item>
 
-          <div style={{ display: "flex", gap: "12px" }}>
-            <Button
-              type="default"
-              size="large"
-              onClick={() => navigate("/customers")}
-              style={{ flex: 1 }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="primary"
-              htmlType="submit"
-              size="large"
-              loading={mutation.isPending}
-              style={{ flex: 1 }}
-            >
-              {id ? "Update Customer" : "Create Customer"}
-            </Button>
-          </div>
-        </form>
+          <Form.Item
+            label={
+              <Text>
+                Phone Number <span style={{ color: "red" }}>*</span>
+              </Text>
+            }
+            validateStatus={errors.phoneNumber ? "error" : ""}
+            help={errors.phoneNumber?.message}
+          >
+            <Controller
+              name="phoneNumber"
+              control={control}
+              rules={{ required: "Phone Number is required" }}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  prefix={<PhoneOutlined />}
+                  placeholder="072 793 2352"
+                  size="large"
+                  status={errors.phoneNumber ? "error" : ""}
+                />
+              )}
+            />
+          </Form.Item>
+
+          <Form.Item>
+            <div style={{ display: "flex", gap: 10 }}>
+              <Button
+                onClick={() => navigate("/customers")}
+                style={{ flex: 1 }}
+                size="large"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                style={{ flex: 1 }}
+                size="large"
+                loading={mutation.isPending}
+              >
+                {id ? "Update Customer" : "Create Customer"}
+              </Button>
+            </div>
+          </Form.Item>
+        </Form>
       </Card>
     </div>
   );
