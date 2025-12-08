@@ -149,7 +149,7 @@ export default function Subscription() {
   return (
     <div className="subscription-container">
       <div className="subscription-header">
-        <h2>{isEditMode ? "Edit Plan" : "Create New Plan"}</h2>
+        <h2>{isEditMode ? "Edit Subscription" : "Create New Subscription"}</h2>
         <button
           type="button"
           className="btn btn-secondary btn-back"

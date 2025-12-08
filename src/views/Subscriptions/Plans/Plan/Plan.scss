@@ -104,9 +104,12 @@
 
 // Form styles
 .plan-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   .form-group {
     margin-bottom: 24px;
-
+    width: 100%;
     &:last-child {
       margin-bottom: 0;
     }
