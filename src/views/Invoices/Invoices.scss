@@ -1,28 +1,322 @@
 @use "../../scss/variables";
 
-.home-container {
-  display: flex;
-  flex-direction: column;
-  .home-header {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    .actions {
+.invoices-container {
+  padding: 24px;
+  /* background-color: #f5f5f5; */
+  min-height: 100vh;
+
+  .invoices-header-card {
+    margin-bottom: 24px;
+    /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); */
+    border-radius: 8px;
+
+    .invoices-header {
       display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 1rem;
-      .create-invoice {
-        .add-invoice {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 24px;
+
+      @media (max-width: 992px) {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .header-left {
+        flex: 1;
+
+        .page-title {
+          margin-bottom: 16px !important;
+          color: variables.$primary;
           font-family: variables.$font-family-base;
-          .add-invoice-text {
-            margin: 0px 5px;
+          font-weight: 600;
+        }
+
+        .search-section {
+          .invoice-search {
+            max-width: 400px;
+
+            @media (max-width: 768px) {
+              max-width: 100%;
+            }
+
+            .ant-input-search {
+              .ant-input {
+                border-radius: 6px;
+                border: 1px solid #d9d9d9;
+                transition: all 0.3s ease;
+
+                &:hover {
+                  border-color: variables.$primary;
+                }
+
+                &:focus {
+                  border-color: variables.$primary;
+                  box-shadow: 0 0 0 2px rgba(49, 0, 74, 0.2);
+                }
+              }
+
+              .ant-input-search-button {
+                border-radius: 0 6px 6px 0;
+                background-color: variables.$primary;
+                border-color: variables.$primary;
+
+                &:hover {
+                  background-color: variables.$primary-600;
+                  opacity: 0.9;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+
+        .actions {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+
+          @media (max-width: 576px) {
+            flex-direction: column;
+            width: 100%;
+            gap: 8px;
+          }
+
+          .btn-export {
+            display: flex;
+            align-items: center;
+            font-family: variables.$font-family-base;
+            border: 1px solid #d9d9d9;
+            color: #595959;
+            background-color: white;
+            border-radius: 6px;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+
+            &:hover:not(:disabled) {
+              border-color: variables.$primary;
+              color: variables.$primary;
+            }
+
+            &:disabled {
+              opacity: 0.5;
+              cursor: not-allowed;
+            }
+
+            @media (max-width: 576px) {
+              width: 100%;
+              justify-content: center;
+            }
+          }
+
+          .btn-new-invoice {
+            display: flex;
+            align-items: center;
+            font-family: variables.$font-family-base;
+            background-color: variables.$primary;
+            border-color: variables.$primary;
+            border-radius: 6px;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+
+            &:hover {
+              background-color: variables.$primary-600;
+              opacity: 0.9;
+              transform: translateY(-1px);
+            }
+
+            @media (max-width: 576px) {
+              width: 100%;
+              justify-content: center;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .invoices-table-card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+
+    .invoices-table {
+      .ant-table {
+        border-radius: 8px;
+
+        .ant-table-thead {
+          > tr > th {
+            background-color: #fafafa;
+            border-bottom: 2px solid #f0f0f0;
+            font-weight: 600;
+            color: variables.$dark;
+            padding: 16px;
+
+            &:first-child {
+              border-top-left-radius: 8px;
+            }
+
+            &:last-child {
+              border-top-right-radius: 8px;
+            }
+          }
+        }
+
+        .ant-table-tbody {
+          > tr {
+            transition: all 0.3s ease;
+
+            &:hover {
+              background-color: variables.$light !important;
+            }
+
+            > td {
+              padding: 16px;
+              border-bottom: 1px solid #f0f0f0;
+
+              .ant-tag {
+                border-radius: 4px;
+                font-weight: 500;
+                font-size: 12px;
+                padding: 2px 8px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+              }
+
+              .total {
+                font-weight: 600;
+                color: variables.$dark;
+                font-size: 14px;
+              }
+
+              a {
+                color: variables.$primary;
+                text-decoration: none;
+                font-weight: 500;
+                transition: all 0.3s ease;
+
+                &:hover {
+                  color: variables.$primary-600;
+                  opacity: 0.8;
+                  text-decoration: underline;
+                }
+              }
+            }
+          }
+
+          > tr.ant-table-row-selected {
+            background-color: variables.$primary-100;
+          }
+        }
+      }
+
+      .ant-pagination {
+        margin-top: 24px;
+        padding: 0 16px;
+
+        .ant-pagination-item {
+          border-radius: 6px;
+          border: 1px solid #d9d9d9;
+
+          &:hover {
+            border-color: variables.$primary;
+          }
+
+          &.ant-pagination-item-active {
+            background-color: variables.$primary;
+            border-color: variables.$primary;
+          }
+        }
+
+        .ant-pagination-jump-prev,
+        .ant-pagination-jump-next {
+          border-radius: 6px;
+        }
+
+        .ant-pagination-prev,
+        .ant-pagination-next {
+          border-radius: 6px;
+          border: 1px solid #d9d9d9;
+
+          &:hover {
+            border-color: variables.$primary;
+            color: variables.$primary;
+          }
+        }
+
+        .ant-pagination-options {
+          .ant-select {
+            .ant-select-selector {
+              border-radius: 6px;
+            }
           }
         }
       }
     }
   }
 }
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .invoices-container {
+    padding: 16px;
+
+    .invoices-header-card {
+      margin-bottom: 16px;
+
+      .invoices-header {
+        .header-left {
+          .page-title {
+            font-size: 20px !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .invoices-container {
+    padding: 12px;
+
+    .invoices-table-card {
+      .invoices-table {
+        .ant-table {
+          .ant-table-thead > tr > th,
+          .ant-table-tbody > tr > td {
+            padding: 12px 8px;
+            font-size: 13px;
+          }
+        }
+
+        .ant-pagination {
+          margin-top: 16px;
+          padding: 0 8px;
+        }
+      }
+    }
+  }
+}
+
+// Dark mode support -  Not now not all colors are supported
+/* @media (prefers-color-scheme: dark) {
+  .invoices-container {
+    background-color: #141414;
+
+    .invoices-header-card,
+    .invoices-table-card {
+      background-color: #1f1f1f;
+      border-color: #303030;
+    }
+
+    .invoices-header {
+      .header-left {
+        .page-title {
+          color: #ffffff;
+        }
+      }
+    }
+  }
+} */

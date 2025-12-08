@@ -1,6 +1,6 @@
 import Axios from "./adaptor";
 
-export default class Accounts {
+export default class AccountNetwork {
   static async getListedBanks(token: string) {
     return await Axios.get("/accounts/external-verified", {
       headers: {
@@ -8,6 +8,7 @@ export default class Accounts {
       },
     });
   }
+
   static async createBankAccount(
     token: string,
     accountNumber: string,
@@ -26,6 +27,7 @@ export default class Accounts {
       },
     );
   }
+
   static async deleteAccount(token: string, id: number) {
     return await Axios.delete(`/accounts/${id}`, {
       headers: {
@@ -34,12 +36,16 @@ export default class Accounts {
     });
   }
 
-  static async getAccountById(id: string) {
-    return await Axios.get(`/accounts/${id}`);
+  static async getAccountById(token: string, id: string) {
+    return await Axios.get(`/accounts/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   }
 
   static async makeDefault(token: string, id: number) {
-    return Axios.put(
+    return await Axios.put(
       `/accounts/default/${id}`,
       {},
       {

@@ -12,11 +12,26 @@ type Props = {
   invoiceGui: string;
 };
 
+interface PaystackConfig {
+  reference: string;
+  email: string;
+  amount: number;
+  publicKey: string;
+  currency: string;
+}
+
+interface PaystackResponse {
+  reference: string;
+  trans?: string;
+  status?: string;
+  message?: string;
+}
+
 export default function PayGateWay(props: Props) {
   const { email, total, currency, invoiceGui } = props;
   const [loading, setLoading] = React.useState(true);
   const navigate = useNavigate();
-  const config: any = {
+  const config: PaystackConfig = {
     reference: invoiceGui,
     email,
     amount: total * 100,
@@ -26,7 +41,7 @@ export default function PayGateWay(props: Props) {
 
   const initializePayment = usePaystackPayment(config);
 
-  const callback = async (payload: any) => {
+  const callback = async (payload: PaystackResponse) => {
     try {
       const response = await Invoice.verifyInvoice(payload.reference, 100);
       if (response.data.success) {
@@ -39,7 +54,6 @@ export default function PayGateWay(props: Props) {
         });
       }
     } catch (error) {
-      console.log(error);
       Notification.error({
         message: "Something went wrong please try again",
       });
@@ -47,7 +61,7 @@ export default function PayGateWay(props: Props) {
   };
 
   const onClose = () => {
-    console.log("closed");
+    // Payment modal closed
   };
   React.useEffect(() => {
     setTimeout(() => {
@@ -61,11 +75,7 @@ export default function PayGateWay(props: Props) {
 
   return (
     <>
-      {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        initializePayment(callback, onClose)
-      }
+      {initializePayment(callback as () => void, onClose) as React.ReactNode}
     </>
   );
 }

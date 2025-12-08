@@ -149,11 +149,11 @@ export default function Subscription() {
   return (
     <div className="subscription-container">
       <div className="subscription-header">
-        <h2>{isEditMode ? "Edit Plan" : "Create New Plan"}</h2>
+        <h2>{isEditMode ? "Edit Subscription" : "Create New Subscription"}</h2>
         <button
           type="button"
           className="btn btn-secondary btn-back"
-          onClick={() => navigate("/subscriptions/plans")}
+          onClick={() => navigate("/subscriptions")}
         >
           Back to Subscription
         </button>
@@ -227,7 +227,7 @@ export default function Subscription() {
               type="submit"
               disabled={!isValid || (!isDirty && !isEditMode)}
             >
-              {isEditMode ? "Update Plan" : "Create Plan"}
+              {isEditMode ? "Update Subscription" : "Create Subscription"}
             </button>
           </div>
         </form>

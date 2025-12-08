@@ -55,7 +55,6 @@ export default function SignIn() {
       }
     } catch (error) {
       setLoading(false);
-      console.log(error);
       Notification.error({
         message: "Something went wrong please try again later",
       });

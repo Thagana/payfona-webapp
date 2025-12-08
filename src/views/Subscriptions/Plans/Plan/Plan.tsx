@@ -9,7 +9,7 @@ import "./Plan.scss";
 
 type PlanInputs = {
   name: string;
-  interval: "daily" | "weekly" | "monthly" | "yearly";
+  interval: "hourly" | "daily" | "weekly" | "monthly" | "yearly";
   amount: number;
 };
 
@@ -170,7 +170,7 @@ export default function Plan() {
               type="text"
               id="name"
               placeholder="Enter plan name"
-              className={`form-control ${errors.name ? "error" : ""}`}
+              className={`form-control w-50 ${errors.name ? "error" : ""}`}
               {...register("name", {
                 required: "Plan name is required",
                 minLength: {
@@ -190,11 +190,12 @@ export default function Plan() {
             </label>
             <select
               id="interval"
-              className={`form-control ${errors.interval ? "error" : ""}`}
+              className={`form-control w-50 ${errors.interval ? "error" : ""}`}
               {...register("interval", {
                 required: "Billing interval is required",
               })}
             >
+              <option value="hourly">Hourly</option>
               <option value="daily">Daily</option>
               <option value="weekly">Weekly</option>
               <option value="monthly">Monthly</option>
@@ -215,7 +216,7 @@ export default function Plan() {
               placeholder="Enter amount"
               min="1"
               step="0.01"
-              className={`form-control ${errors.amount ? "error" : ""}`}
+              className={`form-control w-50 ${errors.amount ? "error" : ""}`}
               {...register("amount", {
                 required: "Amount is required",
                 min: {

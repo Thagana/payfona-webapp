@@ -17,6 +17,20 @@ export interface SubscriptionType {
   id: number;
   createdAt: Date;
   updatedAt: Date;
+  metadata: {
+    customer: {
+      first_name: string;
+      last_name: string;
+      email: string;
+    };
+    plan: {
+      name: string;
+      plan_code: string;
+    };
+    paid_at: string;
+    paidAt: string;
+    currency: string;
+  };
 }
 
 export interface Authorization {
