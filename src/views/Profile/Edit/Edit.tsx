@@ -18,7 +18,7 @@ export default function Edit() {
   const [firstName, setFirstName] = React.useState(location.state.firstName);
   const [lastName, setLastName] = React.useState(location.state.lastName);
 
-  const [file, setFile] = React.useState<any>();
+  const [file, setFile] = React.useState<File | null>(null);
 
   const updateProfile = useStoreActions<Model>(
     (action) => action.updateProfile,
@@ -55,17 +55,19 @@ export default function Edit() {
         });
       }
     } catch (error) {
-      console.error(error);
       Notification.error({
         message: "Something went wrong, please try again later",
       });
     }
   };
 
-  const handleChange = async (e: any) => {
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
+      const files = e.currentTarget.files;
+      if (!files || files.length === 0) return;
+
       const data = new FormData();
-      data.append("profile", e.currentTarget.files[0]);
+      data.append("profile", files[0]);
       const response = await Server.Users.updateProfileImage(data);
       if (!response.data.success) {
         Notification.error({
@@ -79,7 +81,6 @@ export default function Edit() {
         });
       }
     } catch (error) {
-      console.error(error);
       Notification.error({
         message: "Something went wrong please try again later",
       });
@@ -90,7 +91,7 @@ export default function Edit() {
     <div className="profile-container-edit">
       <div className="container-container">
         <div className="image-container">
-          <img src={location.state.avatar} className="image" />
+          <img src={location.state.avatar} alt="User profile avatar" className="image" />
           <div className="pencil-container">
             <EditOutlined size={40} />
           </div>

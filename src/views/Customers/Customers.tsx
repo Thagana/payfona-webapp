@@ -45,7 +45,6 @@ export default function Customer() {
       });
     },
     onError: (error) => {
-      console.error(error);
       notification.open({
         message: "Something went wrong trying to delete customer",
         type: "error",

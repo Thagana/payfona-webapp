@@ -4,7 +4,7 @@ import { AllSubscriptions } from "./Tabs/AllSubscriptions";
 import SubscriptionRequests from "./Tabs/SubscriptionRequests";
 
 const onChange = (key: string) => {
-  console.log(key);
+  // Tab changed
 };
 
 const items: TabsProps["items"] = [
