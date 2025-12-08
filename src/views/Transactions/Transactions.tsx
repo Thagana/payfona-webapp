@@ -75,7 +75,9 @@ export default function Transactions() {
     onSelectAll: toggleSelectAll,
   };
 
-  const getTransactionType = (metadata: any): string => {
+  const getTransactionType = (
+    metadata: Record<string, unknown> | null | undefined,
+  ): string => {
     if (metadata?.type === "SUBSCRIPTION") return "SUBSCRIPTION";
     if (metadata?.type === "INVOICE") return "INVOICE";
     if (metadata?.plan) return "SUBSCRIPTION";

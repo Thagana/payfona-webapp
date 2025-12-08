@@ -41,9 +41,19 @@ ChartJS.register(
   ArcElement,
 );
 
+interface ChartDataset {
+  label: string;
+  data: number[];
+  backgroundColor: string | string[];
+  borderColor: string | string[];
+  borderWidth: number;
+  tension?: number;
+  fill?: boolean;
+}
+
 interface ChartData {
   labels: string[];
-  datasets: any[];
+  datasets: ChartDataset[];
 }
 
 export default function Home() {
@@ -70,7 +80,7 @@ export default function Home() {
   const [loading, setLoading] = React.useState(true);
 
   // Helper function to validate chart data
-  const isValidChartData = (data: any): data is ChartData => {
+  const isValidChartData = (data: unknown): data is ChartData => {
     return (
       data &&
       Array.isArray(data.labels) &&
@@ -81,7 +91,7 @@ export default function Home() {
 
   // Helper to transform data to Chart.js format
   const transformToChartData = (
-    apiData: any,
+    apiData: unknown,
     label: string,
     color: string,
   ): ChartData | null => {
@@ -89,13 +99,19 @@ export default function Home() {
       return apiData;
     }
 
-    if (apiData?.data && apiData?.labels) {
+    if (
+      typeof apiData === "object" &&
+      apiData !== null &&
+      "data" in apiData &&
+      "labels" in apiData
+    ) {
+      const typedData = apiData as { data: number[]; labels: string[] };
       return {
-        labels: apiData.labels,
+        labels: typedData.labels,
         datasets: [
           {
             label: label,
-            data: apiData.data,
+            data: typedData.data,
             backgroundColor: color,
             borderColor: color.replace("0.6", "1"),
             borderWidth: 1,
@@ -106,10 +122,17 @@ export default function Home() {
 
     if (Array.isArray(apiData)) {
       const labels = apiData.map(
-        (item: any) => item.label || item.month || item.name,
+        (item: Record<string, unknown>) =>
+          (item.label as string) ||
+          (item.month as string) ||
+          (item.name as string),
       );
       const values = apiData.map(
-        (item: any) => item.value || item.amount || item.count || 0,
+        (item: Record<string, unknown>) =>
+          (item.value as number) ||
+          (item.amount as number) ||
+          (item.count as number) ||
+          0,
       );
 
       return {
@@ -233,7 +256,6 @@ export default function Home() {
         });
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
       Notification.error({
         message: "Something wrong please try again",
       });

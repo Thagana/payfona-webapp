@@ -72,7 +72,6 @@ export default function Accounts() {
       }
     },
     onError: (error) => {
-      console.error(error);
       notification.error({
         message: "Something went wrong trying to delete account",
       });
@@ -97,7 +96,6 @@ export default function Accounts() {
       }
     },
     onError: (error) => {
-      console.error(error);
       notification.error({
         message: "Something went wrong trying to set default account",
       });
@@ -212,8 +210,9 @@ export default function Accounts() {
     makeDefaultMutation.mutate(id);
   };
 
-  const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
-    console.log(info?.source, value);
+  const onSearch: SearchProps["onSearch"] = (value, _e, info) => {
+    // Search functionality to be implemented
+  };
 
   const columns: ColumnsType<DataType> = [
     {

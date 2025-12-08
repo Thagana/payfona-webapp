@@ -72,8 +72,9 @@ export default function Plans() {
     onSelectAll: toggleSelectAll,
   };
 
-  const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
-    console.log(info?.source, value);
+  const onSearch: SearchProps["onSearch"] = (value, _e, info) => {
+    // Search functionality to be implemented
+  };
 
   return (
     <div style={{ padding: "24px", background: "#f0f2f5", minHeight: "100vh" }}>

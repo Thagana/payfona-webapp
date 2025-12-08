@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(yarn lint)",
+      "Bash(cat:*)",
+      "Bash(if [ -f .env.example ])",
+      "Bash(then cat .env.example)",
+      "Bash(else echo \"File does not exist\")",
+      "Bash(fi)",
+      "Bash(echo:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

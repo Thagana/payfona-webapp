@@ -1,14 +1,13 @@
 import * as React from "react";
-import { UseFormRegister } from "react-hook-form";
+import { FieldValues, UseFormRegister, FieldError } from "react-hook-form";
 import "./Input.scss";
 
-type Props = {
+type Props<T extends FieldValues> = {
   label: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  register: UseFormRegister<any>;
+  register: UseFormRegister<T>;
   required: boolean;
   errors: {
-    [key: string]: any;
+    [key: string]: FieldError | undefined;
   };
   isTouched: boolean;
   type: string;
@@ -16,7 +15,7 @@ type Props = {
   value: string;
 };
 
-export default function Input(props: Props) {
+export default function Input<T extends FieldValues>(props: Props<T>) {
   const {
     label,
     register,
