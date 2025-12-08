@@ -20,6 +20,7 @@ import ForgotPassword from "../views/Auth/ForgotPassword/ForgotPassword";
 import ChangePassword from "../views/Auth/Changepassword/ChangePassword";
 import Customer from "../views/Customers/Customers";
 import InvoiceRefund from "../views/Refund/InvoiceRefund";
+import CreateRefund from "../views/Refund/Create";
 import ViewInvoice from "../views/ViewInvoice";
 import Layout from "../views/Layout";
 import AddCustomer from "../views/Customers/Customer";
@@ -58,6 +59,10 @@ export default function AppRouter() {
           <Route
             path="/invoice-refunds"
             element={<PrivateRoutes component={InvoiceRefund} />}
+          />
+          <Route
+            path="/refund/create"
+            element={<PrivateRoutes component={CreateRefund} />}
           />
           <Route
             path="/customers"
